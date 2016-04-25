@@ -1,0 +1,193 @@
+<App Theme="Basic">
+	<DockPanel>
+		<JavaScript>
+			var Observable = require("FuseJS/Observable");
+			var Timer = require('FuseJS/Timer');
+
+			var tag = Observable();
+			var dbData = Observable();
+			
+			var timer = Timer.create(function(){
+				load();}, 1000, true);
+
+			var currentPage = Observable("login");
+
+			var persona = Observable(
+				new Person("", "","","","Assets/FuseLogo.png"));
+
+			function Person(nombre, apellido, correo, cel, imagen)
+			{
+				this.nombre = nombre;
+				this.apellido = apellido;
+				this.correo = correo;
+				this.cel = cel;
+				this.imagen = imagen;
+			}
+
+			function goToSuccessPage()
+			{
+				currentPage.value = "login";
+			}
+
+			function goToNuevoPage()
+			{
+				currentPage.value = "nuevo";
+			}
+
+			function load()
+			{
+				fetch('https://firstloop.firebaseio.com/tag.json', {
+					method: 'GET',
+					cache: 'default',
+					headers: { "Content-type": "application/json"}
+				})
+				.then(function(result)
+				{
+					if (result.status !== 200)
+					{
+						console.log("Something went wrong :(");
+						return;
+					}
+					return result.json();
+				})
+				.then(function(data)
+				{
+					var keys = Object.keys(data);
+					
+					keys.forEach(function(key, index)
+					{
+						if (index >= dbData.length)
+						{
+							var nuevo = data[key];
+							dbData.add(nuevo);
+						}
+					})
+				});
+
+				var atr1,atr2,atr3,atr4,atr5;
+
+				dbData.forEach(function(e) {
+					if(e.nombre != null)
+					{
+						atr1 = e.nombre;
+					}
+					if(e.apellido != null)
+					{
+						atr2 = e.apellido;
+					}
+					if(e.correo != null)
+					{
+						atr3 = e.correo;
+					}
+					if(e.cel != null)
+					{
+						atr4 = e.cel;
+					}
+					if(e.imagen != null)
+					{
+						atr5 = "Assets/" + e.imagen;
+					}
+				});
+
+				persona.value = new Person(atr1, atr2, atr3, atr4, atr5);
+			};
+
+			function submit()
+			{
+				fetch('https://firstloop.firebaseio.com/tag.json', {
+					method: 'POST',
+					headers: { "Content-type": "application/json"},
+					body: JSON.stringify({"tag": tag.value})
+				});
+
+				tag.value = "";
+			}
+
+			module.exports = {
+				tag: tag,
+				dbData: dbData,
+				persona: persona,
+				submit: submit,
+				currentPage: currentPage,
+				goToSuccessPage: goToSuccessPage,
+				goToNuevoPage: goToNuevoPage
+			};
+		</JavaScript>
+
+		<StatusBarBackground Dock="Top" />
+		<BottomBarBackground Dock="Bottom" />
+
+		<PageControl Active="{currentPage}">
+			
+			<DirectNavigation Active="login"/>
+
+			<Page ux:Name="nuevo">
+				<StackPanel Color="#32CD32">
+					<Text Value="Left" />
+					<Button Clicked="{goToSuccessPage}" Text="Change View"/>
+				</StackPanel>
+			</Page>
+
+			<Page ux:Name="login">
+				<Panel>
+					<Panel ux:Class="udPage">
+						<EnteringAnimation>
+							<Move Y="-1" RelativeTo="Size"/>
+						</EnteringAnimation>
+
+						<ExitingAnimation>
+							<Move Y="1" RelativeTo="Size"/>
+						</ExitingAnimation>
+					</Panel>
+
+					<LinearNavigation Active="centerP" Easing="QuadraticOut"/>
+					<SwipeNavigate SwipeDirection="Up"/>
+
+					<udPage Color="#e57b1e">
+						<StackPanel>
+							
+
+							<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Hola</Text>
+
+							<Text Value="{persona.imagen}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
+							<Text Value="{persona.correo}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
+							<Text Value="{persona.cel}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
+							
+						</StackPanel>
+					</udPage>
+
+					<udPage ux:Name="centerP" Color="#3366CC">
+						<StackPanel>
+							<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
+
+							<StackPanel Dock="Bottom" Margin="0,50,0,0">
+								<Button Text="Submit" Clicked="{submit}" />
+								<TextInput Value="{tag}" TextAlignment="Center" PlaceholderText="Tag" PlaceholderColor="#63aced"/>
+							</StackPanel>
+
+							<ScrollView ClipToBounds="true">
+								<StackPanel>
+									<Each Items="{dbData}">
+										<Text Value="{cel}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
+									</Each>
+								</StackPanel>
+							</ScrollView>
+						</StackPanel>
+					</udPage>
+
+					<udPage Color="#A52A2A">
+						<Text Value="Bottom"/>
+					</udPage>
+				</Panel>
+			</Page>
+
+			<Page ux:Name="success">
+				<StackPanel Color="#FF00FF">
+					<Text Value="Right" />
+					<Text Value="{currentPage}" />
+					<Button Text="Change View" Clicked="{goToNuevoPage}" />
+				</StackPanel>
+			</Page>
+		</PageControl>
+	</DockPanel>
+</App>
