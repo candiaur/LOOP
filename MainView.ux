@@ -10,28 +10,32 @@
 			var timer = Timer.create(function(){
 				load();}, 1000, true);
 
-			var currentPage = Observable("login");
+			var currentPage = Observable("middle");
 
 			var persona = Observable(
-				new Person("", "","","","Assets/FuseLogo.png"));
+				new Person("", "","","","Assets/FuseLogo.png","0"));
 
-			function Person(nombre, apellido, correo, cel, imagen)
+			var saludo = persona.map(function(x) {
+				return "Hola " + x.nombre;
+			});
+
+			var leftPage = persona.map(function(x) {
+				if(x.rol == "1")
+				{
+					return "calificacion";
+				}else{
+					return "informe";
+				}
+			});
+
+			function Person(nombre, apellido, correo, cel, imagen, rol)
 			{
 				this.nombre = nombre;
 				this.apellido = apellido;
 				this.correo = correo;
 				this.cel = cel;
 				this.imagen = imagen;
-			}
-
-			function goToSuccessPage()
-			{
-				currentPage.value = "login";
-			}
-
-			function goToNuevoPage()
-			{
-				currentPage.value = "nuevo";
+				this.rol = rol;
 			}
 
 			function load()
@@ -54,6 +58,7 @@
 				{
 					var keys = Object.keys(data);
 					
+					
 					keys.forEach(function(key, index)
 					{
 						if (index >= dbData.length)
@@ -64,40 +69,18 @@
 					})
 				});
 
-				var atr1,atr2,atr3,atr4,atr5;
-
-				dbData.forEach(function(e) {
-					if(e.nombre != null)
-					{
-						atr1 = e.nombre;
-					}
-					if(e.apellido != null)
-					{
-						atr2 = e.apellido;
-					}
-					if(e.correo != null)
-					{
-						atr3 = e.correo;
-					}
-					if(e.cel != null)
-					{
-						atr4 = e.cel;
-					}
-					if(e.imagen != null)
-					{
-						atr5 = "Assets/" + e.imagen;
-					}
+				dbData.forEach(function(e)
+				{
+					persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.imagen,e.rol);
 				});
-
-				persona.value = new Person(atr1, atr2, atr3, atr4, atr5);
 			};
 
 			function submit()
 			{
-				fetch('https://firstloop.firebaseio.com/tag.json', {
+				fetch('https://firstloop.firebaseio.com/cursos.json', {
 					method: 'POST',
 					headers: { "Content-type": "application/json"},
-					body: JSON.stringify({"tag": tag.value})
+					body: JSON.stringify({"curso": tag.value})
 				});
 
 				tag.value = "";
@@ -108,27 +91,32 @@
 				dbData: dbData,
 				persona: persona,
 				submit: submit,
+				saludo: saludo,
 				currentPage: currentPage,
-				goToSuccessPage: goToSuccessPage,
-				goToNuevoPage: goToNuevoPage
+				leftPage: leftPage,
 			};
 		</JavaScript>
 
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
-
+		
 		<PageControl Active="{currentPage}">
 			
-			<DirectNavigation Active="login"/>
+			<DirectNavigation Active="{currentPage}"/>
 
-			<Page ux:Name="nuevo">
-				<StackPanel Color="#32CD32">
-					<Text Value="Left" />
-					<Button Clicked="{goToSuccessPage}" Text="Change View"/>
-				</StackPanel>
+			<Page ux:Name="left">
+				<PageControl Active="{leftPage}" Interaction="None">
+					<Page ux:Name="informe">
+						<Indicador/>
+					</Page>
+					
+					<Page ux:Name="calificacion">
+						<Cursos/>
+					</Page>
+				</PageControl>
 			</Page>
 
-			<Page ux:Name="login">
+			<Page ux:Name="middle">
 				<Panel>
 					<Panel ux:Class="udPage">
 						<EnteringAnimation>
@@ -140,23 +128,24 @@
 						</ExitingAnimation>
 					</Panel>
 
-					<LinearNavigation Active="centerP" Easing="QuadraticOut"/>
+					<LinearNavigation Active="center" Easing="QuadraticOut"/>
 					<SwipeNavigate SwipeDirection="Up"/>
 
-					<udPage Color="#e57b1e">
-						<StackPanel>
-							
+					<udPage ux:Name="top" Color="#e57b1e">
+						<StackPanel Margin="0,30,0,0">
+							<Circle Height="150" Width="150" >
+								<ImageFill Url="{persona.imagen}"/>
+							</Circle>
 
-							<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Hola</Text>
+							<Text Dock="Top" Alignment="Center" FontSize="50" Margin="0,50,0,50" TextColor="#1e88e5" Value="{saludo}"/>
 
-							<Text Value="{persona.imagen}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
 							<Text Value="{persona.correo}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
 							<Text Value="{persona.cel}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
 							
 						</StackPanel>
 					</udPage>
 
-					<udPage ux:Name="centerP" Color="#3366CC">
+					<udPage ux:Name="center" Color="#3366CC">
 						<StackPanel>
 							<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
 
@@ -175,17 +164,15 @@
 						</StackPanel>
 					</udPage>
 
-					<udPage Color="#A52A2A">
+					<udPage ux:Name="bottom" Color="#A52A2A">
 						<Text Value="Bottom"/>
 					</udPage>
 				</Panel>
 			</Page>
 
-			<Page ux:Name="success">
+			<Page ux:Name="right">
 				<StackPanel Color="#FF00FF">
 					<Text Value="Right" />
-					<Text Value="{currentPage}" />
-					<Button Text="Change View" Clicked="{goToNuevoPage}" />
 				</StackPanel>
 			</Page>
 		</PageControl>
