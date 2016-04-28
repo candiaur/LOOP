@@ -1,0 +1,3 @@
+<Panel ux:Class="CrearAlumno">
+	<Text Value="Crear Alumno" />
+</Panel>

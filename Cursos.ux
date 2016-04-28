@@ -45,7 +45,8 @@
 			cursos.remove(sender.data);
 		}
 
-		function pageButtonClicked(arg){
+		function pageButtonClicked(arg)
+		{
 			idPag.value = arg.data.id;
 		}
 
@@ -60,8 +61,7 @@
 	<PageControl ux:Name="actPage" Active="pagCursos" Interaction="None">
 		<Page ux:Name="pagCursos">
 			<StackPanel>
-				<Text Dock="Top" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="CURSOS"  Margin="0,10,0,10"/>
-				<Text ux:Name="titulo" Value="" Visibility="Collapsed"/>
+				<Text Dock="Top" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="CURSOS" Margin="0,10,0,10"/>
 				
 				<ScrollView>
 					<StackPanel>
@@ -81,7 +81,22 @@
 
 		<Page ux:Name="pagActividad">
 			<StackPanel>
-				<Text Dock="Top" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="{idPag}"  Margin="0,10,0,0"/>
+				<DockPanel>
+					<Text Dock="Left" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="{idPag}" Margin="0,10,0,0" Width="25%"/>
+
+					<Button Text="Actividad" Width="25%">
+						<Clicked>
+							<Set Target="actPage.Active" Value="addAtividad" />
+						</Clicked>
+					</Button>
+
+					<Button Text="Alumno" Width="25%" Dock="Right">
+						<Clicked>
+							<Set Target="actPage.Active" Value="addAlumnos" />
+						</Clicked>
+					</Button>
+				</DockPanel>
+
 				<ScrollView>
 					<StackPanel>
 						<Each Items="{cursos}">
@@ -91,12 +106,22 @@
 						</Each>
 					</StackPanel>
 				</ScrollView>
-				<Button Text="Atrás">
+				
+				<Button Text="Atrás" Alignment="Left" Width="25%">
 					<Clicked>
 						<Set Target="actPage.Active" Value="pagCursos" />
 					</Clicked>
 				</Button>
 			</StackPanel>
+		</Page>
+
+		<Page ux:Name="addAtividad">
+			<ux:Include File="CrearActividad.ux" />
+			<CrearActividad />
+		</Page>
+
+		<Page ux:Name="addAlumnos">
+			<CrearAlumno />
 		</Page>
 	</PageControl>
 </Panel>

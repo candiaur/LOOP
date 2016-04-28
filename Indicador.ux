@@ -1,4 +1,5 @@
 <Panel ux:Class="Indicador">
+
 	<StackPanel Color="#32CD32">
 		<Text Value="Alumnos" />
 	</StackPanel>
