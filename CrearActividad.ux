@@ -1,127 +1,11 @@
 <Panel ux:InnerClass="CrearActividad">
-	<JavaScript>
-		var Observable = require("FuseJS/Observable");
-		var Timer = require('FuseJS/Timer');
-		var habilidades = Observable();
-		var subHabs = Observable();
-
-
-		var timer = Timer.create(function(){
-			cargarHabilidades();}, 1000, true);
-
-		function cargarHabilidades()
-		{
-			cargarSubHabs();
-
-			fetch('https://firstloop.firebaseio.com/habilidades.json', {
-				method: 'GET',
-				cache: 'default',
-				headers: { "Content-type": "application/json"}
-			})
-			.then(function(result)
-			{
-				if (result.status !== 200)
-				{
-					console.log("Something went wrong :(");
-					return;
-				}
-				return result.json();
-			})
-			.then(function(data)
-			{
-				var keys = Object.keys(data);
-				
-				keys.forEach(function(key, index)
-				{
-					if (index >= habilidades.length)
-					{
-						var nuevo = data[key];
-
-						nuevo["subHabsId"] = Observable();
-
-						subHabs.forEach(function(e)
-						{
-							if (e.habilidad == nuevo.id)
-							{
-								e["activo"] = false;
-								nuevo["subHabsId"].add(e);
-							}
-						});
-						
-						nuevo["activo"] = true;
-
-						habilidades.add(nuevo);
-					}
-				})
-			});
-		}
-
-		function cargarSubHabs()
-		{
-			fetch('https://firstloop.firebaseio.com/subHabilidades.json', {
-				method: 'GET',
-				cache: 'default',
-				headers: { "Content-type": "application/json"}
-			})
-			.then(function(result)
-			{
-				if (result.status !== 200)
-				{
-					console.log("Something went wrong :(");
-					return;
-				}
-				return result.json();
-			})
-			.then(function(data)
-			{
-				var keys = Object.keys(data);
-				
-				keys.forEach(function(key, index)
-				{
-					if (index >= subHabs.length)
-					{
-						var nuevo = data[key];
-						subHabs.add(nuevo);
-					}
-				})
-			});
-		}
-
-		function selectAll(arg)
-		{
-			habilidades.forEach(function(e)
-			{
-				if(e.id == arg.data.id)
-				{
-					if (e.activo == true)
-					{
-						e.activo = false;
-
-						e.subHabsId.forEach(function(x)
-						{
-							x.activo = false;
-						});
-					}else{
-
-						e.activo = true;
-
-						e.subHabsId.forEach(function(x)
-						{
-							x.activo = true;
-						});
-					}
-				}
-			});
-		}
-
-		module.exports = {
-			habilidades: habilidades,
-			selectAll: selectAll,
-		};
-	</JavaScript>
+	
+	<JavaScript File="AdmCursos.js" />
 
 	<StackPanel Dock="Top">
 		<Text Alignment="Center" FontSize="30" TextColor="#1e88e5" Value="Crear Actividad" Margin="0,10,0,10"/>
+
+		<Text ux:Name="msnGuardado" Alignment="Center" FontSize="12" TextColor="#1e88e5" Value="Actividad Guardada" Margin="0,5,0,5" Visibility="{mensaje}"/>
 		
 		<ScrollView MaxHeight="500">
 			<StackPanel>
@@ -133,10 +17,10 @@
 						</Grid>
 
 						<StackPanel>
-							<Grid ColumnCount="3">
+							<Grid ColumnCount="2">
 								<Each Items="{subHabsId}">
 									<Text Value="{subHab}" Alignment="Left" Margin="15,0"/>
-									<Checkbox Dock="Right" Value="{activo}"/>
+									<Checkbox Dock="Right" Value="{activo}" Clicked="{selectSubHab}"/>
 								</Each>
 							</Grid>
 						</StackPanel>
@@ -145,10 +29,14 @@
 			</StackPanel>
 		</ScrollView>
 
-		<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
-			<Clicked>
-				<Set Target="actPage.Active" Value="pagActividad" />
-			</Clicked>
-		</Button>
+		<Grid ColumnCount="2">
+			<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
+				<Clicked>
+					<Set Target="msnGuardado.Visibility" Value="Collapsed" />
+					<Set Target="actPage.Active" Value="pagActividad" />
+				</Clicked>
+			</Button>
+			<Button Text="Agregar" Alignment="Right" Width="25%" Height="30" Clicked="{agregarActividad}"/>
+		</Grid>
 	</StackPanel>
 </Panel>

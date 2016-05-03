@@ -1,62 +1,6 @@
 <Panel ux:Class="Cursos" Color="#32CD32">
-	<JavaScript>
-		var Observable = require("FuseJS/Observable");
-		var Timer = require('FuseJS/Timer');
-		var cursos = Observable();
-		var idPag = Observable();
-
-		var timer = Timer.create(function(){
-			cargarCursos();}, 1000, true);
-
-		function cargarCursos()
-		{
-			fetch('https://firstloop.firebaseio.com/cursos.json', {
-				method: 'GET',
-				cache: 'default',
-				headers: { "Content-type": "application/json"}
-			})
-			.then(function(result)
-			{
-				if (result.status !== 200)
-				{
-					console.log("Something went wrong :(");
-					return;
-				}
-				return result.json();
-			})
-			.then(function(data)
-			{
-				var keys = Object.keys(data);
-				
-				
-				keys.forEach(function(key, index)
-				{
-					if (index >= cursos.length)
-					{
-						var nuevo = data[key];
-						cursos.add(nuevo);
-					}
-				})
-			});
-		}
-
-		function removeItem(sender)
-		{
-			cursos.remove(sender.data);
-		}
-
-		function pageButtonClicked(arg)
-		{
-			idPag.value = arg.data.id;
-		}
-
-		module.exports = {
-			cursos: cursos,
-			removeItem: removeItem,
-			pageButtonClicked: pageButtonClicked,
-			idPag: idPag
-		};
-	</JavaScript>
+	
+	<JavaScript File="AdmCursos.js" />
 
 	<PageControl ux:Name="actPage" Active="pagCursos" Interaction="None">
 		<Page ux:Name="pagCursos">
@@ -70,7 +14,7 @@
 								<Text Value="{curso}" Alignment="CenterLeft" />
 								<Clicked>
 									<Set Target="actPage.Active" Value="pagActividad" />
-									<Callback Handler="{pageButtonClicked}" />
+									<Callback Handler="{selectCurso}" />
 								</Clicked>
 							</DockPanel>
 						</Each>
@@ -82,8 +26,7 @@
 		<Page ux:Name="pagActividad">
 			<StackPanel>
 				<DockPanel>
-					<Text Dock="Left" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="{idPag}" Margin="0,10,0,0" Width="25%"/>
-
+					<Text Dock="Left" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="{cursoAct.nombre}" Margin="0,10,0,0" Width="25%"/>
 					<Button Text="Actividad" Width="25%">
 						<Clicked>
 							<Set Target="actPage.Active" Value="addAtividad" />
@@ -99,9 +42,9 @@
 
 				<ScrollView>
 					<StackPanel>
-						<Each Items="{cursos}">
+						<Each Items="{habilidadesAct}">
 							<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
-								<Text Value="{curso}" Alignment="CenterLeft" />
+								<Text Value="{habilidad}" Alignment="CenterLeft" />
 							</DockPanel>
 						</Each>
 					</StackPanel>
