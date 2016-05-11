@@ -40,7 +40,7 @@
 
 			function load()
 			{
-				fetch('https://firstloop.firebaseio.com/tag.json', {
+				fetch('https://firstloop.firebaseio.com/personas.json', {
 					method: 'GET',
 					cache: 'default',
 					headers: { "Content-type": "application/json"}
@@ -71,16 +71,26 @@
 
 				dbData.forEach(function(e)
 				{
-					persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.imagen,e.rol);
+					if(e.id == "1")
+					{
+						var aux = Observable();
+
+						e.ramas.forEach(function(x)
+						{
+							aux.value = x.rol;
+						});
+
+						persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.imagen, aux.value);
+					}
 				});
 			};
 
 			function submit()
 			{
-				fetch('https://firstloop.firebaseio.com/actividad.json', {
+				fetch('https://firstloop.firebaseio.com/personas.json', {
 					method: 'POST',
 					headers: { "Content-type": "application/json"},
-					body: JSON.stringify({"curso": tag.value})
+					body: JSON.stringify({"apellido": tag.value})
 				});
 
 				tag.value = "";
@@ -157,7 +167,7 @@
 							<ScrollView ClipToBounds="true">
 								<StackPanel>
 									<Each Items="{dbData}">
-										<Text Value="{cel}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
+										<Text Value="{nombre}" TextWrapping="Wrap" Margin="0,9" TextAlignment="Center"/>
 									</Each>
 								</StackPanel>
 							</ScrollView>

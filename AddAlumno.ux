@@ -1,0 +1,32 @@
+<Panel ux:InnerClass="AddAlumno">
+
+	<JavaScript File="AdmCursos.js" />
+
+	<StackPanel Dock="Top">
+		<Text Value="Seleccionar Alumno" Alignment="Center"/>
+
+		<Text Alignment="Center" FontSize="12" TextColor="#1e88e5" Value="Alumnos Guardados" Margin="0,5,0,5" Visibility="{mensaje}"/>
+
+		<ScrollView MaxHeight="500">
+			<StackPanel>
+				<Each Items="{alumnos}" >
+					<DockPanel Padding="10,5" Margin="2,2" Color="#6fdc6f">
+						<Image Url="{imagen}" Height="50" Width="50" Alignment="Left" Margin="5,0,0,0" StretchMode="UniformToFill"/>
+						<Text Value="{nombres}" Alignment="Center" />
+						<Checkbox Alignment="Right" Margin="0,0,0,5" Value="{activo}" Clicked="{selectNewAlumno}"/>
+					</DockPanel>
+				</Each>
+			</StackPanel>
+		</ScrollView>
+
+		<Grid ColumnCount="2">
+			<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
+				<Clicked>
+					<Callback Handler="{desActivarMensaje}" />
+					<Set Target="actPage.Active" Value="pagAlumnos" />
+				</Clicked>
+			</Button>
+			<Button Text="Guardar" Alignment="Right" Width="25%" Height="30" Clicked="{agregarAlumnoCurso}"/>
+		</Grid>
+	</StackPanel>
+</Panel>

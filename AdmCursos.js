@@ -1,17 +1,26 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
+var mensaje = Observable("Collapsed");
 
 //---Cursos.ux---
 var cursos = Observable();
 var actividades = Observable();
+var alumnos = Observable();
 var habilidadesAct = Observable({"habilidad":"nueva"});
-var cursoAct = Observable({"id":"","nombre":"","nuevo":true});
-var usado = Observable(0);
+var alumnosCurso = Observable({"alumnos":"nuevo"});
+var hayAct = Observable(false);
+var cursoAct = Observable();
+var alumnoAct = Observable();
+var usadoActividad = Observable(0);
+var usadoCurso = Observable(0);
 
 //---CrearActividad.ux---
 var habilidades = Observable();
 var subHabs = Observable();
-var mensaje = Observable("Collapsed");
+
+//---CrearAlumno.ux---
+var idMaxAlumno = Observable(0);
+var alumno = Observable(new Student( "","","","",""));
 
 var timer = Timer.create(function(){
 	cargarTodo();}, 1000, true);
@@ -21,9 +30,17 @@ function cargarTodo()
 	cargarCursos();
 	cargarActividades();
 	cargarHabilidades();
+	cargarAlumnos();
+}
+
+function desActivarMensaje()
+{
+	mensaje.value = "Collapsed";
 }
 
 //----Cursos.ux----
+
+//--Carga todos los cursos del instructor de la rama activa.
 function cargarCursos()
 {
 	fetch('https://firstloop.firebaseio.com/cursos.json', {
@@ -44,22 +61,41 @@ function cargarCursos()
 	{
 		var keys = Object.keys(data);
 		
-		
-		keys.forEach(function(key, index)
+		if(usadoCurso == 0)
 		{
-			if (index >= cursos.length)
+			keys.forEach(function(key, index)
 			{
-				var nuevo = data[key];
-				cursos.add(nuevo);
-			}
-		})
+				if (index >= cursos.length)
+				{
+					var nuevo = data[key];
+					nuevo["llave"] = key;
+					cursos.add(nuevo);
+				}
+			});
+
+				usadoCurso.value = 1;
+		}else{
+				
+			var aux = Observable();
+
+			keys.forEach(function(key, index)
+			{
+				if (index >= aux.length)
+				{
+					var nuevo = data[key];
+					nuevo["llave"] = key;
+					aux.add(nuevo);
+				}
+			});
+
+			cursos.replaceAll(aux);
+		}
 	});
 }
 
+//--Carga todas los actividades del día y curso seleccionado.
 function cargarActividades()
 {
-	var aux = Observable();
-
 	fetch('https://firstloop.firebaseio.com/actividades.json', {
 		method: 'GET',
 		cache: 'default',
@@ -78,7 +114,7 @@ function cargarActividades()
 	{
 		var keys = Object.keys(data);
 		
-		if(usado == 0)
+		if(usadoActividad == 0)
 		{
 			keys.forEach(function(key, index)
 			{
@@ -89,8 +125,11 @@ function cargarActividades()
 				}
 			});
 			
-			usado.value = 1;
+			usadoActividad.value = 1;
 		}else{
+			
+			var aux = Observable();
+
 			keys.forEach(function(key, index)
 			{
 				if (index >= aux.length)
@@ -106,24 +145,74 @@ function cargarActividades()
 	});
 }
 
-function selectCurso(arg)
+//--Carga todos los alumnos de la rama activa
+function cargarAlumnos()
 {
-	cursoAct.value = {"id":arg.data.id,"nombre":arg.data.curso,"nuevo":true};
-	getHabxCursos();
+	fetch('https://firstloop.firebaseio.com/personas.json', {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		
+		keys.forEach(function(key, index)
+		{
+			if (index >= alumnos.length)
+			{
+				var nuevo = data[key];
+				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
+				nuevo["activo"] = false;
+				alumnos.add(nuevo);
+
+				if(nuevo.id > idMaxAlumno.value)
+				{
+					idMaxAlumno.value = nuevo.id;
+				}
+			}
+		});
+	});
 }
 
+function selectCurso(arg)
+{
+	cursos.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			cursoAct = e;
+		}
+	});
+
+	hayAct.value = false;
+	
+	getHabxCursos();
+	getAlumxCursos();
+}
+
+//-- Carga todas las habilidades del curso y día seleccionado
 function getHabxCursos()
 {
 	var aux = Observable();
 
 	actividades.forEach(function(e)
 	{
-		if(e.curso == cursoAct.value.id)
+		if(e.curso == cursoAct.id)
 		{
 			e.habilidades.forEach(function(x)
 			{
 				aux.add(x);
-				cursoAct.value.nuevo = false;
+				hayAct.value = true;
 			});
 		}
 	});
@@ -131,13 +220,61 @@ function getHabxCursos()
 	habilidadesAct.replaceAll(aux);
 }
 
+//-- Carga todos los alumnos del curso seleccionado
+function getAlumxCursos()
+{
+	var aux = Observable();
+
+	alumnos.forEach(function(e)
+	{
+		if (cursoAct.alumnos != null)
+		{
+			cursoAct.alumnos.forEach(function(x)
+			{
+				if(e.id == x.alumno)
+				{
+					aux.add(e);
+				}
+			});
+		}
+	});
+
+	alumnosCurso.replaceAll(aux);
+}
+
+function desActivarAlumnos()
+{
+	var aux = Observable();
+
+	alumnos.forEach(function(e)
+	{
+		e.activo = false;
+		aux.add(e);
+	});
+
+	alumnos.replaceAll(aux);
+}
+
 function removeItem(sender)
 {
 	cursos.remove(sender.data);
 }
 
+function selectAlumno(arg)
+{
+	alumnos.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			alumnoAct.value = e;
+		}
+	});
+}
+
 
 //----CrearActividad.ux----
+
+//-- Carga todas las habilidades por default
 function cargarHabilidades()
 {
 	cargarSubHabs();
@@ -181,10 +318,11 @@ function cargarHabilidades()
 
 				habilidades.add(nuevo);
 			}
-		})
+		});
 	});
 }
 
+//-- Carga todas las subHabilidades por default
 function cargarSubHabs()
 {
 	fetch('https://firstloop.firebaseio.com/subHabilidades.json', {
@@ -212,7 +350,7 @@ function cargarSubHabs()
 				var nuevo = data[key];
 				subHabs.add(nuevo);
 			}
-		})
+		});
 	});
 }
 
@@ -286,10 +424,11 @@ function selectSubHab(arg)
 	habilidades.replaceAll(aux);
 }
 
+//-- Guarda la nueva actividad por día y por curso
 function agregarActividad()
 {
 	var today = new Date().toISOString().slice(0, 10);
-	var aux = "{\"curso\":" + cursoAct.value.id + ",";
+	var aux = "{\"curso\":" + cursoAct.id + ",";
 	aux = aux + "\"fecha\":\"" + today + "\",";
 	aux = aux + "\"habilidades\":[";
 
@@ -310,7 +449,7 @@ function agregarActividad()
 
 			aux = aux + "{\"habilidad\":\"" + e.habilidad + "\",";
 			aux = aux + "\"id\":" + e.id + ",";
-			aux = aux + "\"subHab\":[";
+			aux = aux + "\"subHabs\":[";
 
 			e.subHabsId.forEach(function(x)
 			{
@@ -323,8 +462,7 @@ function agregarActividad()
 						inicioSub ++ ;
 					}
 
-					aux = aux + "{\"habilidad\":" + x.habilidad + ",";
-					aux = aux + "\"subHab\":\"" + x.subHab + "\",";
+					aux = aux + "{\"subHab\":\"" + x.subHab + "\",";
 					aux = aux + "\"id\":" + x.id + "}";
 				}
 			});
@@ -335,7 +473,7 @@ function agregarActividad()
 
 	aux = aux + "]}";
 
-	if(cursoAct.value.nuevo == true)
+	if(hayAct.value == false)
 	{
 		fetch('https://firstloop.firebaseio.com/actividades.json', {
 			method: 'POST',
@@ -348,7 +486,7 @@ function agregarActividad()
 		
 		actividades.forEach(function(e)
 		{
-			if(e.curso == cursoAct.value.id)
+			if(e.curso == cursoAct.id)
 			{
 				llave.value = e.llave;
 			}
@@ -368,19 +506,172 @@ function agregarActividad()
 	getHabxCursos();}, 1000, true);
 }
 
+//----CrearAlumno.ux----
+
+function Student(nombre, apellido, correo, cel, imagen)
+{
+	this.nombre = nombre;
+	this.apellido = apellido;
+	this.correo = correo;
+	this.cel = cel;
+	this.imagen = imagen;
+}
+
+//-- Guarda un nuevo Alumno de 0(aún no se va a usar)
+function agregarAlumnoNuevo()
+{
+	idMaxAlumno.value = idMaxAlumno.value + 1;
+
+	var aux = "{\"id\":" + idMaxAlumno.value + ",";
+	aux = aux + "\"nombre\": \"" + alumno.nombre + "\",";
+	aux = aux + "\"apellido\": \"" + alumno.apellido + "\",";
+	aux = aux + "\"correo\": \"" + alumno.correo + "\",";
+	aux = aux + "\"cel\": \"" + alumno.cel + "\",";
+	aux = aux + "\"imagen\": \"" + alumno.imagen + "\",";
+	aux = aux + "\"rol\": 0}";
+
+	fetch('https://firstloop.firebaseio.com/personas.json', {
+		method: 'POST',
+		headers: { "Content-type": "application/json"},
+		body: aux
+	});
+
+	mensaje.value = "Visible";
+	cargarAlumnos();
+}
+
+//-- Agrega alumnos de la rama a un curso específico
+function agregarAlumnoCurso()
+{
+	var aux = "{\"id\":" + cursoAct.id + ",";
+	aux = aux + "\"curso\":\"" + cursoAct.curso + "\",";
+	aux = aux + "\"instructor\":\"" + cursoAct.instructor + "\",";
+	aux = aux + "\"rama\":\"" + cursoAct.rama + "\",";
+	aux = aux + "\"alumnos\":[";
+
+	var inicio = 0;
+
+	alumnos.forEach(function(e)
+	{
+		if(e.activo == true)
+		{
+			if(inicio > 0)
+			{
+				aux = aux + ","
+			}else{
+				inicio ++ ;
+			}
+
+			aux = aux + "{\"alumno\":" + e.id + "}";
+		}
+	});
+
+	aux = aux + "]}";
+
+
+	fetch('https://firstloop.firebaseio.com/cursos/' + cursoAct.llave + '.json', {
+		method: 'PUT',
+		headers: { "Content-type": "application/json"},
+		body: aux
+	});
+
+	mensaje.value = "Visible";
+
+	var id = cursoAct.id;
+
+	cargarCursos();
+
+	timer = Timer.create(function(){
+	 actualizarCursoAct; getAlumxCursos();}, 1000, true);	
+}
+
+function selectNewAlumno(arg)
+{
+	var aux = Observable();
+
+	alumnos.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			if(e.activo == true)
+			{
+				e.activo = false;
+			}else
+			{
+				e.activo = true;
+			}
+		}
+
+		aux.add(e);
+	});
+
+	alumnos.replaceAll(aux);
+}
+
+function actualizarCursoAct()
+{
+	cursos.forEach(function(e)
+	{
+		if(e.id == cursoAct.id)
+		{
+			cursoAct = e;
+		}
+	});
+}
+
+//---CalificarAkumno.ux---
+function resetHabxAlumno()
+{
+	var aux = Observable();
+
+	actividades.forEach(function(e)
+	{
+		if(e.curso == cursoAct.id)
+		{
+			e.habilidades.forEach(function(x)
+			{
+				x.subHabs.forEach(function(y)
+				{
+					x["n"] = false;
+					x["m"] = false;
+					x["l"] = false;
+				});
+
+				aux.add(x);
+			});
+		}
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
 
 module.exports = {
+	mensaje: mensaje,
+	desActivarMensaje: desActivarMensaje,
+
 //---Cursos.ux---
 	cursos: cursos,
 	habilidadesAct: habilidadesAct,
 	removeItem: removeItem,
 	selectCurso: selectCurso,
+	selectAlumno: selectAlumno,
 	cursoAct: cursoAct,
+	alumnoAct: alumnoAct,
+	alumnosCurso: alumnosCurso,
+	desActivarAlumnos: desActivarAlumnos,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,
 	selectAll: selectAll,
 	selectSubHab: selectSubHab,
 	agregarActividad: agregarActividad,
-	mensaje: mensaje
+
+//---CrearAlumno.ux---
+	alumnos: alumnos,
+	alumno: alumno,
+	agregarAlumnoCurso: agregarAlumnoCurso,
+	selectNewAlumno: selectNewAlumno,
+
+//---CalificarAkumno.ux---
+	resetHabxAlumno: resetHabxAlumno
 };

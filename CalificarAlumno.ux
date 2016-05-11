@@ -1,0 +1,60 @@
+<Panel ux:InnerClass="CalificarAlumno">
+
+	<JavaScript File="AdmCursos.js" />
+
+	<StackPanel Dock="Top">
+		<Text Value="Calificar Alumno" Alignment="Center"/>
+
+		<Text Alignment="Center" FontSize="12" TextColor="#1e88e5" Value="Calificación Guardada" Margin="0,5,0,5" Visibility="{mensaje}"/>
+
+		<DockPanel Padding="10,5" Margin="2,2" Color="#6fdc6f">
+			<Grid ColumnCount="3">
+				<Image Url="{alumnoAct.imagen}" Height="50" Width="50" Alignment="Left" Margin="5,0,0,0" StretchMode="UniformToFill"/>
+				<Text Value="{alumnoAct.nombres}" Alignment="Center" />
+				<Checkbox Alignment="Center" Value="true"/>
+			</Grid>
+		</DockPanel>
+
+		<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
+			<Grid Columns="7*,1*,1*,1*" >
+				<Text Value="HABILIDADES" Alignment="CenterLeft" />
+				<Text Value="N" Alignment="Center" />
+				<Text Value="M" Alignment="Center" />
+				<Text Value="L" Alignment="Center" />
+			</Grid>
+		</DockPanel>
+
+		<ScrollView MaxHeight="500">
+			<StackPanel>
+				<Each Items="{habilidadesAct}">
+					<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
+						<Grid Dock="Top" ColumnCount="2">
+							<Text Value="{habilidad}" Alignment="TopLeft"/>
+						</Grid>
+
+						<StackPanel>
+							<Grid Columns="7*,1*,1*,1*">
+								<Each Items="{subHabs}">
+									<Text Value="{subHab}" Alignment="CenterLeft" />
+									<Checkbox Alignment="Center" Value="{n}" />
+									<Checkbox Alignment="Center" Value="{m}"/>
+									<Checkbox Alignment="Center" Value="{l}"/>
+								</Each>
+							</Grid>
+						</StackPanel>
+					</DockPanel>
+				</Each>
+			</StackPanel>
+		</ScrollView>
+
+		<Grid ColumnCount="2">
+			<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
+				<Clicked>
+					<Callback Handler="{desActivarMensaje}" />
+					<Set Target="actPage.Active" Value="pagAlumnos" />
+				</Clicked>
+			</Button>
+			<Button Text="Guardar" Alignment="Right" Width="25%" Height="30" Clicked="{agregarAlumnoCurso}"/>
+		</Grid>
+	</StackPanel>
+</Panel>

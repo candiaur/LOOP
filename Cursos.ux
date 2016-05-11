@@ -26,26 +26,33 @@
 		<Page ux:Name="pagActividad">
 			<StackPanel>
 				<DockPanel>
-					<Text Dock="Left" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="{cursoAct.nombre}" Margin="0,10,0,0" Width="25%"/>
+					<Each Items="{cursoAct}">
+						<Text Dock="Left" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="{curso}" Margin="0,10,0,0" Width="25%"/>
+					</Each>
 					<Button Text="Actividad" Width="25%">
 						<Clicked>
 							<Set Target="actPage.Active" Value="addAtividad" />
 						</Clicked>
 					</Button>
 
-					<Button Text="Alumno" Width="25%" Dock="Right">
-						<Clicked>
-							<Set Target="actPage.Active" Value="addAlumnos" />
-						</Clicked>
-					</Button>
+					<Button Text="Alumnos" Width="25%" Dock="Right">
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagAlumnos" />
+					</Clicked>
+				</Button>
 				</DockPanel>
 
 				<ScrollView>
 					<StackPanel>
 						<Each Items="{habilidadesAct}">
-							<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
-								<Text Value="{habilidad}" Alignment="CenterLeft" />
-							</DockPanel>
+							<StackPanel>
+								<Each Items="{subHabs}">
+									<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
+										<Text Value="{subHab}" Alignment="CenterLeft" />
+										<!-- <Text Value="{habilidad}" Alignment="CenterLeft" TextColor="#CCCCCC"/> -->
+									</DockPanel>
+								</Each>
+							</StackPanel>
 						</Each>
 					</StackPanel>
 				</ScrollView>
@@ -61,10 +68,64 @@
 		<Page ux:Name="addAtividad">
 			<ux:Include File="CrearActividad.ux" />
 			<CrearActividad />
+
+			<WhileInactive>
+				<Change addAtividad.IsEnabled="false"/>
+				<Change addAtividad.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change addAtividad.IsEnabled="true"/>
+				<Change addAtividad.Visibility="Visible"/>
+			</WhileActive>
+		</Page>
+
+		<Page ux:Name="pagAlumnos">
+			<StackPanel>
+				<DockPanel>
+					<Text Dock="Left" Alignment="TopCenter" FontSize="30" TextColor="#1e88e5" Value="ALUMNOS" Margin="5,10,0,10"/>
+					
+					<Button Text="(+)" Width="25%" Dock="Right">
+						<Clicked>
+							<Set Target="actPage.Active" Value="addAlumnos" />
+							<Callback Handler="{desActivarAlumnos}" />
+						</Clicked>
+					</Button>
+				</DockPanel>
+
+				<ScrollView>
+					<StackPanel>
+						<Each Items="{alumnosCurso}">
+							<DockPanel Padding="10,5" Margin="2,2" Color="#6fdc6f">
+								<Image Url="{imagen}" Height="50" Width="50" Alignment="Left" Margin="5,0,0,0" StretchMode="UniformToFill"/>
+								<Text Value="{nombres}" Alignment="Center" />
+
+								<Clicked>
+									<Set Target="actPage.Active" Value="calificaAlumno" />
+									<Callback Handler="{selectAlumno}" />
+									<Callback Handler="{resetHabxAlumno}" />
+								</Clicked>
+							</DockPanel>
+						</Each>
+					</StackPanel>
+				</ScrollView>
+
+				<Button Text="Atrás" Alignment="Left" Width="25%">
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagActividad" />
+					</Clicked>
+				</Button>
+			</StackPanel>
 		</Page>
 
 		<Page ux:Name="addAlumnos">
-			<CrearAlumno />
+			<ux:Include File="AddAlumno.ux" />
+			<AddAlumno />
+		</Page>
+
+		<Page ux:Name="calificaAlumno">
+			<ux:Include File="CalificarAlumno.ux" />
+			<CalificarAlumno />
 		</Page>
 	</PageControl>
 </Panel>
