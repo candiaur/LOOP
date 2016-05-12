@@ -121,6 +121,16 @@
 		<Page ux:Name="addAlumnos">
 			<ux:Include File="AddAlumno.ux" />
 			<AddAlumno />
+
+			<WhileInactive>
+				<Change addAtividad.IsEnabled="false"/>
+				<Change addAtividad.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change addAtividad.IsEnabled="true"/>
+				<Change addAtividad.Visibility="Visible"/>
+			</WhileActive>
 		</Page>
 
 		<Page ux:Name="calificaAlumno">

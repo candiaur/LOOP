@@ -8,19 +8,24 @@ var actividades = Observable();
 var alumnos = Observable();
 var habilidadesAct = Observable({"habilidad":"nueva"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
-var hayAct = Observable(false);
+var hayAct = Observable(0);
 var cursoAct = Observable();
 var alumnoAct = Observable();
 var usadoActividad = Observable(0);
 var usadoCurso = Observable(0);
 
 //---CrearActividad.ux---
+var idMaxActividad = Observable(0);
 var habilidades = Observable();
 var subHabs = Observable();
 
 //---CrearAlumno.ux---
 var idMaxAlumno = Observable(0);
 var alumno = Observable(new Student( "","","","",""));
+
+//---CalificarAlumno.ux--
+var asistio = Observable(false);
+var mostrarCalificacion = Observable("Collapsed");
 
 var timer = Timer.create(function(){
 	cargarTodo();}, 1000, true);
@@ -96,6 +101,8 @@ function cargarCursos()
 //--Carga todas los actividades del día y curso seleccionado.
 function cargarActividades()
 {
+	idMaxActividad.value = 0;
+
 	fetch('https://firstloop.firebaseio.com/actividades.json', {
 		method: 'GET',
 		cache: 'default',
@@ -123,6 +130,11 @@ function cargarActividades()
 					var nuevo = data[key];
 					actividades.add(nuevo);
 				}
+
+				if(nuevo.id > idMaxActividad.value)
+				{
+					idMaxActividad.value = nuevo.id;
+				}
 			});
 			
 			usadoActividad.value = 1;
@@ -138,6 +150,11 @@ function cargarActividades()
 					nuevo["llave"] = key;
 					aux.add(nuevo);
 				}
+
+				if(nuevo.id > idMaxActividad.value)
+				{
+					idMaxActividad.value = nuevo.id;
+				}
 			});
 
 			actividades.replaceAll(aux);
@@ -148,6 +165,8 @@ function cargarActividades()
 //--Carga todos los alumnos de la rama activa
 function cargarAlumnos()
 {
+	idMaxAlumno.value = 0;
+
 	fetch('https://firstloop.firebaseio.com/personas.json', {
 		method: 'GET',
 		cache: 'default',
@@ -194,7 +213,7 @@ function selectCurso(arg)
 		}
 	});
 
-	hayAct.value = false;
+	hayAct.value = 0;
 	
 	getHabxCursos();
 	getAlumxCursos();
@@ -212,7 +231,7 @@ function getHabxCursos()
 			e.habilidades.forEach(function(x)
 			{
 				aux.add(x);
-				hayAct.value = true;
+				hayAct.value = e.id;
 			});
 		}
 	});
@@ -427,8 +446,11 @@ function selectSubHab(arg)
 //-- Guarda la nueva actividad por día y por curso
 function agregarActividad()
 {
+	idMaxActividad.value = idMaxActividad.value + 1;
+
 	var today = new Date().toISOString().slice(0, 10);
-	var aux = "{\"curso\":" + cursoAct.id + ",";
+	var aux = "{\"id\":" + idMaxActividad.value + ",";
+	aux = "{\"curso\":" + cursoAct.id + ",";
 	aux = aux + "\"fecha\":\"" + today + "\",";
 	aux = aux + "\"habilidades\":[";
 
@@ -473,7 +495,7 @@ function agregarActividad()
 
 	aux = aux + "]}";
 
-	if(hayAct.value == false)
+	if(hayAct.value == 0)
 	{
 		fetch('https://firstloop.firebaseio.com/actividades.json', {
 			method: 'POST',
@@ -632,9 +654,9 @@ function resetHabxAlumno()
 			{
 				x.subHabs.forEach(function(y)
 				{
-					x["n"] = false;
-					x["m"] = false;
-					x["l"] = false;
+					y["n"] = false;
+					y["m"] = false;
+					y["l"] = false;
 				});
 
 				aux.add(x);
@@ -643,7 +665,174 @@ function resetHabxAlumno()
 	});
 
 	habilidadesAct.replaceAll(aux);
+
+	asistio.value = false;
+	mostrarCalificacion.value = "Collapsed";
 }
+
+function selectN(arg)
+{
+	var aux = Observable();
+	
+	habilidadesAct.forEach(function(e)
+	{
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == arg.data.id)
+			{
+				x.m = false;
+				x.l = false;
+				
+				if(x.n == false)
+				{
+					x.n = true;
+				}else{
+					x.n = false;
+				}	
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
+
+function selectM(arg)
+{
+	var aux = Observable();
+	
+	habilidadesAct.forEach(function(e)
+	{
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == arg.data.id)
+			{
+				x.n = false;
+				x.l = false;
+				
+				if(x.m == false)
+				{
+					x.m = true;
+				}else{
+					x.m = false;
+				}	
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
+
+function selectL(arg)
+{
+	var aux = Observable();
+	
+	habilidadesAct.forEach(function(e)
+	{
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == arg.data.id)
+			{
+				x.m = false;
+				x.n = false;
+				
+				if(x.l == false)
+				{
+					x.l = true;
+				}else{
+					x.l = false;
+				}	
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
+
+function marcaAsistencia()
+{
+	if(asistio.value == true)
+	{
+		mostrarCalificacion.value = "Visible";
+	}else{
+		mostrarCalificacion.value = "Collapsed";
+	}
+}
+
+//-- Guarda las notas del día del estudiante seleccionado
+function agregarCalificaciones()
+{
+	var aux = "{\"actividad\":" + hayAct.value + ",";
+	aux = aux + "\"alumno\":" + alumnoAct.value.id + ",";
+
+	if(asistio == false)
+	{
+		aux = aux + "\"asistencia\": 1 }";
+	}else{
+		
+		aux = aux + "\"asistencia\": 0 ,";
+		aux = aux + "\"habilidades\":[";
+
+		var inicio = 0;
+
+		habilidadesAct.forEach(function(e)
+		{
+			var inicioSub = 0;
+
+			if(inicio > 0)
+			{
+				aux = aux + ","
+			}else{
+				inicio ++ ;
+			}
+
+			aux = aux + "{\"habilidad\":" + e.id + ",";
+			aux = aux + "\"subHabs\":[";
+
+			e.subHabs.forEach(function(x)
+			{
+				if(inicioSub > 0)
+				{
+					aux = aux + ","
+				}else{
+					inicioSub ++ ;
+				}
+
+				aux = aux + "{\"id\":" + x.id + ",";
+
+				if(x.l == true)
+				{
+					aux = aux + "\"nota\": \"L\"}";
+				}else{
+					if(x.m == true)
+					{
+						aux = aux + "\"nota\": \"M\"}";
+					}else{
+						aux = aux + "\"nota\": \"N\"}";
+					}
+				}
+			});
+
+			aux = aux + "]}";
+		});
+
+		aux = aux + "]}";
+	}
+	
+	fetch('https://firstloop.firebaseio.com/calificaciones.json', {
+		method: 'POST',
+		headers: { "Content-type": "application/json"},
+		body: aux
+	});
+
+	mensaje.value = "Visible";
+}
+
 
 module.exports = {
 	mensaje: mensaje,
@@ -673,5 +862,12 @@ module.exports = {
 	selectNewAlumno: selectNewAlumno,
 
 //---CalificarAkumno.ux---
-	resetHabxAlumno: resetHabxAlumno
+	resetHabxAlumno: resetHabxAlumno,
+	selectN: selectN,
+	selectM: selectM,
+	selectL: selectL,
+	asistio: asistio,
+	mostrarCalificacion: mostrarCalificacion,
+	marcaAsistencia: marcaAsistencia,
+	agregarCalificaciones: agregarCalificaciones
 };

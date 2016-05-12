@@ -11,11 +11,11 @@
 			<Grid ColumnCount="3">
 				<Image Url="{alumnoAct.imagen}" Height="50" Width="50" Alignment="Left" Margin="5,0,0,0" StretchMode="UniformToFill"/>
 				<Text Value="{alumnoAct.nombres}" Alignment="Center" />
-				<Checkbox Alignment="Center" Value="true"/>
+				<Checkbox Alignment="Center" Value="{asistio}" Clicked="{marcaAsistencia}"/>
 			</Grid>
 		</DockPanel>
 
-		<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
+		<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f" Visibility="{mostrarCalificacion}">
 			<Grid Columns="7*,1*,1*,1*" >
 				<Text Value="HABILIDADES" Alignment="CenterLeft" />
 				<Text Value="N" Alignment="Center" />
@@ -25,7 +25,7 @@
 		</DockPanel>
 
 		<ScrollView MaxHeight="500">
-			<StackPanel>
+			<StackPanel Visibility="{mostrarCalificacion}">
 				<Each Items="{habilidadesAct}">
 					<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
 						<Grid Dock="Top" ColumnCount="2">
@@ -36,9 +36,9 @@
 							<Grid Columns="7*,1*,1*,1*">
 								<Each Items="{subHabs}">
 									<Text Value="{subHab}" Alignment="CenterLeft" />
-									<Checkbox Alignment="Center" Value="{n}" />
-									<Checkbox Alignment="Center" Value="{m}"/>
-									<Checkbox Alignment="Center" Value="{l}"/>
+									<Checkbox Alignment="Center" Value="{n}" Clicked="{selectN}"/>
+									<Checkbox Alignment="Center" Value="{m}" Clicked="{selectM}"/>
+									<Checkbox Alignment="Center" Value="{l}" Clicked="{selectL}"/>
 								</Each>
 							</Grid>
 						</StackPanel>
@@ -54,7 +54,7 @@
 					<Set Target="actPage.Active" Value="pagAlumnos" />
 				</Clicked>
 			</Button>
-			<Button Text="Guardar" Alignment="Right" Width="25%" Height="30" Clicked="{agregarAlumnoCurso}"/>
+			<Button Text="Guardar" Alignment="Right" Width="25%" Height="30" Clicked="{agregarCalificaciones}" Visibility="{mostrarCalificacion}"/>
 		</Grid>
 	</StackPanel>
 </Panel>
