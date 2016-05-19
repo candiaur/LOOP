@@ -2,41 +2,87 @@
 	
 	<JavaScript File="AdmCursos.js" />
 
-	<StackPanel Dock="Top">
-		<Text Alignment="Center" FontSize="30" TextColor="#1e88e5" Value="Crear Actividad" Margin="0,10,0,10"/>
+	<DockPanel>
+		<StackPanel Dock="Top">
+			<Image File="Assets/img_Cabecera.png"/>
 
-		<Text Alignment="Center" FontSize="12" TextColor="#1e88e5" Value="Actividad Guardada" Margin="0,5,0,5" Visibility="{mensaje}"/>
-		
-		<ScrollView MaxHeight="500">
-			<StackPanel>
-				<Each Items="{habilidades}" >
-					<DockPanel Padding="10,20" Margin="2,2" Color="#6fdc6f">
-						<Grid Dock="Top" ColumnCount="2" Margin="0,0,0,5">
-							<Text Value="{habilidad}" Alignment="TopLeft"/>
-							<Checkbox Dock="Right" Value="{activo}" Clicked="{selectAll}"/>
-						</Grid>
-
-						<StackPanel>
-							<Grid ColumnCount="2">
-								<Each Items="{subHabsId}">
-									<Text Value="{subHab}" Alignment="Left" Margin="15,0"/>
-									<Checkbox Dock="Right" Value="{activo}" Clicked="{selectSubHab}"/>
-								</Each>
-							</Grid>
-						</StackPanel>
-					</DockPanel>
-				</Each>
+			<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+				<Grid Columns="auto,1*">
+					<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="AGREGAR " Font="museo700_letter"/>
+					<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="HABILIDADES" Font="museo100_letter"/>
+				</Grid>
 			</StackPanel>
-		</ScrollView>
 
-		<Grid ColumnCount="2">
-			<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
-				<Clicked>
-					<Callback Handler="{desActivarMensaje}" />
-					<Set Target="actPage.Active" Value="pagActividad" />
-				</Clicked>
-			</Button>
-			<Button Text="Agregar" Alignment="Right" Width="25%" Height="30" Clicked="{agregarActividad}"/>
-		</Grid>
-	</StackPanel>
+			<Grid Columns="1*,5*,4*,1*" Color="#00D9C5">
+				<DockPanel>
+					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,7,0,2"/>
+					<Rotation Degrees="180"/>
+					<Clicked>
+						<Callback Handler="{lastMonth}" />
+					</Clicked>
+				</DockPanel>
+				
+				<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" Alignment="CenterRight" Padding="0,5"/>
+				<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" Alignment="CenterLeft" Padding="0,5"/>
+
+				<DockPanel>
+					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
+					<Clicked>
+						<Callback Handler="{nextMonth}" />
+					</Clicked>
+				</DockPanel>
+			</Grid>
+
+			<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Actividad Guardada" Margin="0,5,0,5" Visibility="{mensaje}"/>
+			
+			<ScrollView MaxHeight="350" Margin="0,5">
+				<StackPanel>
+					<Each Items="{habilidades}" >
+						<DockPanel>
+							<DockPanel Color="#FFF" Dock="Top">
+								<Grid Dock="Top" Columns="9*,1*" Padding="15,2">
+									<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989"/>
+									<Checkbox Value="{activo}" Clicked="{selectAll}" Padding="0,2" Alignment="Center"/>
+								</Grid>
+
+								<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+							</DockPanel>
+
+							<StackPanel>
+								<Each Items="{subHabsId}">
+									<DockPanel Color="#FCFBFC">
+										<Grid Columns="9*,1*" Padding="15,2">
+											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14"/>
+											<CheckboxSub Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Center" />
+										</Grid>
+
+										<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+									</DockPanel>
+								</Each>
+							</StackPanel>
+						</DockPanel>
+					</Each>
+				</StackPanel>
+			</ScrollView>
+
+			<Grid ColumnCount="2">
+				<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
+					<Clicked>
+						<Callback Handler="{desActivarMensaje}" />
+						<Set Target="actPage.Active" Value="pagActividad" />
+					</Clicked>
+				</Button>
+			</Grid>
+		</StackPanel>
+
+		<DockPanel Dock="Bottom" Padding="10,15" Height="50" Color="#00D9C5">
+			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+			<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+
+			<Clicked>
+				<Callback Handler="{agregarActividad}" />
+			</Clicked>
+		</DockPanel>
+	</DockPanel>
 </Panel>

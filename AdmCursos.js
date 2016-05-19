@@ -3,12 +3,14 @@ var Timer = require('FuseJS/Timer');
 var mensaje = Observable("Collapsed");
 
 //---Cursos.ux---
+var ramas = Observable();
 var cursos = Observable();
 var actividades = Observable();
 var alumnos = Observable();
 var habilidadesAct = Observable({"habilidad":"nueva"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
 var hayAct = Observable(0);
+var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
 var usadoActividad = Observable(0);
@@ -27,6 +29,13 @@ var alumno = Observable(new Student( "","","","",""));
 var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
 
+//---Calendar.ux---
+var dias = Observable({"dias":""});
+var nombreDia = Observable();
+var mes = Observable();
+var anio = Observable();
+var today = new Date();
+
 var timer = Timer.create(function(){
 	cargarTodo();}, 1000, true);
 
@@ -36,6 +45,8 @@ function cargarTodo()
 	cargarActividades();
 	cargarHabilidades();
 	cargarAlumnos();
+	getDias();
+	cargarRamas();
 }
 
 function desActivarMensaje()
@@ -44,6 +55,38 @@ function desActivarMensaje()
 }
 
 //----Cursos.ux----
+
+//--Carga todas las ramas a las está asociado.
+function cargarRamas()
+{
+	fetch('https://firstloop.firebaseio.com/ramas.json', {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		
+		keys.forEach(function(key, index)
+		{
+			if (index >= ramas.length)
+			{
+				var nuevo = data[key];
+				ramas.add(nuevo);
+			}
+		});
+	});
+}
 
 //--Carga todos los cursos del instructor de la rama activa.
 function cargarCursos()
@@ -203,13 +246,25 @@ function cargarAlumnos()
 	});
 }
 
+function selectRama(arg)
+{
+	ramas.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			ramaAct.value = e;
+		}
+	});
+
+}
+
 function selectCurso(arg)
 {
 	cursos.forEach(function(e)
 	{
 		if(e.id == arg.data.id)
 		{
-			cursoAct = e;
+			cursoAct.value = e;
 		}
 	});
 
@@ -226,7 +281,7 @@ function getHabxCursos()
 
 	actividades.forEach(function(e)
 	{
-		if(e.curso == cursoAct.id)
+		if(e.curso == cursoAct.value.id)
 		{
 			e.habilidades.forEach(function(x)
 			{
@@ -246,9 +301,9 @@ function getAlumxCursos()
 
 	alumnos.forEach(function(e)
 	{
-		if (cursoAct.alumnos != null)
+		if (cursoAct.value.alumnos != null)
 		{
-			cursoAct.alumnos.forEach(function(x)
+			cursoAct.value.alumnos.forEach(function(x)
 			{
 				if(e.id == x.alumno)
 				{
@@ -446,12 +501,19 @@ function selectSubHab(arg)
 //-- Guarda la nueva actividad por día y por curso
 function agregarActividad()
 {
-	idMaxActividad.value = idMaxActividad.value + 1;
+	var aux = "";
 
-	var today = new Date().toISOString().slice(0, 10);
-	var aux = "{\"id\":" + idMaxActividad.value + ",";
-	aux = "{\"curso\":" + cursoAct.id + ",";
-	aux = aux + "\"fecha\":\"" + today + "\",";
+	if(hayAct.value == 0)
+	{
+		idMaxActividad.value = idMaxActividad.value + 1;
+
+		aux = "{\"id\":" + idMaxActividad.value + ",";
+	}else{
+		aux = "{\"id\":" + hayAct.value + ",";
+	}
+	
+	aux = aux + "\"curso\":" + cursoAct.value.id + ",";
+	aux = aux + "\"fecha\":\"" + today.toISOString().slice(0, 10) + "\",";
 	aux = aux + "\"habilidades\":[";
 
 	var inicio = 0;
@@ -508,7 +570,7 @@ function agregarActividad()
 		
 		actividades.forEach(function(e)
 		{
-			if(e.curso == cursoAct.id)
+			if(e.curso == cursoAct.value.id)
 			{
 				llave.value = e.llave;
 			}
@@ -520,7 +582,7 @@ function agregarActividad()
 			body: aux
 		});
 	}
-
+	
 	mensaje.value = "Visible";
 	cargarActividades();
 
@@ -565,10 +627,10 @@ function agregarAlumnoNuevo()
 //-- Agrega alumnos de la rama a un curso específico
 function agregarAlumnoCurso()
 {
-	var aux = "{\"id\":" + cursoAct.id + ",";
-	aux = aux + "\"curso\":\"" + cursoAct.curso + "\",";
-	aux = aux + "\"instructor\":\"" + cursoAct.instructor + "\",";
-	aux = aux + "\"rama\":\"" + cursoAct.rama + "\",";
+	var aux = "{\"id\":" + cursoAct.value.id + ",";
+	aux = aux + "\"curso\":\"" + cursoAct.value.curso + "\",";
+	aux = aux + "\"instructor\":\"" + cursoAct.value.instructor + "\",";
+	aux = aux + "\"rama\":\"" + cursoAct.value.rama + "\",";
 	aux = aux + "\"alumnos\":[";
 
 	var inicio = 0;
@@ -591,7 +653,7 @@ function agregarAlumnoCurso()
 	aux = aux + "]}";
 
 
-	fetch('https://firstloop.firebaseio.com/cursos/' + cursoAct.llave + '.json', {
+	fetch('https://firstloop.firebaseio.com/cursos/' + cursoAct.value.llave + '.json', {
 		method: 'PUT',
 		headers: { "Content-type": "application/json"},
 		body: aux
@@ -599,12 +661,12 @@ function agregarAlumnoCurso()
 
 	mensaje.value = "Visible";
 
-	var id = cursoAct.id;
+	var id = cursoAct.value.id;
 
 	cargarCursos();
 
 	timer = Timer.create(function(){
-	 actualizarCursoAct; getAlumxCursos();}, 1000, true);	
+	 actualizarCursoAct(); getAlumxCursos();}, 1000, true);	
 }
 
 function selectNewAlumno(arg)
@@ -634,9 +696,9 @@ function actualizarCursoAct()
 {
 	cursos.forEach(function(e)
 	{
-		if(e.id == cursoAct.id)
+		if(e.id == cursoAct.value.id)
 		{
-			cursoAct = e;
+			cursoAct.value = e;
 		}
 	});
 }
@@ -648,15 +710,15 @@ function resetHabxAlumno()
 
 	actividades.forEach(function(e)
 	{
-		if(e.curso == cursoAct.id)
+		if(e.curso == cursoAct.value.id)
 		{
 			e.habilidades.forEach(function(x)
 			{
 				x.subHabs.forEach(function(y)
 				{
-					y["n"] = false;
-					y["m"] = false;
-					y["l"] = false;
+					y["noLogrado"] = false;
+					y["medio"] = false;
+					y["logrado"] = false;
 				});
 
 				aux.add(x);
@@ -680,14 +742,14 @@ function selectN(arg)
 		{
 			if(x.id == arg.data.id)
 			{
-				x.m = false;
-				x.l = false;
+				x.medio = false;
+				x.logrado = false;
 				
-				if(x.n == false)
+				if(x.noLogrado == false)
 				{
-					x.n = true;
+					x.noLogrado = true;
 				}else{
-					x.n = false;
+					x.noLogrado = false;
 				}	
 			}
 		});
@@ -708,14 +770,14 @@ function selectM(arg)
 		{
 			if(x.id == arg.data.id)
 			{
-				x.n = false;
-				x.l = false;
+				x.noLogrado = false;
+				x.logrado = false;
 				
-				if(x.m == false)
+				if(x.medio == false)
 				{
-					x.m = true;
+					x.medio = true;
 				}else{
-					x.m = false;
+					x.medio = false;
 				}	
 			}
 		});
@@ -736,14 +798,14 @@ function selectL(arg)
 		{
 			if(x.id == arg.data.id)
 			{
-				x.m = false;
-				x.n = false;
+				x.medio = false;
+				x.noLogrado = false;
 				
-				if(x.l == false)
+				if(x.logrado == false)
 				{
-					x.l = true;
+					x.logrado = true;
 				}else{
-					x.l = false;
+					x.logrado = false;
 				}	
 			}
 		});
@@ -805,15 +867,15 @@ function agregarCalificaciones()
 
 				aux = aux + "{\"id\":" + x.id + ",";
 
-				if(x.l == true)
+				if(x.logrado == true)
 				{
-					aux = aux + "\"nota\": \"L\"}";
+					aux = aux + "\"nota\": 3}";
 				}else{
-					if(x.m == true)
+					if(x.medio == true)
 					{
-						aux = aux + "\"nota\": \"M\"}";
+						aux = aux + "\"nota\": 2}";
 					}else{
-						aux = aux + "\"nota\": \"N\"}";
+						aux = aux + "\"nota\": 1}";
 					}
 				}
 			});
@@ -833,17 +895,101 @@ function agregarCalificaciones()
 	mensaje.value = "Visible";
 }
 
+//---Calendar.ux---
+function nextMonth()
+{
+	if(today.getMonth() < 11)
+	{
+		today = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+	}else{
+		today = new Date(today.getFullYear() + 1, 0, 1);
+	}
+	
+	getDias();
+	getFecha();
+}
+
+function lastMonth()
+{
+	if(today.getMonth() > 0)
+	{
+		today = new Date(today.getFullYear(), today.getMonth() - 1, 1);;
+	}else{
+		today = new Date(today.getFullYear() - 1, 11, 1);
+	}
+	
+	getDias();
+	getFecha();
+}
+
+function getDias()
+{
+	var aux = Observable();
+	var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+	var lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+	var diasPasados = Observable(firstDay.getUTCDay());
+
+	if(diasPasados.value == 0)
+	{
+		diasPasados.value = 7;
+	}
+
+	for (var i = 1; i < diasPasados.value; i++)
+	{
+		aux.add({"dia": " ","color": "#FFF","textColor": "#000"});
+	}
+
+	for (var i = 1; i <= lastDay.getDate(); i++)
+	{
+		if(i == today.getDate())
+		{
+			aux.add({"dia": i,"color": "#00D9C5","textColor": "#FFF"});
+		}else{
+			aux.add({"dia": i,"color": "#FFF","textColor": "#000"});
+		}
+	}
+
+	dias.replaceAll(aux);
+}
+
+function getFecha()
+{
+	var monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+	 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+	mes.value = monthNames[today.getMonth()];
+	anio.value = " / " + today.getFullYear()
+}
+
+function getFechaCompleta()
+{
+	mes.value = today.getDate() + " de " + mes.value;
+}
+
+function setDay(arg)
+{
+	if(arg.data.dia != " ")
+	{
+		today.setDate(arg.data.dia);
+	}
+
+	getFechaCompleta();
+}
+
 
 module.exports = {
 	mensaje: mensaje,
 	desActivarMensaje: desActivarMensaje,
 
 //---Cursos.ux---
+	ramas: ramas,
 	cursos: cursos,
 	habilidadesAct: habilidadesAct,
 	removeItem: removeItem,
+	selectRama: selectRama,
 	selectCurso: selectCurso,
 	selectAlumno: selectAlumno,
+	ramaAct: ramaAct,
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
 	alumnosCurso: alumnosCurso,
@@ -869,5 +1015,14 @@ module.exports = {
 	asistio: asistio,
 	mostrarCalificacion: mostrarCalificacion,
 	marcaAsistencia: marcaAsistencia,
-	agregarCalificaciones: agregarCalificaciones
+	agregarCalificaciones: agregarCalificaciones,
+
+//---Calendar.ux---
+	dias: dias,
+	mes: mes,
+	anio: anio,
+	nextMonth: nextMonth,
+	lastMonth: lastMonth,
+	setDay: setDay,
+	getFecha: getFecha
 };

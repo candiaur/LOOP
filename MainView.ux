@@ -15,25 +15,26 @@
 			var persona = Observable(
 				new Person("", "","","","Assets/FuseLogo.png","0"));
 
-			var saludo = persona.map(function(x) {
-				return "Hola " + x.nombre;
-			});
-
 			var leftPage = persona.map(function(x) {
 				if(x.rol == "1")
 				{
 					return "calificacion";
 				}else{
-					return "informe";
+					return "calificacion";
 				}
 			});
 
-			function Person(nombre, apellido, correo, cel, imagen, rol)
+			function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
 			{
-				this.nombre = nombre;
-				this.apellido = apellido;
+				var monthNames = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+				var fecha = nacio.substr(8) + " de " + monthNames[parseInt(nacio.substr(5,2))] + " de " + nacio.substr(0,4);
+
+				this.nombre = nombre.toUpperCase();;
+				this.apellido = apellido.toUpperCase();;
 				this.correo = correo;
 				this.cel = cel;
+				this.nacio = fecha;
 				this.imagen = imagen;
 				this.rol = rol;
 			}
@@ -80,17 +81,17 @@
 							aux.value = x.rol;
 						});
 
-						persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.imagen, aux.value);
+						persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.nacimiento, e.imagen, aux.value);
 					}
 				});
 			};
 
 			function submit()
 			{
-				fetch('https://firstloop.firebaseio.com/personas.json', {
+				fetch('https://firstloop.firebaseio.com/ramas.json', {
 					method: 'POST',
 					headers: { "Content-type": "application/json"},
-					body: JSON.stringify({"apellido": tag.value})
+					body: JSON.stringify({"rama": tag.value})
 				});
 
 				tag.value = "";
@@ -101,11 +102,18 @@
 				dbData: dbData,
 				persona: persona,
 				submit: submit,
-				saludo: saludo,
 				currentPage: currentPage,
 				leftPage: leftPage,
 			};
 		</JavaScript>
+
+		<Font File="Assets/PrestigeEliteStd-Bd.otf" ux:Global="pres_letter" />
+		<Font File="Assets/MuseoSans-100.otf" ux:Global="museo100_letter" />
+		<Font File="Assets/MuseoSans-300.otf" ux:Global="museo300_letter" />
+		<Font File="Assets/MuseoSans-300Italic.otf" ux:Global="museo300I_letter" />
+		<Font File="Assets/MuseoSans_700.otf" ux:Global="museo700_letter" />
+		<Font File="Assets/MuseoSans-700Italic.otf" ux:Global="museo700I_letter" />
+		<Font File="Assets/MuseoSans_900.otf" ux:Global="museo900_letter" />
 
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
@@ -141,18 +149,31 @@
 					<LinearNavigation Active="center" Easing="QuadraticOut"/>
 					<SwipeNavigate SwipeDirection="Up"/>
 
-					<udPage ux:Name="top" Color="#e57b1e">
-						<StackPanel Margin="0,30,0,0">
-							<Circle Height="150" Width="150" >
-								<ImageFill Url="{persona.imagen}"/>
-							</Circle>
+					<udPage ux:Name="top" Color="#00D9C5">
+						<DockPanel>
+							<StackPanel Margin="0,35,0,10">
+								<Circle Height="250" Width="250" Margin="0,15">
+									<ImageFill Url="{persona.imagen}"/>
+								</Circle>
 
-							<Text Dock="Top" Alignment="Center" FontSize="50" Margin="0,50,0,50" TextColor="#1e88e5" Value="{saludo}"/>
+								<Grid Columns="auto,auto" Alignment="Center">
+									<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
+									<Text FontSize="27" TextColor="#FFF" Value="{persona.apellido}" Font="museo100_letter" Padding="5,0"/>
+									<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
+									<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
+								</Grid>
 
-							<Text Value="{persona.correo}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
-							<Text Value="{persona.cel}" TextWrapping="Wrap" Margin="9" TextAlignment="Center"/>
-							
-						</StackPanel>
+								<Text Value="{persona.nacio}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
+								<Text Value="{persona.correo}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
+								<Text Value="{persona.cel}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
+							</StackPanel>
+
+							<DockPanel Dock="Bottom">
+								<Text Value=">" Padding="20,10,10,10" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
+									<Rotation Degrees="-90"/>
+								</Text>
+							</DockPanel>
+						</DockPanel>
 					</udPage>
 
 					<udPage ux:Name="center" Color="#3366CC">
@@ -182,7 +203,7 @@
 
 			<Page ux:Name="right">
 				<StackPanel Color="#FF00FF">
-					<Text Value="Right" />
+					<Text Value="Right"/>
 				</StackPanel>
 			</Page>
 		</PageControl>

@@ -1,4 +1,4 @@
-<ToggleControl ux:Class="Checkbox" HitTestMode="LocalBounds">
+<ToggleControl ux:Class="CheckboxSub" HitTestMode="LocalBounds">
 	<Clicked>
 		<Toggle Target="this"/>
 	</Clicked>
@@ -6,7 +6,7 @@
 	<Font File="Assets/fontawesome-webfont.ttf" ux:Global="fa_icons" />
 	<Rectangle Width="18" Height="18" Fill="#FFF">
 		<Stroke Color="#D2D2D2" Width="1"/>
-		<Text ux:Name="checkbox" Font="fa_icons" TextColor="#00D9C5" FontSize="18">
+		<Text ux:Name="checkbox" Font="fa_icons" TextColor="#DCDCDC" FontSize="18">
 			<Rotation Degrees="-10"/>
 		</Text>
 
