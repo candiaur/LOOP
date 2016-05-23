@@ -88,10 +88,10 @@
 
 			function submit()
 			{
-				fetch('https://firstloop.firebaseio.com/ramas.json', {
+				fetch('https://firstloop.firebaseio.com/cursos.json', {
 					method: 'POST',
 					headers: { "Content-type": "application/json"},
-					body: JSON.stringify({"rama": tag.value})
+					body: JSON.stringify({"curso": tag.value})
 				});
 
 				tag.value = "";

@@ -12,22 +12,26 @@
 			</Grid>
 		</StackPanel>
 
-		<Grid Columns="1*,5*,4*,1*" Color="#00D9C5">
+		<Grid Columns="1*,9*,1*" Color="#00D9C5">
 			<DockPanel>
 				<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,7,0,2"/>
 				<Rotation Degrees="180"/>
 				<Clicked>
-					<Callback Handler="{lastMonth}" />
+					<Callback Handler="{lastFechaconActividad}" />
 				</Clicked>
 			</DockPanel>
 			
-			<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" Alignment="CenterRight" Padding="0,5"/>
-			<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" Alignment="CenterLeft" Padding="0,5"/>
+			<Grid Columns="auto,auto,auto,auto" Alignment="Center" Padding="0,5">
+				<Text Value="{dia}" TextColor="#FFF" Font="museo700_letter" />
+				<Text Value=" de " TextColor="#FFF" Font="museo700_letter" />
+				<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" />
+				<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter"/>
+			</Grid>
 
 			<DockPanel>
 				<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
 				<Clicked>
-					<Callback Handler="{nextMonth}" />
+					<Callback Handler="{nextFechaconActividad}" />
 				</Clicked>
 			</DockPanel>
 		</Grid>
@@ -52,7 +56,7 @@
 				<Text Value="{alumnoAct.apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
 			</Grid>
 			
-			<Checkbox Alignment="CenterRight" Value="{asistio}" Clicked="{marcaAsistencia}" Padding="10,0,0,20"/>
+			<Checkbox Alignment="CenterRight" Value="{asistio}" Clicked="{marcaAsistencia}" Padding="0,10,20,0"/>
 		</DockPanel>
 
 		<DockPanel Padding="15,5" Visibility="{mostrarCalificacion}">
@@ -68,15 +72,15 @@
 			<StackPanel Visibility="{mostrarCalificacion}">
 				<Each Items="{habilidadesAct}">
 					<DockPanel Margin="0,2">
-						<Grid Dock="Top" ColumnCount="2" Color="#FFF" Padding="15,5">
-							<Text Value="{habilidad}" Alignment="TopLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989"/>
+						<Grid Dock="Top" Color="#FFF" Padding="15,5">
+							<Text Value="{habilidad}" Alignment="TopLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap"/>
 							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 						</Grid>
 
 						<StackPanel>
 							<Each Items="{subHabs}">
 								<Grid Columns="7*,1*,1*,1*" Color="#FCFBFC" Padding="15,5">
-									<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14"/>
+									<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
 									<Checkbox Alignment="Center" Value="{noLogrado}" Clicked="{selectN}"/>
 									<Checkbox Alignment="Center" Value="{medio}" Clicked="{selectM}"/>
 									<Checkbox Alignment="Center" Value="{logrado}" Clicked="{selectL}"/>

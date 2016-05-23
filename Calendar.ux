@@ -51,7 +51,7 @@
 			<StackPanel>
 				<Grid ColumnCount="7">	
 					<Each Items="{dias}">
-						<DockPanel Padding="0,2" Margin="0,10">
+						<DockPanel Padding="0,2" Margin="0,10" IsEnabled="{valido}">
 							<Circle Color="{color}">
 								<Text Value="{dia}" Padding="3" TextAlignment="Center" TextColor="{textColor}"/>
 							</Circle>

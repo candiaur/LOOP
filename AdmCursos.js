@@ -1,6 +1,7 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
 var mensaje = Observable("Collapsed");
+var personaActual = Observable(1);
 
 //---Cursos.ux---
 var ramas = Observable();
@@ -9,7 +10,7 @@ var actividades = Observable();
 var alumnos = Observable();
 var habilidadesAct = Observable({"habilidad":"nueva"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
-var hayAct = Observable(0);
+var hayAct = Observable({"id":0,"llave":" "});
 var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
@@ -28,10 +29,13 @@ var alumno = Observable(new Student( "","","","",""));
 //---CalificarAlumno.ux--
 var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
+var fechasAct = [];
+var indexFechasAct = Observable(0);
 
 //---Calendar.ux---
 var dias = Observable({"dias":""});
 var nombreDia = Observable();
+var dia = Observable();
 var mes = Observable();
 var anio = Observable();
 var today = new Date();
@@ -41,12 +45,9 @@ var timer = Timer.create(function(){
 
 function cargarTodo()
 {
-	cargarCursos();
-	cargarActividades();
-	cargarHabilidades();
-	cargarAlumnos();
 	getDias();
 	cargarRamas();
+	cargarHabilidades();
 }
 
 function desActivarMensaje()
@@ -68,7 +69,7 @@ function cargarRamas()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarRamas: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -100,7 +101,7 @@ function cargarCursos()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarCursos: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -155,7 +156,7 @@ function cargarActividades()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarActividades: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -219,7 +220,7 @@ function cargarAlumnos()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarAlumnos: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -256,6 +257,26 @@ function selectRama(arg)
 		}
 	});
 
+	cargarCursos();
+	
+	timer = Timer.create(function(){
+	getCursosxRama();}, 1000, true);
+}
+
+//-- Carga todos los cursos de la rama seleccionada y del instructor.
+function getCursosxRama()
+{
+	var aux = Observable();
+
+	cursos.forEach(function(e)
+	{
+		if((e.rama == ramaAct.value.id) && (personaActual.value == e.instructor))
+		{
+			aux.add(e);
+		}
+	});
+
+	cursos.replaceAll(aux);
 }
 
 function selectCurso(arg)
@@ -268,25 +289,28 @@ function selectCurso(arg)
 		}
 	});
 
-	hayAct.value = 0;
+	hayAct.id = 0;
 	
-	getHabxCursos();
-	getAlumxCursos();
+	cargarAlumnos();
+
+	timer = Timer.create(function(){
+	getAlumxCursos();}, 1000, true);
 }
 
 //-- Carga todas las habilidades del curso y día seleccionado
-function getHabxCursos()
+function getHabxCursoxDia()
 {
 	var aux = Observable();
 
 	actividades.forEach(function(e)
 	{
-		if(e.curso == cursoAct.value.id)
+		if((e.curso == cursoAct.value.id) && (e.fecha == today.toISOString().slice(0, 10)))
 		{
 			e.habilidades.forEach(function(x)
 			{
 				aux.add(x);
-				hayAct.value = e.id;
+				hayAct.id = e.id;
+				hayAct.llave = e.llave;
 			});
 		}
 	});
@@ -316,13 +340,31 @@ function getAlumxCursos()
 	alumnosCurso.replaceAll(aux);
 }
 
-function desActivarAlumnos()
+function marcarAlumnosxCurso()
 {
 	var aux = Observable();
 
 	alumnos.forEach(function(e)
 	{
-		e.activo = false;
+		var encontrado = false;
+
+		if (cursoAct.value.alumnos != null)
+		{
+			cursoAct.value.alumnos.forEach(function(x)
+			{
+				if(e.id == x.alumno)
+				{
+					e.activo = true;
+					encontrado = true;
+				}
+			});
+		}
+
+		if (!encontrado)
+		{
+			e.activo = false;
+		}
+
 		aux.add(e);
 	});
 
@@ -345,6 +387,55 @@ function selectAlumno(arg)
 	});
 }
 
+function marcarActividadesxDia()
+{
+	var aux = Observable();
+
+	habilidades.forEach(function(e)
+	{
+		e.activo = false;
+		var encontrado = false;
+
+		habilidadesAct.forEach(function(x)
+		{
+			if(x.id == e.id)
+			{
+				e.activo = true;
+
+				e.subHabsId.forEach(function(y)
+				{
+					x.subHabs.forEach(function(z)
+					{
+						if(z.id == y.id)
+						{
+							y.activo = true;
+						}else
+						{
+							y.activo = false;
+						}
+					});
+				});
+
+				encontrado = true;
+			}
+		});
+
+		if (!encontrado)
+		{
+			e.activo = false;
+
+			e.subHabsId.forEach(function(x)
+			{
+				x.activo = false;
+			});
+		}
+
+		aux.add(e);
+	});
+
+	habilidades.replaceAll(aux);
+}
+
 
 //----CrearActividad.ux----
 
@@ -362,7 +453,7 @@ function cargarHabilidades()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarHabilidades: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -408,7 +499,7 @@ function cargarSubHabs()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarSubHabs: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -503,13 +594,13 @@ function agregarActividad()
 {
 	var aux = "";
 
-	if(hayAct.value == 0)
+	if(hayAct.id == 0)
 	{
 		idMaxActividad.value = idMaxActividad.value + 1;
 
 		aux = "{\"id\":" + idMaxActividad.value + ",";
 	}else{
-		aux = "{\"id\":" + hayAct.value + ",";
+		aux = "{\"id\":" + hayAct.id + ",";
 	}
 	
 	aux = aux + "\"curso\":" + cursoAct.value.id + ",";
@@ -528,7 +619,7 @@ function agregarActividad()
 			{
 				aux = aux + ","
 			}else{
-				inicio ++ ;
+				inicio++;
 			}
 
 			aux = aux + "{\"habilidad\":\"" + e.habilidad + "\",";
@@ -543,7 +634,7 @@ function agregarActividad()
 					{
 						aux = aux + ","
 					}else{
-						inicioSub ++ ;
+						inicioSub++;
 					}
 
 					aux = aux + "{\"subHab\":\"" + x.subHab + "\",";
@@ -557,7 +648,7 @@ function agregarActividad()
 
 	aux = aux + "]}";
 
-	if(hayAct.value == 0)
+	if(hayAct.id == 0)
 	{
 		fetch('https://firstloop.firebaseio.com/actividades.json', {
 			method: 'POST',
@@ -566,28 +657,20 @@ function agregarActividad()
 		});
 		
 	}else{
-		var llave = Observable();
-		
-		actividades.forEach(function(e)
-		{
-			if(e.curso == cursoAct.value.id)
-			{
-				llave.value = e.llave;
-			}
-		});
 
-		fetch('https://firstloop.firebaseio.com/actividades/' + llave.value + '.json', {
+		fetch('https://firstloop.firebaseio.com/actividades/' + hayAct.llave + '.json', {
 			method: 'PUT',
 			headers: { "Content-type": "application/json"},
 			body: aux
 		});
 	}
-	
+
 	mensaje.value = "Visible";
+	
 	cargarActividades();
 
-	timer = Timer.create(function(){
-	getHabxCursos();}, 1000, true);
+	getFechasconActividades();
+	getHabxCursoxDia();
 }
 
 //----CrearAlumno.ux----
@@ -643,7 +726,7 @@ function agregarAlumnoCurso()
 			{
 				aux = aux + ","
 			}else{
-				inicio ++ ;
+				inicio++;
 			}
 
 			aux = aux + "{\"alumno\":" + e.id + "}";
@@ -666,7 +749,7 @@ function agregarAlumnoCurso()
 	cargarCursos();
 
 	timer = Timer.create(function(){
-	 actualizarCursoAct(); getAlumxCursos();}, 1000, true);	
+	 actualizarCursoAct();}, 1000, true);	
 }
 
 function selectNewAlumno(arg)
@@ -704,6 +787,92 @@ function actualizarCursoAct()
 }
 
 //---CalificarAkumno.ux---
+
+//-- Cargar lista de fechas con actividades
+function getFechasconActividades()
+{	
+	fechasAct = [];
+	
+	actividades.forEach(function(e)
+	{
+		if(e.curso == cursoAct.value.id)
+		{
+			fechasAct.push(e.fecha + "T11:51:00");
+		}
+	});
+
+	fechasAct.sort();
+}
+
+function setDiaconActividad()
+{
+	var encontrado = false;
+	var backupFecha = "";
+	var aux = 0;
+	indexFechasAct = 0;
+	
+	fechasAct.forEach(function(e)
+	{
+		if(encontrado == false)
+		{
+			if(e == today.toISOString().slice(0, 10))
+			{
+				encontrado = true;
+			}else{
+				if((e > today.toISOString().slice(0, 10)))
+				{
+					today = new Date(e);
+					encontrado = true;
+				}else
+				{
+					aux = indexFechasAct;
+					backupFecha = e;
+				}
+			}
+			
+			indexFechasAct++;
+		}
+	});
+
+	if (!encontrado)
+	{
+		today = new Date(backupFecha);
+		indexFechasAct = aux;
+	}
+
+	getFecha();
+}
+
+function nextFechaconActividad()
+{
+	if(indexFechasAct == fechasAct.length)
+	{
+		today = new Date(fechasAct[0]);
+		indexFechasAct = 1;
+	}else{
+		today = new Date(fechasAct[indexFechasAct]);
+		indexFechasAct++;
+	}
+
+	getFecha();
+}
+
+function lastFechaconActividad()
+{
+	console.log("lastFechaconActividad : " + indexFechasAct);
+
+	if(indexFechasAct == 1)
+	{
+		today = new Date(fechasAct[fechasAct.length - 1]);
+		indexFechasAct = fechasAct.length;
+	}else{
+		indexFechasAct--;
+		today = new Date(fechasAct[indexFechasAct - 1]);
+	}
+
+	getFecha();
+}
+
 function resetHabxAlumno()
 {
 	var aux = Observable();
@@ -829,15 +998,15 @@ function marcaAsistencia()
 //-- Guarda las notas del día del estudiante seleccionado
 function agregarCalificaciones()
 {
-	var aux = "{\"actividad\":" + hayAct.value + ",";
+	var aux = "{\"actividad\":" + hayAct.id + ",";
 	aux = aux + "\"alumno\":" + alumnoAct.value.id + ",";
 
 	if(asistio == false)
 	{
-		aux = aux + "\"asistencia\": 1 }";
+		aux = aux + "\"asistencia\": 0 }";
 	}else{
 		
-		aux = aux + "\"asistencia\": 0 ,";
+		aux = aux + "\"asistencia\": 1 ,";
 		aux = aux + "\"habilidades\":[";
 
 		var inicio = 0;
@@ -850,7 +1019,7 @@ function agregarCalificaciones()
 			{
 				aux = aux + ","
 			}else{
-				inicio ++ ;
+				inicio++;
 			}
 
 			aux = aux + "{\"habilidad\":" + e.id + ",";
@@ -862,7 +1031,7 @@ function agregarCalificaciones()
 				{
 					aux = aux + ","
 				}else{
-					inicioSub ++ ;
+					inicioSub++;
 				}
 
 				aux = aux + "{\"id\":" + x.id + ",";
@@ -898,28 +1067,45 @@ function agregarCalificaciones()
 //---Calendar.ux---
 function nextMonth()
 {
-	if(today.getMonth() < 11)
-	{
-		today = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-	}else{
-		today = new Date(today.getFullYear() + 1, 0, 1);
-	}
+	today.setMonth(today.getMonth() + 1);
 	
-	getDias();
 	getFecha();
 }
 
 function lastMonth()
 {
-	if(today.getMonth() > 0)
-	{
-		today = new Date(today.getFullYear(), today.getMonth() - 1, 1);;
-	}else{
-		today = new Date(today.getFullYear() - 1, 11, 1);
-	}
+	today.setMonth(today.getMonth() - 1);
 	
-	getDias();
 	getFecha();
+}
+
+function nextDay()
+{
+	today.setDate(today.getDate() + 1);
+	
+	getFecha();
+}
+
+function lastDay()
+{
+	today.setDate(today.getDate() - 1);
+	
+	getFecha();
+}
+
+function setDay(arg)
+{
+	if(arg.data.dia != " ")
+	{
+		today.setDate(arg.data.dia);
+	}
+
+	getFecha();
+
+	cargarActividades();
+	
+	timer = Timer.create(function(){
+	getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
 }
 
 function getDias()
@@ -936,16 +1122,16 @@ function getDias()
 
 	for (var i = 1; i < diasPasados.value; i++)
 	{
-		aux.add({"dia": " ","color": "#FFF","textColor": "#000"});
+		aux.add({"dia": " ", "color": "#FFF", "textColor": "#000", "valido": false});
 	}
 
 	for (var i = 1; i <= lastDay.getDate(); i++)
 	{
 		if(i == today.getDate())
 		{
-			aux.add({"dia": i,"color": "#00D9C5","textColor": "#FFF"});
+			aux.add({"dia": i, "color": "#00D9C5", "textColor": "#FFF", "valido": true});
 		}else{
-			aux.add({"dia": i,"color": "#FFF","textColor": "#000"});
+			aux.add({"dia": i,"color": "#FFF", "textColor": "#000", "valido": true});
 		}
 	}
 
@@ -957,25 +1143,10 @@ function getFecha()
 	var monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
 	 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
+	dia.value = today.getDate();
 	mes.value = monthNames[today.getMonth()];
-	anio.value = " / " + today.getFullYear()
+	anio.value = " / " + today.getFullYear();
 }
-
-function getFechaCompleta()
-{
-	mes.value = today.getDate() + " de " + mes.value;
-}
-
-function setDay(arg)
-{
-	if(arg.data.dia != " ")
-	{
-		today.setDate(arg.data.dia);
-	}
-
-	getFechaCompleta();
-}
-
 
 module.exports = {
 	mensaje: mensaje,
@@ -993,7 +1164,9 @@ module.exports = {
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
 	alumnosCurso: alumnosCurso,
-	desActivarAlumnos: desActivarAlumnos,
+	setDiaconActividad: setDiaconActividad,
+	marcarAlumnosxCurso: marcarAlumnosxCurso,
+	marcarActividadesxDia: marcarActividadesxDia,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,
@@ -1016,13 +1189,18 @@ module.exports = {
 	mostrarCalificacion: mostrarCalificacion,
 	marcaAsistencia: marcaAsistencia,
 	agregarCalificaciones: agregarCalificaciones,
+	nextFechaconActividad: nextFechaconActividad,
+	lastFechaconActividad: lastFechaconActividad,
 
 //---Calendar.ux---
 	dias: dias,
+	dia: dia,
 	mes: mes,
 	anio: anio,
 	nextMonth: nextMonth,
 	lastMonth: lastMonth,
+	nextDay: nextDay,
+	lastDay: lastDay,
 	setDay: setDay,
 	getFecha: getFecha
 };

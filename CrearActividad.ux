@@ -13,22 +13,26 @@
 				</Grid>
 			</StackPanel>
 
-			<Grid Columns="1*,5*,4*,1*" Color="#00D9C5">
+			<Grid Columns="1*,9*,1*" Color="#00D9C5">
 				<DockPanel>
 					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,7,0,2"/>
 					<Rotation Degrees="180"/>
 					<Clicked>
-						<Callback Handler="{lastMonth}" />
+						<Callback Handler="{lastDay}" />
 					</Clicked>
 				</DockPanel>
-				
-				<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" Alignment="CenterRight" Padding="0,5"/>
-				<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" Alignment="CenterLeft" Padding="0,5"/>
+
+				<Grid Columns="auto,auto,auto,auto" Alignment="Center" Padding="0,5">
+					<Text Value="{dia}" TextColor="#FFF" Font="museo700_letter" />
+					<Text Value=" de " TextColor="#FFF" Font="museo700_letter" />
+					<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" />
+					<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter"/>
+				</Grid>
 
 				<DockPanel>
 					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
 					<Clicked>
-						<Callback Handler="{nextMonth}" />
+						<Callback Handler="{nextDay}" />
 					</Clicked>
 				</DockPanel>
 			</Grid>
@@ -41,7 +45,9 @@
 						<DockPanel>
 							<DockPanel Color="#FFF" Dock="Top">
 								<Grid Dock="Top" Columns="9*,1*" Padding="15,2">
-									<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989"/>
+									<StackPanel>
+										<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap" Padding="0,0,10,0"/>
+									</StackPanel>
 									<Checkbox Value="{activo}" Clicked="{selectAll}" Padding="0,2" Alignment="Center"/>
 								</Grid>
 
@@ -52,7 +58,7 @@
 								<Each Items="{subHabsId}">
 									<DockPanel Color="#FCFBFC">
 										<Grid Columns="9*,1*" Padding="15,2">
-											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14"/>
+											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap" Padding="0,0,10,0"/>
 											<CheckboxSub Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Center" />
 										</Grid>
 

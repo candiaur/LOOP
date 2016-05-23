@@ -14,7 +14,7 @@
 					</Grid>
 				</StackPanel>
 
-				<ScrollView>
+				<ScrollView MaxHeight="400">
 					<DockPanel>
 						<StackPanel>
 							<Each Items="{ramas}">
@@ -50,7 +50,7 @@
 					</Grid>
 				</StackPanel>
 
-				<ScrollView>
+				<ScrollView MaxHeight="400">
 					<StackPanel>
 						<Each Items="{cursos}">
 							<DockPanel Padding="15,10" Margin="0,2" Color="#FFF">
@@ -68,8 +68,8 @@
 								</Grid>
 
 								<Clicked>
-									<Set Target="actPage.Active" Value="pagCalendario" />
 									<Callback Handler="{selectCurso}" />
+									<Set Target="actPage.Active" Value="pagCalendario" />
 								</Clicked>
 							</DockPanel>
 						</Each>
@@ -101,22 +101,26 @@
 						</Grid>
 					</StackPanel>
 
-					<Grid Columns="1*,5*,4*,1*" Color="#00D9C5">
+					<Grid Columns="1*,9*,1*" Color="#00D9C5">
 						<DockPanel>
 							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,7,0,2"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
-								<Callback Handler="{lastMonth}" />
+								<Callback Handler="{lastDay}" />
 							</Clicked>
 						</DockPanel>
 						
-						<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" Alignment="CenterRight" Padding="0,5"/>
-						<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" Alignment="CenterLeft" Padding="0,5"/>
+						<Grid Columns="auto,auto,auto,auto" Alignment="Center" Padding="0,5">
+							<Text Value="{dia}" TextColor="#FFF" Font="museo700_letter"/>
+							<Text Value=" de " TextColor="#FFF" Font="museo700_letter" />
+							<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" />
+							<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" />
+						</Grid>
 
 						<DockPanel>
 							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
 							<Clicked>
-								<Callback Handler="{nextMonth}" />
+								<Callback Handler="{nextDay}" />
 							</Clicked>
 						</DockPanel>
 					</Grid>
@@ -127,7 +131,7 @@
 								<StackPanel>
 									<Each Items="{subHabs}">
 										<DockPanel Padding="15,10" Color="#FFF">
-											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14"/>
+											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
 											<!-- <Text Value="{habilidad}" Alignment="CenterLeft" TextColor="#CCCCCC"/> -->
 										</DockPanel>
 										<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
@@ -145,6 +149,7 @@
 						<Text Value="+" FontSize="45" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
 
 						<Clicked>
+							<Callback Handler="{marcarActividadesxDia}" />
 							<Set Target="actPage.Active" Value="addAtividad" />
 						</Clicked>
 					</DockPanel>
@@ -224,6 +229,7 @@
 
 								<Clicked>
 									<Set Target="actPage.Active" Value="calificaAlumno" />
+									<Callback Handler="{setDiaconActividad}" />
 									<Callback Handler="{selectAlumno}" />
 									<Callback Handler="{resetHabxAlumno}" />
 								</Clicked>
@@ -241,7 +247,7 @@
 
 					<Clicked>
 						<Set Target="actPage.Active" Value="addAlumnos" />
-						<Callback Handler="{desActivarAlumnos}" />
+						<Callback Handler="{marcarAlumnosxCurso}" />
 					</Clicked>
 				</DockPanel>
 
