@@ -229,9 +229,7 @@
 
 								<Clicked>
 									<Set Target="actPage.Active" Value="calificaAlumno" />
-									<Callback Handler="{setDiaconActividad}" />
 									<Callback Handler="{selectAlumno}" />
-									<Callback Handler="{resetHabxAlumno}" />
 								</Clicked>
 							</DockPanel>
 						</Each>

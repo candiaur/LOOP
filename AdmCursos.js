@@ -5,8 +5,8 @@ var personaActual = Observable(1);
 
 //---Cursos.ux---
 var ramas = Observable();
-var cursos = Observable();
-var actividades = Observable();
+var cursos = Observable({"cursos":"nuevos"});
+var actividades = Observable({"actividades":"nuevas"});
 var alumnos = Observable();
 var habilidadesAct = Observable({"habilidad":"nueva"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
@@ -14,8 +14,6 @@ var hayAct = Observable({"id":0,"llave":" "});
 var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
-var usadoActividad = Observable(0);
-var usadoCurso = Observable(0);
 
 //---CrearActividad.ux---
 var idMaxActividad = Observable(0);
@@ -31,6 +29,8 @@ var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
 var fechasAct = [];
 var indexFechasAct = Observable(0);
+var calificaciones = Observable({"calificaciones": "nuevas"});
+var calificacionAct = Observable();
 
 //---Calendar.ux---
 var dias = Observable({"dias":""});
@@ -109,36 +109,19 @@ function cargarCursos()
 	.then(function(data)
 	{
 		var keys = Object.keys(data);
-		
-		if(usadoCurso == 0)
+		var aux = Observable();
+
+		keys.forEach(function(key, index)
 		{
-			keys.forEach(function(key, index)
+			if (index >= aux.length)
 			{
-				if (index >= cursos.length)
-				{
-					var nuevo = data[key];
-					nuevo["llave"] = key;
-					cursos.add(nuevo);
-				}
-			});
+				var nuevo = data[key];
+				nuevo["llave"] = key;
+				aux.add(nuevo);
+			}
+		});
 
-				usadoCurso.value = 1;
-		}else{
-				
-			var aux = Observable();
-
-			keys.forEach(function(key, index)
-			{
-				if (index >= aux.length)
-				{
-					var nuevo = data[key];
-					nuevo["llave"] = key;
-					aux.add(nuevo);
-				}
-			});
-
-			cursos.replaceAll(aux);
-		}
+		cursos.replaceAll(aux);
 	});
 }
 
@@ -164,45 +147,24 @@ function cargarActividades()
 	.then(function(data)
 	{
 		var keys = Object.keys(data);
-		
-		if(usadoActividad == 0)
+		var aux = Observable();
+
+		keys.forEach(function(key, index)
 		{
-			keys.forEach(function(key, index)
+			if (index >= aux.length)
 			{
-				if (index >= actividades.length)
-				{
-					var nuevo = data[key];
-					actividades.add(nuevo);
-				}
+				var nuevo = data[key];
+				nuevo["llave"] = key;
+				aux.add(nuevo);
+			}
 
-				if(nuevo.id > idMaxActividad.value)
-				{
-					idMaxActividad.value = nuevo.id;
-				}
-			});
-			
-			usadoActividad.value = 1;
-		}else{
-			
-			var aux = Observable();
-
-			keys.forEach(function(key, index)
+			if(nuevo.id > idMaxActividad.value)
 			{
-				if (index >= aux.length)
-				{
-					var nuevo = data[key];
-					nuevo["llave"] = key;
-					aux.add(nuevo);
-				}
+				idMaxActividad.value = nuevo.id;
+			}
+		});
 
-				if(nuevo.id > idMaxActividad.value)
-				{
-					idMaxActividad.value = nuevo.id;
-				}
-			});
-
-			actividades.replaceAll(aux);
-		}
+		actividades.replaceAll(aux);
 	});
 }
 
@@ -288,19 +250,19 @@ function selectCurso(arg)
 			cursoAct.value = e;
 		}
 	});
-
-	hayAct.id = 0;
 	
 	cargarAlumnos();
+	cargarActividades();
 
 	timer = Timer.create(function(){
-	getAlumxCursos();}, 1000, true);
+	getAlumxCursos(); getFechasconActividades();}, 1000, true);
 }
 
 //-- Carga todas las habilidades del curso y día seleccionado
 function getHabxCursoxDia()
 {
 	var aux = Observable();
+	hayAct.id = 0;
 
 	actividades.forEach(function(e)
 	{
@@ -385,6 +347,9 @@ function selectAlumno(arg)
 			alumnoAct.value = e;
 		}
 	});
+
+	cargarCalificaciones();
+	setDiaconActividad();
 }
 
 function marcarActividadesxDia()
@@ -787,12 +752,47 @@ function actualizarCursoAct()
 }
 
 //---CalificarAkumno.ux---
+//--Carga todas las calificaciones de un alumno del curso.
+function cargarCalificaciones()
+{
+	fetch('https://firstloop.firebaseio.com/calificaciones.json', {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("CargarCalificaciones: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var aux = Observable();
+
+		keys.forEach(function(key, index)
+		{
+			if (index >= aux.length)
+			{
+				var nuevo = data[key];
+				nuevo["llave"] = key;
+				aux.add(nuevo);
+			}
+		});
+
+		calificaciones.replaceAll(aux);
+	});
+}
 
 //-- Cargar lista de fechas con actividades
 function getFechasconActividades()
 {	
 	fechasAct = [];
-	
+
 	actividades.forEach(function(e)
 	{
 		if(e.curso == cursoAct.value.id)
@@ -815,11 +815,11 @@ function setDiaconActividad()
 	{
 		if(encontrado == false)
 		{
-			if(e == today.toISOString().slice(0, 10))
+			if(e == (today.toISOString().slice(0, 10) + "T11:51:00"))
 			{
 				encontrado = true;
 			}else{
-				if((e > today.toISOString().slice(0, 10)))
+				if(e > (today.toISOString().slice(0, 10) + "T11:51:00"))
 				{
 					today = new Date(e);
 					encontrado = true;
@@ -840,7 +840,9 @@ function setDiaconActividad()
 		indexFechasAct = aux;
 	}
 
+	getHabxCursoxDia();
 	getFecha();
+	setTimeout(function(){ resetHabxAlumno();}, 1000);
 }
 
 function nextFechaconActividad()
@@ -854,13 +856,12 @@ function nextFechaconActividad()
 		indexFechasAct++;
 	}
 
+	resetHabxAlumno();
 	getFecha();
 }
 
 function lastFechaconActividad()
 {
-	console.log("lastFechaconActividad : " + indexFechasAct);
-
 	if(indexFechasAct == 1)
 	{
 		today = new Date(fechasAct[fechasAct.length - 1]);
@@ -870,35 +871,101 @@ function lastFechaconActividad()
 		today = new Date(fechasAct[indexFechasAct - 1]);
 	}
 
+	resetHabxAlumno();
 	getFecha();
 }
 
 function resetHabxAlumno()
 {
 	var aux = Observable();
-
+	var actvActualAux = Observable();
+	var encontrado = false;
+	asistio.value = false;
+	calificacionAct.value = "";
+	
 	actividades.forEach(function(e)
 	{
-		if(e.curso == cursoAct.value.id)
+		if(e.id == hayAct.id)
 		{
-			e.habilidades.forEach(function(x)
-			{
-				x.subHabs.forEach(function(y)
-				{
-					y["noLogrado"] = false;
-					y["medio"] = false;
-					y["logrado"] = false;
-				});
-
-				aux.add(x);
-			});
+			actvActualAux = e;
 		}
 	});
 
+	calificaciones.forEach(function(a)
+	{
+		if((hayAct.id == a.actividad) && (alumnoAct.value.id == a.alumno))
+		{
+			calificacionAct.value = a.llave;
+			
+			if(a.asistencia == 1)
+			{
+				asistio.value = true;
+
+				a.habilidades.forEach(function(x)
+				{
+					actvActualAux.habilidades.forEach(function(y)
+					{
+						if (y.id == x.habilidad)
+						{
+							x.subHabs.forEach(function(z)
+							{
+								y.subHabs.forEach(function(d)
+								{
+									if (z.id == d.id)
+									{
+										d["noLogrado"] = false;
+										d["medio"] = false;
+										d["logrado"] = false;
+										
+										if(z.nota == 3)
+										{
+											d.logrado = true;
+
+										}else{
+											if(z.nota == 2)
+											{
+												d.medio = true;
+											}else{
+												d.noLogrado = true;
+											}
+										}
+									}
+								});
+							});
+						}
+						
+						aux.add(x);
+					});
+				});
+
+				encontrado = true;
+			}
+		}
+	});
+
+	if (!encontrado)
+	{
+		actvActualAux.habilidades.forEach(function(x)
+		{
+			x.subHabs.forEach(function(y)
+			{
+				y["noLogrado"] = false;
+				y["medio"] = false;
+				y["logrado"] = false;
+			});
+
+			aux.add(x);
+		});
+	}
+
 	habilidadesAct.replaceAll(aux);
 
-	asistio.value = false;
-	mostrarCalificacion.value = "Collapsed";
+	if(asistio.value == true)
+	{
+		mostrarCalificacion.value = "Visible";
+	}else{
+		mostrarCalificacion.value = "Collapsed";
+	}
 }
 
 function selectN(arg)
@@ -1054,13 +1121,22 @@ function agregarCalificaciones()
 
 		aux = aux + "]}";
 	}
-	
-	fetch('https://firstloop.firebaseio.com/calificaciones.json', {
-		method: 'POST',
-		headers: { "Content-type": "application/json"},
-		body: aux
-	});
 
+	if (calificacionAct.value == "")
+	{
+		fetch('https://firstloop.firebaseio.com/calificaciones.json', {
+			method: 'POST',
+			headers: { "Content-type": "application/json"},
+			body: aux
+		});
+	}else{
+		fetch('https://firstloop.firebaseio.com/calificaciones/' + calificacionAct.value + '.json', {
+			method: 'PUT',
+			headers: { "Content-type": "application/json"},
+			body: aux
+		});
+	}
+	
 	mensaje.value = "Visible";
 }
 
@@ -1102,10 +1178,8 @@ function setDay(arg)
 
 	getFecha();
 
-	cargarActividades();
-	
 	timer = Timer.create(function(){
-	getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
+	getHabxCursoxDia();}, 1000, true);
 }
 
 function getDias()
@@ -1122,16 +1196,31 @@ function getDias()
 
 	for (var i = 1; i < diasPasados.value; i++)
 	{
-		aux.add({"dia": " ", "color": "#FFF", "textColor": "#000", "valido": false});
+		aux.add({"dia": " ", "color": "#FFF", "textColor": "#000", "valido": false, "punto": "#FFF"});
 	}
+
+	var auxDia = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
 	for (var i = 1; i <= lastDay.getDate(); i++)
 	{
+		var punto = "#FFF";
+		auxDia.setDate(i);
+		
+		fechasAct.forEach(function(e)
+		{
+			var auxAct = new Date(e);
+			
+			if(auxDia.toISOString().slice(0, 10) == auxAct.toISOString().slice(0, 10))
+			{
+				punto = "#D8D8D8";
+			}
+		});
+
 		if(i == today.getDate())
 		{
-			aux.add({"dia": i, "color": "#00D9C5", "textColor": "#FFF", "valido": true});
+			aux.add({"dia": i, "color": "#00D9C5", "textColor": "#FFF", "valido": true, "punto": punto});
 		}else{
-			aux.add({"dia": i,"color": "#FFF", "textColor": "#000", "valido": true});
+			aux.add({"dia": i,"color": "#FFF", "textColor": "#000", "valido": true, "punto": punto});
 		}
 	}
 
