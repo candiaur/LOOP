@@ -4,10 +4,15 @@
 
 	<DockPanel>	
 		<StackPanel Dock="Top">
+			<Image Source="cabecera"/>
+			<Atras>
+				<Clicked>
+					<Callback Handler="{desActivarMensaje}" />
+					<Set Target="actPage.Active" Value="pagAlumnos" />
+				</Clicked>
+			</Atras>
 
-			<Image File="Assets/img_Cabecera.png"/>
-
-			<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+			<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
 				<Grid Columns="auto,1*">
 					<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="AGREGAR " Font="museo700_letter"/>
 					<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ALUMNOS" Font="museo100_letter"/>
@@ -27,13 +32,6 @@
 					</Each>
 				</StackPanel>
 			</ScrollView>
-
-			<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
-				<Clicked>
-					<Callback Handler="{desActivarMensaje}" />
-					<Set Target="actPage.Active" Value="pagAlumnos" />
-				</Clicked>
-			</Button>
 		</StackPanel>
 
 		<DockPanel Dock="Bottom" Padding="10,15" Height="50" Color="#00D9C5">

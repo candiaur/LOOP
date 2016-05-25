@@ -5,9 +5,9 @@
 	<PageControl ux:Name="actPage" Active="pagRamas" Interaction="None">
 		<Page ux:Name="pagRamas">
 			<StackPanel>
-				<Image File="Assets/img_Cabecera.png"/>
+				<Image Source="cabecera"/>
 
-				<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,40,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MIS " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="COLEGIOS" Font="museo100_letter"/>
@@ -41,9 +41,14 @@
 
 		<Page ux:Name="pagCursos">
 			<StackPanel>
-				<Image File="Assets/img_Cabecera.png"/>
+				<Image Source="cabecera"/>
+				<Atras>
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagRamas" />
+					</Clicked>
+				</Atras>
 
-				<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MIS " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="CURSOS" Font="museo100_letter"/>
@@ -69,37 +74,56 @@
 
 								<Clicked>
 									<Callback Handler="{selectCurso}" />
-									<Set Target="actPage.Active" Value="pagCalendario" />
+									<Set Target="actPage.Active" Value="pagActividad" />
 								</Clicked>
 							</DockPanel>
 						</Each>
 					</StackPanel>
 				</ScrollView>
-
-				<Button Text="Atrás" Alignment="Left" Width="25%">
-					<Clicked>
-						<Set Target="actPage.Active" Value="pagRamas" />
-					</Clicked>
-				</Button>
 			</StackPanel>
 		</Page>
 
 		<Page ux:Name="pagCalendario">
 			<ux:Include File="Calendar.ux" />
 			<Calendar/>
+
+			<WhileInactive>
+				<Change pagCalendario.IsEnabled="false"/>
+				<Change pagCalendario.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change pagCalendario.IsEnabled="true"/>
+				<Change pagCalendario.Visibility="Visible"/>
+			</WhileActive>
 		</Page>
 
 		<Page ux:Name="pagActividad">
 			<DockPanel>
 				<StackPanel>
-					<Image File="Assets/img_Cabecera.png"/>
+					<Image Source="cabecera"/>
+					<Atras>
+						<Clicked>
+							<Set Target="actPage.Active" Value="pagCursos" />
+						</Clicked>
+					</Atras>
 
-					<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+					<StackPanel Color="#000" Margin="0,20,0,0" Padding="15,7">
 						<Grid Columns="auto,1*">
 							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="NOMBRE " Font="museo700_letter"/>
 							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="{cursoAct.curso}" Font="museo100_letter"/>
 						</Grid>
 					</StackPanel>
+
+					<DockPanel Color="#BFBFBF" Margin="0,8">
+						<Text Value="Ver calendario completo" TextColor="#FFF" Font="museo300_letter" Alignment="Center" Margin="10"/>
+
+						<Image File="Assets/img_Calendario.png" Layer="Background" Alignment="Right" Width="25" Margin="10,0"/>
+						
+						<Clicked>
+							<Set Target="actPage.Active" Value="pagCalendario" />
+						</Clicked>
+					</DockPanel>
 
 					<Grid Columns="1*,9*,1*" Color="#00D9C5">
 						<DockPanel>
@@ -126,7 +150,7 @@
 					</Grid>
 
 					<ScrollView>
-						<StackPanel Margin="0,5">
+						<StackPanel Margin="0,8">
 							<Each Items="{habilidadesAct}">
 								<StackPanel>
 									<Each Items="{subHabs}">
@@ -141,7 +165,7 @@
 						</StackPanel>
 					</ScrollView>
 
-					<DockPanel Dock="Bottom" Color="#F7F5F7" Margin="0,5,0,0">
+					<DockPanel Dock="Bottom" Color="#F7F5F7">
 						<Rectangle Layer="Background" Opacity="0.5">
 							<Stroke Width="1" Color="#D2D2D2"/>
 						</Rectangle>
@@ -153,13 +177,6 @@
 							<Set Target="actPage.Active" Value="addAtividad" />
 						</Clicked>
 					</DockPanel>
-					
-					<Button Text="Atrás" Alignment="Left" Width="25%">
-						<Clicked>
-							<Callback Handler="{getFecha}" />
-							<Set Target="actPage.Active" Value="pagCalendario" />
-						</Clicked>
-					</Button>
 				</StackPanel>
 
 				<DockPanel Dock="Bottom" Padding="10,15" Height="50" Color="#FFF">
@@ -195,9 +212,14 @@
 
 		<Page ux:Name="pagAlumnos">
 			<StackPanel>
-				<Image File="Assets/img_Cabecera.png"/>
+				<Image Source="cabecera"/>
+				<Atras>
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagActividad" />
+					</Clicked>
+				</Atras>
 
-				<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="ALUMNOS " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="{cursoAct.curso}" Font="museo100_letter"/>
@@ -236,7 +258,7 @@
 					</StackPanel>
 				</ScrollView>
 
-				<DockPanel Dock="Bottom" Color="#F7F5F7" Margin="0,5">
+				<DockPanel Dock="Bottom" Color="#F7F5F7" Margin="0,8">
 					<Rectangle Layer="Background" Opacity="0.5">
 						<Stroke Width="1" Color="#D2D2D2"/>
 					</Rectangle>
@@ -248,12 +270,6 @@
 						<Callback Handler="{marcarAlumnosxCurso}" />
 					</Clicked>
 				</DockPanel>
-
-				<Button Text="Atrás" Alignment="Left" Width="25%">
-					<Clicked>
-						<Set Target="actPage.Active" Value="pagActividad" />
-					</Clicked>
-				</Button>
 			</StackPanel>
 		</Page>
 

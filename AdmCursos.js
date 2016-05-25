@@ -254,8 +254,10 @@ function selectCurso(arg)
 	cargarAlumnos();
 	cargarActividades();
 
-	timer = Timer.create(function(){
-	getAlumxCursos(); getFechasconActividades();}, 1000, true);
+	timer = Timer.create(function(){ getAlumxCursos(); 
+		getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
+
+	getFecha();
 }
 
 //-- Carga todas las habilidades del curso y día seleccionado

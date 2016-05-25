@@ -4,9 +4,15 @@
 
 	<DockPanel>
 		<StackPanel Dock="Top">
-			<Image File="Assets/img_Cabecera.png"/>
+			<Image Source="cabecera"/>
+			<Atras>
+				<Clicked>
+					<Callback Handler="{desActivarMensaje}" />
+					<Set Target="actPage.Active" Value="pagActividad" />
+				</Clicked>
+			</Atras>
 
-			<StackPanel Color="#000" Margin="0,40,0,10" Padding="15,7">
+			<StackPanel Color="#000" Margin="0,40,0,8" Padding="15,7">
 				<Grid Columns="auto,1*">
 					<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="AGREGAR " Font="museo700_letter"/>
 					<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="HABILIDADES" Font="museo100_letter"/>
@@ -39,7 +45,7 @@
 
 			<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Actividad Guardada" Margin="0,5,0,5" Visibility="{mensaje}"/>
 			
-			<ScrollView MaxHeight="350" Margin="0,5">
+			<ScrollView MaxHeight="350" Margin="0,8">
 				<StackPanel>
 					<Each Items="{habilidades}" >
 						<DockPanel>
@@ -70,15 +76,6 @@
 					</Each>
 				</StackPanel>
 			</ScrollView>
-
-			<Grid ColumnCount="2">
-				<Button Text="Atrás" Alignment="Left" Width="25%" Height="30">
-					<Clicked>
-						<Callback Handler="{desActivarMensaje}" />
-						<Set Target="actPage.Active" Value="pagActividad" />
-					</Clicked>
-				</Button>
-			</Grid>
 		</StackPanel>
 
 		<DockPanel Dock="Bottom" Padding="10,15" Height="50" Color="#00D9C5">

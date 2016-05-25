@@ -110,10 +110,14 @@
 		<Font File="Assets/PrestigeEliteStd-Bd.otf" ux:Global="pres_letter" />
 		<Font File="Assets/MuseoSans-100.otf" ux:Global="museo100_letter" />
 		<Font File="Assets/MuseoSans-300.otf" ux:Global="museo300_letter" />
-		<Font File="Assets/MuseoSans-300Italic.otf" ux:Global="museo300I_letter" />
 		<Font File="Assets/MuseoSans_700.otf" ux:Global="museo700_letter" />
-		<Font File="Assets/MuseoSans-700Italic.otf" ux:Global="museo700I_letter" />
 		<Font File="Assets/MuseoSans_900.otf" ux:Global="museo900_letter" />
+		
+		<Font File="Assets/MuseoSans-700Italic.otf" ux:Global="museo700I_letter"/>
+		<Font File="Assets/MuseoSans-300Italic.otf" ux:Global="museo300I_letter"/>
+
+		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
+		<Image ux:Class="Atras" File="Assets/btn_Atras.png" Margin="0,-21,20,0" Alignment="TopRight" Width="45" Height="54" ZOffset="2"/>
 
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
