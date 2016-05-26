@@ -40,7 +40,7 @@
 			<Text Value="Agregar al curso!" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 			<Clicked>
-				<Callback Handler="{agregarAlumnoCurso}" />
+				<Callback Handler="{agregarAlumnosCurso}" />
 			</Clicked>
 		</DockPanel>
 	</DockPanel>

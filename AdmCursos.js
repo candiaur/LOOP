@@ -43,6 +43,8 @@ var today = new Date();
 var timer = Timer.create(function(){
 	cargarTodo();}, 1000, true);
 
+cargarCursos();
+
 function cargarTodo()
 {
 	getDias();
@@ -250,12 +252,12 @@ function selectCurso(arg)
 			cursoAct.value = e;
 		}
 	});
-	
+
 	cargarAlumnos();
 	cargarActividades();
 
-	timer = Timer.create(function(){ getAlumxCursos(); 
-		getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
+	setTimeout(function(){ getAlumxCursos(); 
+		getFechasconActividades(); getHabxCursoxDia();}, 1000);
 
 	getFecha();
 }
@@ -337,7 +339,24 @@ function marcarAlumnosxCurso()
 
 function removeItem(sender)
 {
-	cursos.remove(sender.data);
+	var aux = Observable();
+	
+	habilidadesAct.forEach(function(e)
+	{
+		var indexSubHab = 0;
+
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == sender.data.id)
+			{
+				delete x;
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
 }
 
 function selectAlumno(arg)
@@ -675,7 +694,7 @@ function agregarAlumnoNuevo()
 }
 
 //-- Agrega alumnos de la rama a un curso específico
-function agregarAlumnoCurso()
+function agregarAlumnosCurso()
 {
 	var aux = "{\"id\":" + cursoAct.value.id + ",";
 	aux = aux + "\"curso\":\"" + cursoAct.value.curso + "\",";
@@ -753,7 +772,7 @@ function actualizarCursoAct()
 	});
 }
 
-//---CalificarAkumno.ux---
+//---CalificarAlumno.ux---
 //--Carga todas las calificaciones de un alumno del curso.
 function cargarCalificaciones()
 {
@@ -1268,7 +1287,7 @@ module.exports = {
 //---CrearAlumno.ux---
 	alumnos: alumnos,
 	alumno: alumno,
-	agregarAlumnoCurso: agregarAlumnoCurso,
+	agregarAlumnosCurso: agregarAlumnosCurso,
 	selectNewAlumno: selectNewAlumno,
 
 //---CalificarAkumno.ux---

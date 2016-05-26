@@ -20,7 +20,7 @@
 				{
 					return "calificacion";
 				}else{
-					return "calificacion";
+					return "informe";
 				}
 			});
 
@@ -88,10 +88,10 @@
 
 			function submit()
 			{
-				fetch('https://firstloop.firebaseio.com/cursos.json', {
+				fetch('https://firstloop.firebaseio.com/instancia.json', {
 					method: 'POST',
 					headers: { "Content-type": "application/json"},
-					body: JSON.stringify({"curso": tag.value})
+					body: JSON.stringify({"nombre": tag.value})
 				});
 
 				tag.value = "";

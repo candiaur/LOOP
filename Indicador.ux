@@ -1,6 +1,22 @@
-<Panel ux:Class="Indicador">
+<Panel ux:Class="Indicador" Color="#EEEBF0">
 
-	<StackPanel Color="#32CD32">
-		<Text Value="Alumnos" />
-	</StackPanel>
+	<PageControl ux:Name="actPage" Active="pagRamas" Interaction="None">
+		<Page>
+			<StackPanel>
+				<Image Source="cabecera"/>
+				<Atras>
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagRamas" />
+					</Clicked>
+				</Atras>
+
+				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+					<Grid Columns="auto,1*">
+						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
+						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ACTIVIDAD" Font="museo100_letter"/>
+					</Grid>
+				</StackPanel>
+			</StackPanel>
+		</Page>
+	</PageControl>
 </Panel>

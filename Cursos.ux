@@ -39,6 +39,34 @@
 			</StackPanel>
 		</Page>
 
+		<Page ux:Name="pagInstructores">
+			<StackPanel>
+				<Image Source="cabecera"/>
+				<Atras>
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagRamas" />
+					</Clicked>
+				</Atras>
+
+				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+					<Grid Columns="auto,1*">
+						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="INSTRUCTORES " Font="museo700_letter"/>
+						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ARSKI" Font="museo100_letter"/>
+					</Grid>
+				</StackPanel>
+			</StackPanel>
+
+			<WhileInactive>
+				<Change pagInstructores.IsEnabled="false"/>
+				<Change pagInstructores.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change pagInstructores.IsEnabled="true"/>
+				<Change pagInstructores.Visibility="Visible"/>
+			</WhileActive>
+		</Page>
+
 		<Page ux:Name="pagCursos">
 			<StackPanel>
 				<Image Source="cabecera"/>
@@ -110,7 +138,7 @@
 
 					<StackPanel Color="#000" Margin="0,20,0,0" Padding="15,7">
 						<Grid Columns="auto,1*">
-							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="NOMBRE " Font="museo700_letter"/>
+							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="CURSO " Font="museo700_letter"/>
 							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="{cursoAct.curso}" Font="museo100_letter"/>
 						</Grid>
 					</StackPanel>
@@ -154,11 +182,42 @@
 							<Each Items="{habilidadesAct}">
 								<StackPanel>
 									<Each Items="{subHabs}">
-										<DockPanel Padding="15,10" Color="#FFF">
-											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
-											<!-- <Text Value="{habilidad}" Alignment="CenterLeft" TextColor="#CCCCCC"/> -->
-										</DockPanel>
-										<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+										<Panel>
+											<PageControl Active="contents">
+												<Page Background="#fff" ux:Name="contents">
+													<DockPanel Padding="15,10">
+														<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
+														<!-- <Text Value="{habilidad}" Alignment="CenterLeft" TextColor="#CCCCCC"/> -->
+													</DockPanel>
+												</Page>
+
+												<Page>
+													<ActivatingAnimation>		
+														<Set postponeText.Opacity="1" />
+														<Change background.Color="#990033" Easing="ExponentialOut" />
+														<Move Target="postponeText" X="-2" RelativeTo="Size" Duration=".3" DelayBack="0"/>
+													</ActivatingAnimation>
+													<WhileActive>
+														<Callback Handler="{removeItem}" />
+													</WhileActive>
+												</Page>
+											</PageControl>
+
+											<Text ux:Class="Operation" TextAlignment="Center" Alignment="CenterRight" TextColor="#fff" FontSize="22" />
+											<Operation ux:Name="postponeText">Eliminar</Operation>
+											<Rectangle>
+												<SolidColor ux:Name="background" Color="#fff" />
+											</Rectangle>
+
+											<RemovingAnimation>
+												<Move RelativeTo="Size" Y="-1" Duration="0.4" Easing="CircularInOut" />
+											</RemovingAnimation>
+
+											<LayoutAnimation>
+												<Move RelativeTo="LayoutChange" Y="1" Duration="0.8" Easing="CircularInOut" />
+											</LayoutAnimation>
+											<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+										</Panel>
 									</Each>
 								</StackPanel>
 							</Each>
@@ -221,8 +280,8 @@
 
 				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
-						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="ALUMNOS " Font="museo700_letter"/>
-						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="{cursoAct.curso}" Font="museo100_letter"/>
+						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="LISTADO " Font="museo700_letter"/>
+						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ALUMNOS" Font="museo100_letter"/>
 					</Grid>
 				</StackPanel>
 
