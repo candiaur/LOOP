@@ -65,7 +65,7 @@
 					<Text Value="Evolución" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 					<Clicked>
-						
+						<Set Target="alumPage.Active" Value="pagProgreso" />
 					</Clicked>
 
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
@@ -79,7 +79,7 @@
 					<Text Value="Progresión" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 					<Clicked>
-						
+						<Set Target="alumPage.Active" Value="pagEvolucion" />
 					</Clicked>
 
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>

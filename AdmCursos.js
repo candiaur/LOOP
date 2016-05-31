@@ -258,9 +258,7 @@ function selectCurso(arg)
 	cargarActividades();
 
 	timer = Timer.create(function(){ getAlumxCursos(); 
-		getFechasconActividades();}, 1000, true);
-
-	setTimeout(function(){getHabxCursoxDia();},1100);
+		getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
 
 	getFecha();
 }
@@ -288,7 +286,7 @@ function getHabxCursoxDia()
 			});
 		}
 	});
-	
+
 	habilidadesAct.replaceAll(aux);
 }
 
@@ -962,7 +960,7 @@ function resetHabxAlumno()
 			aux.add(x);
 		});
 	}
-	
+
 	habilidadesAct.replaceAll(aux);
 
 	if(asistio.value == true)
@@ -997,7 +995,7 @@ function selectN(arg)
 
 		aux.add(e);
 	});
-	
+
 	habilidadesAct.replaceAll(aux);
 }
 
@@ -1025,7 +1023,7 @@ function selectM(arg)
 
 		aux.add(e);
 	});
-	
+
 	habilidadesAct.replaceAll(aux);
 }
 
@@ -1053,7 +1051,7 @@ function selectL(arg)
 
 		aux.add(e);
 	});
-	
+
 	habilidadesAct.replaceAll(aux);
 }
 
@@ -1183,7 +1181,8 @@ function setDay(arg)
 
 	getFecha();
 
-	setTimeout(function(){getHabxCursoxDia();},1100);
+	timer = Timer.create(function(){
+	getHabxCursoxDia();}, 1000, true);
 }
 
 function getDias()

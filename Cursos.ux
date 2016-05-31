@@ -136,14 +136,14 @@
 						</Clicked>
 					</Atras>
 
-					<StackPanel Color="#000" Margin="0,15,0,0" Padding="15,7">
+					<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 						<Grid Columns="auto,1*">
 							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="CURSO " Font="museo700_letter"/>
 							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="{cursoAct.curso}" Font="museo100_letter"/>
 						</Grid>
 					</StackPanel>
 
-					<DockPanel Color="#BFBFBF" Margin="0,8">
+					<DockPanel Color="#BFBFBF">
 						<Text Value="Ver calendario completo" TextColor="#FFF" Font="museo300_letter" Alignment="Center" Margin="8"/>
 
 						<Image File="Assets/img_Calendario.png" Layer="Background" Alignment="Right" Width="23" Margin="10,0"/>
@@ -153,7 +153,7 @@
 						</Clicked>
 					</DockPanel>
 
-					<Grid Columns="1*,9*,1*" Color="#00D9C5">
+					<Grid Columns="1*,9*,1*" Color="#00D9C5" Margin="0,8">
 						<DockPanel>
 							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,0"/>
 							<Rotation Degrees="180"/>
@@ -177,67 +177,69 @@
 						</DockPanel>
 					</Grid>
 
-					<ScrollView MaxHeight="300" Margin="0,8">
+					<ScrollView MaxHeight="360">
 						<StackPanel>
-							<Each Items="{habilidadesAct}">
-								<StackPanel>
-									<Each Items="{subHabs}">
-										<Panel>
-											<PageControl Active="contents">
-												<Page Background="#fff" ux:Name="contents">
-													<StackPanel Padding="15,10">
-														<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo700_letter" FontSize="12" TextColor="#C9C9C9"/>
+							<StackPanel>
+								<Each Items="{habilidadesAct}">
+									<StackPanel>
+										<Each Items="{subHabs}">
+											<Panel>
+												<PageControl Active="contents">
+													<Page Background="#fff" ux:Name="contents">
+														<StackPanel Padding="15,10">
+															<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo700_letter" FontSize="12" TextColor="#C9C9C9"/>
 
-														<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
-														
-														<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
-													</StackPanel>
-												</Page>
+															<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
+															
+															<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+														</StackPanel>
+													</Page>
 
-												<Page>
-													<ActivatingAnimation>		
-														<Set postponeText.Opacity="1" />
-														<Change background.Color="#e0464d" Easing="ExponentialOut" />
-														<Move Target="postponeText" X="-2" RelativeTo="Size" Duration=".3" DelayBack="0"/>
-													</ActivatingAnimation>
-													<WhileActive>
-														<Callback Handler="{removeItem}" />
-													</WhileActive>
-												</Page>
-											</PageControl>
+													<Page>
+														<ActivatingAnimation>		
+															<Set postponeText.Opacity="1" />
+															<Change background.Color="#e0464d" Easing="ExponentialOut" />
+															<Move Target="postponeText" X="-2" RelativeTo="Size" Duration=".3" DelayBack="0"/>
+														</ActivatingAnimation>
+														<WhileActive>
+															<Callback Handler="{removeItem}" />
+														</WhileActive>
+													</Page>
+												</PageControl>
 
-											<Text ux:Class="Operation" TextAlignment="Center" Alignment="CenterRight" TextColor="#fff" FontSize="18" Font="museo500I_letter"/>
-											<Operation ux:Name="postponeText">Eliminar</Operation>
-											<Rectangle>
-												<SolidColor ux:Name="background" Color="#fff" />
-											</Rectangle>
+												<Text ux:Class="Operation" TextAlignment="Center" Alignment="CenterRight" TextColor="#fff" FontSize="18" Font="museo500I_letter"/>
+												<Operation ux:Name="postponeText">Eliminar</Operation>
+												<Rectangle>
+													<SolidColor ux:Name="background" Color="#fff" />
+												</Rectangle>
 
-											<RemovingAnimation>
-												<Move RelativeTo="Size" Y="-1" Duration="0.4" Easing="CircularInOut" />
-											</RemovingAnimation>
+												<RemovingAnimation>
+													<Move RelativeTo="Size" Y="-1" Duration="0.4" Easing="CircularInOut" />
+												</RemovingAnimation>
 
-											<LayoutAnimation>
-												<Move RelativeTo="LayoutChange" Y="1" Duration="0.8" Easing="CircularInOut" />
-											</LayoutAnimation>
-										</Panel>
-									</Each>
-								</StackPanel>
-							</Each>
+												<LayoutAnimation>
+													<Move RelativeTo="LayoutChange" Y="1" Duration="0.8" Easing="CircularInOut" />
+												</LayoutAnimation>
+											</Panel>
+										</Each>
+									</StackPanel>
+								</Each>
+							</StackPanel>
+
+							<StackPanel Dock="Bottom" Color="#F7F5F7" Margin="0,8">
+								<Rectangle Layer="Background" Opacity="0.5">
+									<Stroke Width="1" Color="#D2D2D2"/>
+								</Rectangle>
+
+								<Text Value="+" FontSize="45" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
+
+								<Clicked>
+									<Callback Handler="{marcarActividadesxDia}" />
+									<Set Target="actPage.Active" Value="addActividad" />
+								</Clicked>
+							</StackPanel>
 						</StackPanel>
 					</ScrollView>
-
-					<DockPanel Dock="Bottom" Color="#F7F5F7">
-						<Rectangle Layer="Background" Opacity="0.5">
-							<Stroke Width="1" Color="#D2D2D2"/>
-						</Rectangle>
-
-						<Text Value="+" FontSize="45" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
-
-						<Clicked>
-							<Callback Handler="{marcarActividadesxDia}" />
-							<Set Target="actPage.Active" Value="addActividad" />
-						</Clicked>
-					</DockPanel>
 				</StackPanel>
 
 				<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#FFF">
@@ -289,48 +291,50 @@
 
 				<ScrollView MaxHeight="400">
 					<StackPanel>
-						<Each Items="{alumnosCurso}">
-							<DockPanel Color="#FFF">
-								<Rectangle Layer="Background" Opacity="0.5">
-									<Stroke Width="1" Color="#D2D2D2"/>
-								</Rectangle>
+						<StackPanel>
+							<Each Items="{alumnosCurso}">
+								<DockPanel Color="#FFF">
+									<Rectangle Layer="Background" Opacity="0.5">
+										<Stroke Width="1" Color="#D2D2D2"/>
+									</Rectangle>
 
-								<Image Url="{imagen}" Height="70" Width="70" StretchMode="UniformToFill" Alignment="Left" />
+									<Image Url="{imagen}" Height="70" Width="70" StretchMode="UniformToFill" Alignment="Left" />
 
-								<Rectangle Fill="#FFF" Height="70" Width="20" Margin="60,0" ZOffset="2" Alignment="Left">
-									<WhileEnabled>
-										<Skew DegreesX="-15" Duration="0.4"/>
-									</WhileEnabled>
-								</Rectangle>
+									<Rectangle Fill="#FFF" Height="70" Width="20" Margin="60,0" ZOffset="2" Alignment="Left">
+										<WhileEnabled>
+											<Skew DegreesX="-15" Duration="0.4"/>
+										</WhileEnabled>
+									</Rectangle>
 
-								<Grid Margin="10,10">
-									<Text Value="{nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="75,0,0,0" FontSize="18"/>
-									<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
-								</Grid>
-								
-								<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,0" Padding="0,5,0,0"/>
+									<Grid Margin="10,10">
+										<Text Value="{nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="75,0,0,0" FontSize="18"/>
+										<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
+									</Grid>
+									
+									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,0" Padding="0,5,0,0"/>
 
-								<Clicked>
-									<Set Target="actPage.Active" Value="calificaAlumno" />
-									<Callback Handler="{selectAlumno}" />
-								</Clicked>
-							</DockPanel>
-						</Each>
+									<Clicked>
+										<Set Target="actPage.Active" Value="calificaAlumno" />
+										<Callback Handler="{selectAlumno}" />
+									</Clicked>
+								</DockPanel>
+							</Each>
+						</StackPanel>
+
+						<StackPanel Color="#F7F5F7" Margin="0,8">
+							<Rectangle Layer="Background" Opacity="0.5">
+								<Stroke Width="1" Color="#D2D2D2"/>
+							</Rectangle>
+
+							<Text Value="+" FontSize="45" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
+
+							<Clicked>
+								<Set Target="actPage.Active" Value="addAlumnos" />
+								<Callback Handler="{marcarAlumnosxCurso}" />
+							</Clicked>
+						</StackPanel>
 					</StackPanel>
 				</ScrollView>
-
-				<DockPanel Dock="Bottom" Color="#F7F5F7" Margin="0,8">
-					<Rectangle Layer="Background" Opacity="0.5">
-						<Stroke Width="1" Color="#D2D2D2"/>
-					</Rectangle>
-
-					<Text Value="+" FontSize="45" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
-
-					<Clicked>
-						<Set Target="actPage.Active" Value="addAlumnos" />
-						<Callback Handler="{marcarAlumnosxCurso}" />
-					</Clicked>
-				</DockPanel>
 			</StackPanel>
 		</Page>
 
