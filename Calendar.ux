@@ -10,7 +10,7 @@
 			</Clicked>
 		</Atras>
 
-		<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+		<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 			<Grid Columns="auto,1*">
 				<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="NOMBRE " Font="museo700_letter"/>
 				<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="CURSO" Font="museo100_letter"/>
@@ -19,7 +19,7 @@
 
 		<Grid Columns="1*,4*,4*,1*" Color="#00D9C5">
 			<DockPanel>
-				<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
+				<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,0"/>
 				<Rotation Degrees="180"/>
 				<Clicked>
 					<Callback Handler="{lastMonth}" />
@@ -30,7 +30,7 @@
 			<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" Alignment="CenterLeft" Padding="0,5"/>
 
 			<DockPanel>
-				<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
+				<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,0,1"/>
 				<Clicked>
 					<Callback Handler="{nextMonth}" />
 				</Clicked>

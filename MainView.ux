@@ -11,18 +11,12 @@
 				load();}, 1000, true);
 
 			var currentPage = Observable("middle");
-
+			
 			var persona = Observable(
 				new Person("", "","","","Assets/FuseLogo.png","0"));
 
-			var leftPage = persona.map(function(x) {
-				if(x.rol == "1")
-				{
-					return "calificacion";
-				}else{
-					return "informe";
-				}
-			});
+			var leftPage = Observable("calificacion");
+			var changeAvailble = Observable(0);
 
 			function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
 			{
@@ -82,6 +76,18 @@
 						});
 
 						persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.nacimiento, e.imagen, aux.value);
+
+						if(changeAvailble == 0)
+						{
+							if(x.rol == "1")
+							{
+								leftPage.value = "calificacion";
+								changeAvailble.value = 1;
+							}else{
+								leftPage.value = "informe";
+								changeAvailble.value = 1;
+							}
+						}
 					}
 				});
 			};
@@ -114,6 +120,7 @@
 		<Font File="Assets/MuseoSans_900.otf" ux:Global="museo900_letter" />
 		
 		<Font File="Assets/MuseoSans-700Italic.otf" ux:Global="museo700I_letter"/>
+		<Font File="Assets/MuseoSans_500_Italic.otf" ux:Global="museo500I_letter"/>
 		<Font File="Assets/MuseoSans-300Italic.otf" ux:Global="museo300I_letter"/>
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
@@ -127,7 +134,7 @@
 			<DirectNavigation Active="{currentPage}"/>
 
 			<Page ux:Name="left">
-				<PageControl Active="{leftPage}" Interaction="None">
+				<PageControl ux:Name="leftControl" Active="{leftPage}" Interaction="None">
 					<Page ux:Name="informe">
 						<Indicador/>
 					</Page>
@@ -181,22 +188,37 @@
 					</udPage>
 
 					<udPage ux:Name="center" Color="#3366CC">
-						<StackPanel>
-							<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
+						<DockPanel>
+							<StackPanel>
+								<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
 
-							<StackPanel Dock="Bottom" Margin="0,50,0,0">
-								<Button Text="Submit" Clicked="{submit}" />
-								<TextInput Value="{tag}" TextAlignment="Center" PlaceholderText="Tag" PlaceholderColor="#63aced"/>
-							</StackPanel>
-
-							<ScrollView ClipToBounds="true">
-								<StackPanel>
-									<Each Items="{dbData}">
-										<Text Value="{nombre}" TextWrapping="Wrap" Margin="0,9" TextAlignment="Center"/>
-									</Each>
+								<StackPanel Dock="Bottom" Margin="0,50,0,0">
+									<Button Text="Submit" Clicked="{submit}" />
+									<TextInput Value="{tag}" TextAlignment="Center" PlaceholderText="Tag" PlaceholderColor="#63aced"/>
 								</StackPanel>
-							</ScrollView>
-						</StackPanel>
+
+								<ScrollView ClipToBounds="true">
+									<StackPanel>
+										<Each Items="{dbData}">
+											<Text Value="{nombre}" TextWrapping="Wrap" Margin="0,9" TextAlignment="Center"/>
+										</Each>
+									</StackPanel>
+								</ScrollView>
+
+								<Grid ColumnCount="2">
+									<Button Text="Alumno">
+										<Clicked>
+											<Set Target="leftControl.Active" Value="informe" />
+										</Clicked>
+									</Button>
+									<Button Text="Instructor" >
+										<Clicked>
+											<Set Target="leftControl.Active" Value="calificacion" />
+										</Clicked>
+									</Button>
+								</Grid>
+							</StackPanel>
+						</DockPanel>
 					</udPage>
 
 					<udPage ux:Name="bottom" Color="#A52A2A">

@@ -14,6 +14,7 @@ var hayAct = Observable({"id":0,"llave":" "});
 var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
+var instructores = Observable();
 
 //---CrearActividad.ux---
 var idMaxActividad = Observable(0);
@@ -44,6 +45,8 @@ var timer = Timer.create(function(){
 	cargarTodo();}, 1000, true);
 
 cargarCursos();
+cargarAlumnos();
+cargarActividades();
 
 function cargarTodo()
 {
@@ -274,6 +277,11 @@ function getHabxCursoxDia()
 		{
 			e.habilidades.forEach(function(x)
 			{
+				x.subHabs.forEach(function(z)
+				{
+					z["habilidad"] = x.habilidad;
+				});
+
 				aux.add(x);
 				hayAct.id = e.id;
 				hayAct.llave = e.llave;
@@ -339,24 +347,24 @@ function marcarAlumnosxCurso()
 
 function removeItem(sender)
 {
-	var aux = Observable();
+	// var aux = Observable();
 	
-	habilidadesAct.forEach(function(e)
-	{
-		var indexSubHab = 0;
+	// habilidadesAct.forEach(function(e)
+	// {
+	// 	var indexSubHab = 0;
 
-		e.subHabs.forEach(function(x)
-		{
-			if(x.id == sender.data.id)
-			{
-				delete x;
-			}
-		});
+	// 	e.subHabs.forEach(function(x)
+	// 	{
+	// 		if(x.id == sender.data.id)
+	// 		{
+	// 			delete x;
+	// 		}
+	// 	});
 
-		aux.add(e);
-	});
+	// 	aux.add(e);
+	// });
 
-	habilidadesAct.replaceAll(aux);
+	// habilidadesAct.replaceAll(aux);
 }
 
 function selectAlumno(arg)
@@ -605,7 +613,7 @@ function agregarActividad()
 			{
 				aux = aux + ","
 			}else{
-				inicio++;
+				inicio ++;
 			}
 
 			aux = aux + "{\"habilidad\":\"" + e.habilidad + "\",";
@@ -620,7 +628,7 @@ function agregarActividad()
 					{
 						aux = aux + ","
 					}else{
-						inicioSub++;
+						inicioSub ++;
 					}
 
 					aux = aux + "{\"subHab\":\"" + x.subHab + "\",";
@@ -712,7 +720,7 @@ function agregarAlumnosCurso()
 			{
 				aux = aux + ","
 			}else{
-				inicio++;
+				inicio ++;
 			}
 
 			aux = aux + "{\"alumno\":" + e.id + "}";
@@ -851,7 +859,7 @@ function setDiaconActividad()
 				}
 			}
 			
-			indexFechasAct++;
+			indexFechasAct ++;
 		}
 	});
 
@@ -874,7 +882,7 @@ function nextFechaconActividad()
 		indexFechasAct = 1;
 	}else{
 		today = new Date(fechasAct[indexFechasAct]);
-		indexFechasAct++;
+		indexFechasAct ++;
 	}
 
 	resetHabxAlumno();
@@ -1107,7 +1115,7 @@ function agregarCalificaciones()
 			{
 				aux = aux + ","
 			}else{
-				inicio++;
+				inicio ++;
 			}
 
 			aux = aux + "{\"habilidad\":" + e.id + ",";
@@ -1119,7 +1127,7 @@ function agregarCalificaciones()
 				{
 					aux = aux + ","
 				}else{
-					inicioSub++;
+					inicioSub ++;
 				}
 
 				aux = aux + "{\"id\":" + x.id + ",";
@@ -1199,8 +1207,7 @@ function setDay(arg)
 
 	getFecha();
 
-	timer = Timer.create(function(){
-	getHabxCursoxDia();}, 1000, true);
+	setTimeout(function(){ getHabxCursoxDia();}, 1000);
 }
 
 function getDias()

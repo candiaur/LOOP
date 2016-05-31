@@ -7,7 +7,7 @@
 			<StackPanel>
 				<Image Source="cabecera"/>
 
-				<StackPanel Color="#000" Margin="0,40,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MIS " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="COLEGIOS" Font="museo100_letter"/>
@@ -48,7 +48,7 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="INSTRUCTORES " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ARSKI" Font="museo100_letter"/>
@@ -76,7 +76,7 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MIS " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="CURSOS" Font="museo100_letter"/>
@@ -136,7 +136,7 @@
 						</Clicked>
 					</Atras>
 
-					<StackPanel Color="#000" Margin="0,20,0,0" Padding="15,7">
+					<StackPanel Color="#000" Margin="0,15,0,0" Padding="15,7">
 						<Grid Columns="auto,1*">
 							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="CURSO " Font="museo700_letter"/>
 							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="{cursoAct.curso}" Font="museo100_letter"/>
@@ -144,9 +144,9 @@
 					</StackPanel>
 
 					<DockPanel Color="#BFBFBF" Margin="0,8">
-						<Text Value="Ver calendario completo" TextColor="#FFF" Font="museo300_letter" Alignment="Center" Margin="10"/>
+						<Text Value="Ver calendario completo" TextColor="#FFF" Font="museo300_letter" Alignment="Center" Margin="8"/>
 
-						<Image File="Assets/img_Calendario.png" Layer="Background" Alignment="Right" Width="25" Margin="10,0"/>
+						<Image File="Assets/img_Calendario.png" Layer="Background" Alignment="Right" Width="23" Margin="10,0"/>
 						
 						<Clicked>
 							<Set Target="actPage.Active" Value="pagCalendario" />
@@ -155,7 +155,7 @@
 
 					<Grid Columns="1*,9*,1*" Color="#00D9C5">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,7,0,2"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -170,7 +170,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,0,1"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
@@ -185,16 +185,19 @@
 										<Panel>
 											<PageControl Active="contents">
 												<Page Background="#fff" ux:Name="contents">
-													<DockPanel Padding="15,10">
+													<StackPanel Padding="15,10">
+														<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo700_letter" FontSize="12" TextColor="#C9C9C9"/>
+
 														<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
-														<!-- <Text Value="{habilidad}" Alignment="CenterLeft" TextColor="#CCCCCC"/> -->
-													</DockPanel>
+														
+														<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+													</StackPanel>
 												</Page>
 
 												<Page>
 													<ActivatingAnimation>		
 														<Set postponeText.Opacity="1" />
-														<Change background.Color="#990033" Easing="ExponentialOut" />
+														<Change background.Color="#e0464d" Easing="ExponentialOut" />
 														<Move Target="postponeText" X="-2" RelativeTo="Size" Duration=".3" DelayBack="0"/>
 													</ActivatingAnimation>
 													<WhileActive>
@@ -203,7 +206,7 @@
 												</Page>
 											</PageControl>
 
-											<Text ux:Class="Operation" TextAlignment="Center" Alignment="CenterRight" TextColor="#fff" FontSize="22" />
+											<Text ux:Class="Operation" TextAlignment="Center" Alignment="CenterRight" TextColor="#fff" FontSize="18" Font="museo500I_letter"/>
 											<Operation ux:Name="postponeText">Eliminar</Operation>
 											<Rectangle>
 												<SolidColor ux:Name="background" Color="#fff" />
@@ -216,7 +219,6 @@
 											<LayoutAnimation>
 												<Move RelativeTo="LayoutChange" Y="1" Duration="0.8" Easing="CircularInOut" />
 											</LayoutAnimation>
-											<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
 										</Panel>
 									</Each>
 								</StackPanel>
@@ -233,19 +235,19 @@
 
 						<Clicked>
 							<Callback Handler="{marcarActividadesxDia}" />
-							<Set Target="actPage.Active" Value="addAtividad" />
+							<Set Target="actPage.Active" Value="addActividad" />
 						</Clicked>
 					</DockPanel>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,15" Height="50" Color="#FFF">
+				<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#FFF">
 					<Rectangle Layer="Background">
 						<Stroke Width="1" Color="#D2D2D2"/>
 					</Rectangle>
 
-					<Image File="Assets/lista.png" Layer="Background" Alignment="Left" Height="40" Margin="5,0"/>
+					<Image File="Assets/img_Lista.png" Layer="Background" Alignment="Left" Height="40" Margin="5,0"/>
 
-					<Text Value="Listado del Curso" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+					<Text Value="Listado del curso" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 					<Clicked>
 						<Set Target="actPage.Active" Value="pagAlumnos" />
@@ -254,18 +256,18 @@
 			</DockPanel>
 		</Page>
 
-		<Page ux:Name="addAtividad">
+		<Page ux:Name="addActividad">
 			<ux:Include File="CrearActividad.ux" />
 			<CrearActividad />
 
 			<WhileInactive>
-				<Change addAtividad.IsEnabled="false"/>
-				<Change addAtividad.Visibility="Hidden"/>
+				<Change addActividad.IsEnabled="false"/>
+				<Change addActividad.Visibility="Hidden"/>
 			</WhileInactive>
 
 			<WhileActive>
-				<Change addAtividad.IsEnabled="true"/>
-				<Change addAtividad.Visibility="Visible"/>
+				<Change addActividad.IsEnabled="true"/>
+				<Change addActividad.Visibility="Visible"/>
 			</WhileActive>
 		</Page>
 
@@ -278,7 +280,7 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="LISTADO " Font="museo700_letter"/>
 						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ALUMNOS" Font="museo100_letter"/>

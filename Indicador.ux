@@ -1,22 +1,188 @@
 <Panel ux:Class="Indicador" Color="#EEEBF0">
 
-	<PageControl ux:Name="actPage" Active="pagRamas" Interaction="None">
-		<Page>
+	<JavaScript File="AdmAlumnos.js" />
+
+	<PageControl ux:Name="alumPage" Active="pagMiActividad" Interaction="None">
+		<Page ux:Name="pagMiActividad">
+			<DockPanel>
+				<StackPanel>
+					<Image Source="cabecera"/>
+
+					<StackPanel Color="#000" Margin="0,40,0,0" Padding="15,7">
+						<Grid Columns="auto,1*">
+							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
+							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ACTIVIDAD" Font="museo100_letter"/>
+						</Grid>
+					</StackPanel>
+
+					<StackPanel>
+						<Image File="Assets/img_Fondo.png" Layer="Background" StretchMode="UniformToFill" ContentAlignment="Top"/>
+
+						<Grid ColumnCount="2">
+							<Text Margin="10,15,0,40" Value="Conoce tu rendimiento y evolución en la temporada, revisando diariamente tu resumen de habilidades logradas, asistencia, progreso y calificaciones."  TextColor="#535353" Font="museo300I_letter" TextWrapping="Wrap" FontSize="10"/>
+						</Grid>
+
+						<Grid Columns="auto,1*" Margin="10,0">
+							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#535353" Value="MIS " Font="museo700_letter"/>
+							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#535353" Value="HABLIDADES" Font="museo100_letter"/>
+						</Grid>
+
+						<StackPanel Margin="0,10,0,100">
+							<Grid ColumnCount="3" Color="#FFF" Opacity=".78" Padding="0,35,0,15">
+								<Each Items="{resumenNotas}">
+									<Grid>
+										<Panel>
+											<Circle Width="70" Height="70" Layer="Background">
+												<Stroke Width="5" Brush="#B5B5B5" />
+											</Circle>
+
+											<Circle Width="70" Height="70" StartAngleDegrees="-90" LengthAngleDegrees="{radio}" Margin="0,-10">
+												<Stroke Width="5" Brush="#00d9c5" />
+												<Text Value="{nota}" Font="museo700_letter" Layer="Background" FontSize="30" Alignment="Center"/>
+											</Circle>
+										</Panel>
+
+										<Text Value="{nombre}" FontSize="11" Alignment="Center" Font="museo300_letter" Margin="25,15,25,0" TextColor="#535353" TextWrapping="Wrap" TextAlignment="Center"/>
+									</Grid>
+								</Each>
+							</Grid>
+
+							<StackPanel Color="#00D9C5" Padding="0,10">
+								<Grid Columns="auto,auto" Alignment="Center">
+									<Text Value="Total de habilidades ejecutadas: " TextColor="#FFF" Font="museo300_letter" FontSize="13"/>
+									<Text Value="{total}" TextColor="#FFF" Font="museo700_letter" FontSize="13"/>
+								</Grid>
+							</StackPanel>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+
+				<DockPanel Padding="10,20" Height="60" Color="#FFF" Dock="Bottom" ZOffset="2">
+					<Grid Layer="Background" Columns="1*,5*">
+						<Image File="Assets/img_Progreso.png" Alignment="Center" Height="40" Margin="5,0"/>
+					</Grid>
+
+					<Text Value="Evolución" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+
+					<Clicked>
+						
+					</Clicked>
+
+					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+				</DockPanel>
+
+				<DockPanel Padding="10,20" Height="60" Color="#FFF" Dock="Bottom" ZOffset="2">
+					<Grid Layer="Background" Columns="1*,5*">
+						<Image File="Assets/img_Califica.png" Alignment="Center" Height="40" Margin="5,0"/>
+					</Grid>
+
+					<Text Value="Progresión" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+
+					<Clicked>
+						
+					</Clicked>
+
+					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+				</DockPanel>
+
+				<DockPanel Padding="10,20" Height="60" Color="#FFF" Dock="Bottom" ZOffset="2">
+					<Grid Layer="Background" Columns="1*,5*">
+						<Image File="Assets/img_Lista.png" Alignment="Center" Height="40" Margin="5,0"/>
+					</Grid>
+
+					<Text Value="Asistencia" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+
+					<Clicked>
+						<Set Target="alumPage.Active" Value="pagAsistencia" />
+					</Clicked>
+
+					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+				</DockPanel>
+			</DockPanel>
+		</Page>
+
+		<Page ux:Name="pagAsistencia">
 			<StackPanel>
 				<Image Source="cabecera"/>
 				<Atras>
 					<Clicked>
-						<Set Target="actPage.Active" Value="pagRamas" />
+						<Set Target="alumPage.Active" Value="pagMiActividad" />
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,20,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 					<Grid Columns="auto,1*">
 						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
-						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ACTIVIDAD" Font="museo100_letter"/>
+						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ASISTENCIA" Font="museo100_letter"/>
 					</Grid>
 				</StackPanel>
 			</StackPanel>
+
+			<WhileInactive>
+				<Change pagAsistencia.IsEnabled="false"/>
+				<Change pagAsistencia.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change pagAsistencia.IsEnabled="true"/>
+				<Change pagAsistencia.Visibility="Visible"/>
+			</WhileActive>
+		</Page>
+
+		<Page ux:Name="pagProgreso">
+			<StackPanel>
+				<Image Source="cabecera"/>
+				<Atras>
+					<Clicked>
+						<Set Target="alumPage.Active" Value="pagMiActividad" />
+					</Clicked>
+				</Atras>
+
+				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
+					<Grid Columns="auto,1*">
+						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
+						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="PROGRESIÓN" Font="museo100_letter"/>
+					</Grid>
+				</StackPanel>
+			</StackPanel>
+
+			<WhileInactive>
+				<Change pagProgreso.IsEnabled="false"/>
+				<Change pagProgreso.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change pagProgreso.IsEnabled="true"/>
+				<Change pagProgreso.Visibility="Visible"/>
+			</WhileActive>
+		</Page>
+
+		<Page ux:Name="pagEvolucion">
+			<StackPanel>
+				<Image Source="cabecera"/>
+				<Atras>
+					<Clicked>
+						<Set Target="alumPage.Active" Value="pagMiActividad" />
+					</Clicked>
+				</Atras>
+
+				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
+					<Grid Columns="auto,1*">
+						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
+						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="EVOLUCIÓN" Font="museo100_letter"/>
+					</Grid>
+				</StackPanel>
+			</StackPanel>
+
+			<WhileInactive>
+				<Change pagEvolucion.IsEnabled="false"/>
+				<Change pagEvolucion.Visibility="Hidden"/>
+			</WhileInactive>
+
+			<WhileActive>
+				<Change pagEvolucion.IsEnabled="true"/>
+				<Change pagEvolucion.Visibility="Visible"/>
+			</WhileActive>
 		</Page>
 	</PageControl>
 </Panel>

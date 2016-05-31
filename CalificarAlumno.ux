@@ -12,7 +12,7 @@
 				</Clicked>
 			</Atras>
 
-			<StackPanel Color="#000" Margin="0,40,0,8" Padding="15,7">
+			<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
 				<Grid Columns="auto,1*">
 					<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="CALIFICAR " Font="museo700_letter"/>
 					<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ALUMNO" Font="museo100_letter"/>
@@ -21,7 +21,7 @@
 
 			<Grid Columns="1*,9*,1*" Color="#00D9C5">
 				<DockPanel>
-					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,7,0,2"/>
+					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,0"/>
 					<Rotation Degrees="180"/>
 					<Clicked>
 						<Callback Handler="{lastFechaconActividad}" />
@@ -36,7 +36,7 @@
 				</Grid>
 
 				<DockPanel>
-					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,2"/>
+					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,0,1"/>
 					<Clicked>
 						<Callback Handler="{nextFechaconActividad}" />
 					</Clicked>
@@ -62,7 +62,7 @@
 					<Text Value="{alumnoAct.nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="75,0,0,0" FontSize="18"/>
 					<Text Value="{alumnoAct.apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
 				</Grid>
-				
+
 				<Checkbox Alignment="CenterRight" Value="{asistio}" Clicked="{marcaAsistencia}" Padding="0,10,20,0"/>
 			</DockPanel>
 
@@ -110,7 +110,7 @@
 			</Grid>
 		</StackPanel>
 
-		<DockPanel Dock="Bottom" Padding="10,15" Height="50" Color="#00D9C5">
+		<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5">
 			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 			<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="14"/>
