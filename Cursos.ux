@@ -177,8 +177,8 @@
 						</DockPanel>
 					</Grid>
 
-					<ScrollView>
-						<StackPanel Margin="0,8">
+					<ScrollView MaxHeight="300" Margin="0,8">
+						<StackPanel>
 							<Each Items="{habilidadesAct}">
 								<StackPanel>
 									<Each Items="{subHabs}">
