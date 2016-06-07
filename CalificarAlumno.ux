@@ -80,13 +80,13 @@
 			<ScrollView MaxHeight="330">
 				<StackPanel Visibility="{mostrarCalificacion}">
 					<StackPanel>
-						<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+						<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
 						<Each Items="{habilidadesAct}">
 							<DockPanel>
 								<Grid Dock="Top" Color="#FFF" Padding="15,5">
 									<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap"/>
-									<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+									<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 								</Grid>
 
 								<StackPanel>
@@ -96,7 +96,7 @@
 											<Checkbox Alignment="Center" Value="{noLogrado}" Clicked="{selectN}" TextColor="#00D9C5"/>
 											<Checkbox Alignment="Center" Value="{medio}" Clicked="{selectM}" TextColor="#00D9C5"/>
 											<Checkbox Alignment="Center" Value="{logrado}" Clicked="{selectL}" TextColor="#00D9C5"/>
-											<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+											<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 										</Grid>
 									</Each>
 								</StackPanel>

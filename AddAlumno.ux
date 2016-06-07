@@ -23,13 +23,13 @@
 
 			<ScrollView MaxHeight="400">
 				<StackPanel>
-					<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+					<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
 					<Each Items="{alumnos}" >
 						<DockPanel Padding="15,5" Color="#FFF">
 							<Text Value="{nombres}" Alignment="CenterLeft" />
 							<Checkbox Alignment="Right" Value="{activo}" Clicked="{selectNewAlumno}" TextColor="#00D9C5"/>
-							<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 						</DockPanel>
 					</Each>
 				</StackPanel>

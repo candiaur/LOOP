@@ -14,6 +14,8 @@
 			
 			var persona = Observable(
 				new Person("", "","","","Assets/FuseLogo.png","0"));
+			var email = Observable();
+			var clave = Observable();
 
 			var leftPage = Observable("calificacion");
 			var changeAvailble = Observable(0);
@@ -111,6 +113,8 @@
 				submit: submit,
 				currentPage: currentPage,
 				leftPage: leftPage,
+				email: email,
+				clave: clave
 			};
 		</JavaScript>
 
@@ -127,8 +131,8 @@
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
 		
-		<DockPanel ux:Class="Atras" Margin="0,-70,0,0" Alignment="TopLeft" ZOffset="2">
-			<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Padding="15"/>
+		<DockPanel ux:Class="Atras" Margin="0,-55,0,23" Alignment="TopLeft" ZOffset="2">
+			<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Padding="15,0" TextAlignment="Center"/>
 			<Rotation Degrees="180"/>
 		</DockPanel>
 
@@ -151,7 +155,7 @@
 												<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
 											</DockPanel>
 											
-											<TextInput PlaceholderText="Mail" Font="museo100_letter" PlaceholderColor="#535353" InputHint="Email" Padding="5,0"/>
+											<TextInput PlaceholderText="Mail" Font="museo100_letter" PlaceholderColor="#535353" InputHint="Email" Padding="5,0" Value="{email}"/>
 										</Grid>
 									</Rectangle>
 
@@ -162,7 +166,7 @@
 												<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
 											</DockPanel>
 											
-											<TextInput PlaceholderText="Contraseña" Font="museo100_letter" PlaceholderColor="#535353" IsPassword="true" Padding="5,0"/>
+											<TextInput PlaceholderText="Contraseña" Font="museo100_letter" PlaceholderColor="#535353" IsPassword="true" Padding="5,0" Value="{clave}"/>
 										</Grid>
 									</Rectangle>
 

@@ -210,13 +210,13 @@
 				<ScrollView MaxHeight="400">
 					<StackPanel>
 						<StackPanel>
-							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom"/>
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Top"/>
 
 							<Each Items="{calificacionAct}">
 								<DockPanel>
 									<Grid Dock="Top" Color="#FFF" Padding="15,5">
 										<Text Value="{habilidad}" Alignment="TopLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap"/>
-										<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 									</Grid>
 
 									<StackPanel>
@@ -232,7 +232,7 @@
 												<Panel>
 													<Image Source="{DataToResource logrado}" Alignment="Center" Width="20" Height="20"/>
 												</Panel>
-												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+												<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 											</Grid>
 										</Each>
 									</StackPanel>
@@ -305,14 +305,14 @@
 
 				<ScrollView MaxHeight="350">
 					<StackPanel>
-						<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+						<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
 						<Each Items="{habilidadesAlcanzadas}" >
 							<DockPanel>
 								<Grid Dock="Top" Color="#FFF" Padding="15,5">
 									<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap" Padding="0,0,10,0"/>
 
-									<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+									<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 								</Grid>
 
 								<StackPanel>
@@ -321,7 +321,7 @@
 											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap" />
 											<Text Value="{fecha}" Alignment="CenterRight" Font="museo100I_letter" FontSize="12" TextWrapping="Wrap" TextColor="#535353"/>
 
-											<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+											<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 										</Grid>
 									</Each>
 								</StackPanel>

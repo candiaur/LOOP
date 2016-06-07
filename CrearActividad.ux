@@ -47,7 +47,7 @@
 			
 			<ScrollView MaxHeight="350" Margin="0,8">
 				<StackPanel>
-					<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+					<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
 					<Each Items="{habilidades}" >
 						<DockPanel>
@@ -59,7 +59,7 @@
 									<Checkbox Value="{activo}" Clicked="{selectAll}" Padding="0,2" Alignment="Center" TextColor="#00D9C5"/>
 								</Grid>
 
-								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+								<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 							</DockPanel>
 
 							<StackPanel>
@@ -70,7 +70,7 @@
 											<Checkbox Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Center" TextColor="#DCDCDC"/>
 										</Grid>
 
-										<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
+										<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
 									</DockPanel>
 								</Each>
 							</StackPanel>
