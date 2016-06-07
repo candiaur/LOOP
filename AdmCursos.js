@@ -14,7 +14,7 @@ var hayAct = Observable({"id":0,"llave":" "});
 var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
-var instructores = Observable();
+var instructores = Observable({"instructor":"nuevo"});
 
 //---CrearActividad.ux---
 var idMaxActividad = Observable(0);
@@ -32,6 +32,7 @@ var fechasAct = [];
 var indexFechasAct = Observable(0);
 var calificaciones = Observable({"calificaciones": "nuevas"});
 var calificacionAct = Observable();
+var comentario = Observable("");
 
 //---Calendar.ux---
 var dias = Observable({"dias":""});
@@ -45,6 +46,8 @@ var timer = Timer.create(function(){
 	cargarTodo();}, 1000, true);
 
 cargarCursos();
+cargarAlumnos();
+cargarActividades();
 
 function cargarTodo()
 {
@@ -398,6 +401,11 @@ function marcarActividadesxDia()
 	});
 
 	habilidades.replaceAll(aux);
+}
+
+function getInstructores()
+{
+	instructores.replaceAll(alumnos);
 }
 
 
@@ -808,12 +816,14 @@ function setDiaconActividad()
 	var encontrado = false;
 	var backupFecha = "";
 	var aux = 0;
-	indexFechasAct = 0;
+	indexFechasAct.value = -1;
 	
 	fechasAct.forEach(function(e)
 	{
 		if(encontrado == false)
 		{
+			indexFechasAct.value++;
+
 			if(e == (today.toISOString().slice(0, 10) + "T11:51:00"))
 			{
 				encontrado = true;
@@ -824,19 +834,17 @@ function setDiaconActividad()
 					encontrado = true;
 				}else
 				{
-					aux = indexFechasAct;
+					aux = indexFechasAct.value;
 					backupFecha = e;
 				}
 			}
-			
-			indexFechasAct++;
 		}
 	});
 
 	if (!encontrado)
 	{
 		today = new Date(backupFecha);
-		indexFechasAct = aux;
+		indexFechasAct.value = aux;
 	}
 
 	getHabxCursoxDia();
@@ -846,14 +854,14 @@ function setDiaconActividad()
 
 function nextFechaconActividad()
 {
-	if(indexFechasAct == fechasAct.length)
+	if(indexFechasAct.value == (fechasAct.length - 1))
 	{
-		today = new Date(fechasAct[0]);
-		indexFechasAct = 1;
-	}else{
-		today = new Date(fechasAct[indexFechasAct]);
-		indexFechasAct++;
+		indexFechasAct.value = 0;
+	}else{	
+		indexFechasAct.value++;
 	}
+
+	today = new Date(fechasAct[indexFechasAct.value]);
 
 	getHabxCursoxDia();
 	resetHabxAlumno();
@@ -862,14 +870,14 @@ function nextFechaconActividad()
 
 function lastFechaconActividad()
 {
-	if(indexFechasAct == 1)
+	if(indexFechasAct.value == 0)
 	{
-		today = new Date(fechasAct[fechasAct.length - 1]);
-		indexFechasAct = fechasAct.length;
+		indexFechasAct.value = fechasAct.length - 1;
 	}else{
-		indexFechasAct--;
-		today = new Date(fechasAct[indexFechasAct - 1]);
+		indexFechasAct.value--;
 	}
+
+	today = new Date(fechasAct[indexFechasAct.value]);
 
 	getHabxCursoxDia();
 	resetHabxAlumno();
@@ -879,18 +887,10 @@ function lastFechaconActividad()
 function resetHabxAlumno()
 {
 	var aux = Observable();
-	var actvActualAux = Observable();
 	var encontrado = false;
 	asistio.value = false;
+	comentario.value = "";
 	calificacionAct.value = "";
-	
-	actividades.forEach(function(e)
-	{
-		if(e.id == hayAct.id)
-		{
-			actvActualAux = e;
-		}
-	});
 
 	console.log("Id Actividad: " + hayAct.id);
 	
@@ -906,7 +906,7 @@ function resetHabxAlumno()
 
 				a.habilidades.forEach(function(x)
 				{
-					actvActualAux.habilidades.forEach(function(y)
+					habilidadesAct.forEach(function(y)
 					{
 						if (y.id == x.habilidad)
 						{
@@ -935,20 +935,21 @@ function resetHabxAlumno()
 									}
 								});
 							});
+
+							aux.add(y);
 						}
-						
-						aux.add(x);
 					});
 				});
 
 				encontrado = true;
+				comentario.value = a.comentario;
 			}
 		}
 	});
 
 	if (!encontrado)
 	{
-		actvActualAux.habilidades.forEach(function(x)
+		habilidadesAct.forEach(function(x)
 		{
 			x.subHabs.forEach(function(y)
 			{
@@ -1077,6 +1078,7 @@ function agregarCalificaciones()
 	}else{
 		
 		aux = aux + "\"asistencia\": 1 ,";
+		aux = aux + "\"comentario\":\"" + comentario.value + "\",";
 		aux = aux + "\"habilidades\":[";
 
 		var inicio = 0;
@@ -1259,6 +1261,8 @@ module.exports = {
 	setDiaconActividad: setDiaconActividad,
 	marcarAlumnosxCurso: marcarAlumnosxCurso,
 	marcarActividadesxDia: marcarActividadesxDia,
+	instructores: instructores,
+	getInstructores: getInstructores,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,
@@ -1278,8 +1282,9 @@ module.exports = {
 	selectM: selectM,
 	selectL: selectL,
 	asistio: asistio,
-	mostrarCalificacion: mostrarCalificacion,
+	comentario: comentario,
 	marcaAsistencia: marcaAsistencia,
+	mostrarCalificacion: mostrarCalificacion,
 	agregarCalificaciones: agregarCalificaciones,
 	nextFechaconActividad: nextFechaconActividad,
 	lastFechaconActividad: lastFechaconActividad,

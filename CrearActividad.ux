@@ -12,16 +12,16 @@
 				</Clicked>
 			</Atras>
 
-			<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
-				<Grid Columns="auto,1*">
-					<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="AGREGAR " Font="museo700_letter"/>
-					<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="HABILIDADES" Font="museo100_letter"/>
+			<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+				<Grid Columns="auto,auto">
+					<Text Value="AGREGAR " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
+					<Text Value="HABILIDADES" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
 				</Grid>
 			</StackPanel>
 
 			<Grid Columns="1*,9*,1*" Color="#00D9C5">
 				<DockPanel>
-					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,0,0"/>
+					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,5,0"/>
 					<Rotation Degrees="180"/>
 					<Clicked>
 						<Callback Handler="{lastDay}" />
@@ -36,17 +36,19 @@
 				</Grid>
 
 				<DockPanel>
-					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,0,1"/>
+					<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,5,1"/>
 					<Clicked>
 						<Callback Handler="{nextDay}" />
 					</Clicked>
 				</DockPanel>
 			</Grid>
 
-			<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Actividad Guardada" Margin="0,5,0,5" Visibility="{mensaje}"/>
+			<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Actividad Guardada" Margin="0,5,0,0" Visibility="{mensaje}"/>
 			
 			<ScrollView MaxHeight="350" Margin="0,8">
 				<StackPanel>
+					<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+
 					<Each Items="{habilidades}" >
 						<DockPanel>
 							<DockPanel Color="#FFF" Dock="Top">
@@ -54,10 +56,10 @@
 									<StackPanel>
 										<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap" Padding="0,0,10,0"/>
 									</StackPanel>
-									<Checkbox Value="{activo}" Clicked="{selectAll}" Padding="0,2" Alignment="Center"/>
+									<Checkbox Value="{activo}" Clicked="{selectAll}" Padding="0,2" Alignment="Center" TextColor="#00D9C5"/>
 								</Grid>
 
-								<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
 							</DockPanel>
 
 							<StackPanel>
@@ -65,10 +67,10 @@
 									<DockPanel Color="#FCFBFC">
 										<Grid Columns="9*,1*" Padding="15,2">
 											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap" Padding="0,0,10,0"/>
-											<CheckboxSub Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Center" />
+											<Checkbox Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Center" TextColor="#DCDCDC"/>
 										</Grid>
 
-										<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+										<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 									</DockPanel>
 								</Each>
 							</StackPanel>
@@ -78,7 +80,7 @@
 			</ScrollView>
 		</StackPanel>
 
-		<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5">
+		<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5" ZOffset="2">
 			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 			<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="14"/>

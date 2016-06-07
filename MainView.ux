@@ -1,4 +1,4 @@
-<App Theme="Basic">
+<App>
 	<DockPanel>
 		<JavaScript>
 			var Observable = require("FuseJS/Observable");
@@ -79,12 +79,13 @@
 
 						if(changeAvailble == 0)
 						{
-							if(x.rol == "1")
+							if(x.rol == "0")
 							{
-								leftPage.value = "calificacion";
+								leftPage.value = "informe";
 								changeAvailble.value = 1;
 							}else{
-								leftPage.value = "informe";
+								
+								leftPage.value = "calificacion";
 								changeAvailble.value = 1;
 							}
 						}
@@ -118,119 +119,219 @@
 		<Font File="Assets/MuseoSans-300.otf" ux:Global="museo300_letter" />
 		<Font File="Assets/MuseoSans_700.otf" ux:Global="museo700_letter" />
 		<Font File="Assets/MuseoSans_900.otf" ux:Global="museo900_letter" />
-		
+
 		<Font File="Assets/MuseoSans-700Italic.otf" ux:Global="museo700I_letter"/>
 		<Font File="Assets/MuseoSans_500_Italic.otf" ux:Global="museo500I_letter"/>
 		<Font File="Assets/MuseoSans-300Italic.otf" ux:Global="museo300I_letter"/>
+		<Font File="Assets/MuseoSans-100Italic.otf" ux:Global="museo100I_letter"/>
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
-		<Image ux:Class="Atras" File="Assets/btn_Atras.png" Margin="0,-21,20,0" Alignment="TopRight" Width="45" Height="54" ZOffset="2"/>
+		
+		<DockPanel ux:Class="Atras" Margin="0,-70,0,0" Alignment="TopLeft" ZOffset="2">
+			<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Padding="15"/>
+			<Rotation Degrees="180"/>
+		</DockPanel>
 
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
 		
-		<PageControl Active="{currentPage}">
-			
-			<DirectNavigation Active="{currentPage}"/>
+		<PageControl ux:Name="principalPage" Active="login" Interaction="None">
+			<Page ux:Name="login" Color="#00D9C5">
+				<DockPanel>
+					<Grid RowCount="2">
+						<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-10"/>
 
-			<Page ux:Name="left">
-				<PageControl ux:Name="leftControl" Active="{leftPage}" Interaction="None">
-					<Page ux:Name="informe">
-						<Indicador/>
-					</Page>
+						<StackPanel Width="100%" Margin="0,-10,0,0" ZOffset="2">
+							<Rectangle Alignment="Center" Color="#FFF" CornerRadius="5" Width="80%">
+								<Grid Padding="5,10,5,5">
+									<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,10">
+										<Grid Columns="1*,3*" Padding="5,5">
+											<DockPanel>
+												<Image File="Assets/img_Mail.png" Alignment="Center"/>
+												<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
+											</DockPanel>
+											
+											<TextInput PlaceholderText="Mail" Font="museo100_letter" PlaceholderColor="#535353" InputHint="Email" Padding="5,0"/>
+										</Grid>
+									</Rectangle>
+
+									<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,5">
+										<Grid Columns="1*,3*" Padding="5,5">
+											<DockPanel>
+												<Image File="Assets/img_Candado.png"  Alignment="Center" />
+												<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
+											</DockPanel>
+											
+											<TextInput PlaceholderText="Contraseña" Font="museo100_letter" PlaceholderColor="#535353" IsPassword="true" Padding="5,0"/>
+										</Grid>
+									</Rectangle>
+
+									<Rectangle Color="#00D9C5" CornerRadius="5" Width="100%" Height="50">
+										<Text Value="INICIAR SESIÓN" TextColor="#FFF" Font="museo300_letter" Alignment="Center"/>
+
+										<Clicked>
+											<Set Target="principalPage.Active" Value="inicio"/>
+										</Clicked>
+									</Rectangle>
+								</Grid>
+							</Rectangle>
+						</StackPanel>
+					</Grid>
+				</DockPanel>
+			</Page>
+
+			<Page ux:Name="inicio">
+				<PageControl Active="{currentPage}">
 					
-					<Page ux:Name="calificacion">
-						<Cursos/>
+					<DirectNavigation Active="{currentPage}"/>
+
+					<Page ux:Name="left">
+						<PageControl ux:Name="leftControl" Active="{leftPage}" Interaction="None">
+							<Page ux:Name="informe">
+								<Indicador/>
+							</Page>
+							
+							<Page ux:Name="calificacion">
+								<Cursos/>
+							</Page>
+						</PageControl>
+					</Page>
+
+					<Page ux:Name="middle">
+						<Panel>
+							<Panel ux:Class="udPage">
+								<EnteringAnimation>
+									<Move Y="-1" RelativeTo="Size"/>
+								</EnteringAnimation>
+
+								<ExitingAnimation>
+									<Move Y="1" RelativeTo="Size"/>
+								</ExitingAnimation>
+							</Panel>
+
+							<LinearNavigation Active="center"/>
+
+							<SwipeNavigate SwipeDirection="Up"/>
+
+							<udPage ux:Name="top" Color="#00D9C5">
+								<DockPanel>
+									<StackPanel Margin="0,35,0,10">
+										<Circle Height="250" Width="250" Margin="0,15">
+											<ImageFill Url="{persona.imagen}"/>
+										</Circle>
+
+										<Grid Columns="auto,auto" Alignment="Center">
+											<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
+											<Text FontSize="27" TextColor="#FFF" Value="{persona.apellido}" Font="museo100_letter" Padding="5,0"/>
+											<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
+											<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
+										</Grid>
+
+										<Text Value="{persona.nacio}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
+										<Text Value="{persona.correo}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
+										<Text Value="{persona.cel}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
+									</StackPanel>
+
+									<DockPanel Dock="Bottom">
+										<Text Value=">" Padding="20,10,10,10" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
+											<Rotation Degrees="-90"/>
+										</Text>
+									</DockPanel>
+								</DockPanel>
+							</udPage>
+
+							<udPage ux:Name="center" Color="#00D9C5">
+								<DockPanel>
+									<Grid  Alignment="TopCenter" Width="10%">
+										<StackPanel>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,5,1"/>
+											<Rotation Degrees="270"/>
+										</StackPanel>
+
+										<Image File="Assets/img_Perfil.png" Alignment="Center" Margin="5,0"/>
+									</Grid>
+
+									<Grid ColumnCount="2" Alignment="CenterLeft" Width="20%">
+										<StackPanel>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,5,0"/>
+											<Rotation Degrees="180"/>
+										</StackPanel>
+
+										<Image File="Assets/img_Progreso.png" Alignment="Left" Margin="5,0"/>
+									</Grid>
+
+									<Grid ColumnCount="2" Alignment="CenterRight" Width="20%">
+										<Image File="Assets/img_Instructores.png" Alignment="Left" Margin="5,0"/>
+
+										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,5,1"/>
+									</Grid>
+
+									<StackPanel Alignment="Bottom" Margin="0,125">
+										<Text Value="¡HOLA" TextAlignment="Center" TextColor="#FFF" Font="museo700_letter" FontSize="26"/>
+
+										<Grid Columns="auto,auto" Alignment="Center">
+											<Text Value="{persona.nombre}" Font="museo300_letter" FontSize="26" TextColor="#FFF"/>
+											<Text Value="!" Font="museo300_letter" FontSize="24" TextColor="#FFF"/>
+										</Grid>
+
+										<Rectangle Height="1" Color="#FFF" Margin="0,15"/>
+
+										<Text Value="¿Qué quieres hacer hoy?" TextAlignment="Center" TextColor="#FFF" Font="museo700_letter" FontSize="14"/>
+									</StackPanel>
+
+									<Grid Alignment="BottomCenter" Width="10%">
+										<Image File="Assets/img_Camara.png" Alignment="Center" Margin="5,0"/>
+
+										<StackPanel>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,1,5,4"/>
+											<Rotation Degrees="90"/>
+										</StackPanel>
+									</Grid>
+								</DockPanel>
+							</udPage>
+
+							<udPage ux:Name="bottom" Color="#A52A2A">
+								<Text Value="Bottom"/>
+							</udPage>
+						</Panel>
+					</Page>
+
+					<Page ux:Name="right">
+						<StackPanel Color="#3366CC">
+							<DockPanel>
+								<StackPanel>
+									<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
+
+									<StackPanel Dock="Bottom" Margin="0,50,0,0">
+										<Button Text="Submit" Clicked="{submit}" />
+										<TextInput Value="{tag}" TextAlignment="Center" PlaceholderText="Tag" PlaceholderColor="#63aced"/>
+									</StackPanel>
+
+									<ScrollView ClipToBounds="true">
+										<StackPanel>
+											<Each Items="{dbData}">
+												<Text Value="{nombre}" TextWrapping="Wrap" Margin="0,9" TextAlignment="Center"/>
+											</Each>
+										</StackPanel>
+									</ScrollView>
+
+									<Grid ColumnCount="2">
+										<Button Text="Alumno">
+											<Clicked>
+												<Set Target="leftControl.Active" Value="informe" />
+											</Clicked>
+										</Button>
+										<Button Text="Instructor" >
+											<Clicked>
+												<Set Target="leftControl.Active" Value="calificacion" />
+											</Clicked>
+										</Button>
+									</Grid>
+								</StackPanel>
+							</DockPanel>
+						</StackPanel>
 					</Page>
 				</PageControl>
-			</Page>
-
-			<Page ux:Name="middle">
-				<Panel>
-					<Panel ux:Class="udPage">
-						<EnteringAnimation>
-							<Move Y="-1" RelativeTo="Size"/>
-						</EnteringAnimation>
-
-						<ExitingAnimation>
-							<Move Y="1" RelativeTo="Size"/>
-						</ExitingAnimation>
-					</Panel>
-
-					<LinearNavigation Active="center" Easing="QuadraticOut"/>
-					<SwipeNavigate SwipeDirection="Up"/>
-
-					<udPage ux:Name="top" Color="#00D9C5">
-						<DockPanel>
-							<StackPanel Margin="0,35,0,10">
-								<Circle Height="250" Width="250" Margin="0,15">
-									<ImageFill Url="{persona.imagen}"/>
-								</Circle>
-
-								<Grid Columns="auto,auto" Alignment="Center">
-									<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
-									<Text FontSize="27" TextColor="#FFF" Value="{persona.apellido}" Font="museo100_letter" Padding="5,0"/>
-									<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
-									<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
-								</Grid>
-
-								<Text Value="{persona.nacio}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
-								<Text Value="{persona.correo}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
-								<Text Value="{persona.cel}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
-							</StackPanel>
-
-							<DockPanel Dock="Bottom">
-								<Text Value=">" Padding="20,10,10,10" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
-									<Rotation Degrees="-90"/>
-								</Text>
-							</DockPanel>
-						</DockPanel>
-					</udPage>
-
-					<udPage ux:Name="center" Color="#3366CC">
-						<DockPanel>
-							<StackPanel>
-								<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
-
-								<StackPanel Dock="Bottom" Margin="0,50,0,0">
-									<Button Text="Submit" Clicked="{submit}" />
-									<TextInput Value="{tag}" TextAlignment="Center" PlaceholderText="Tag" PlaceholderColor="#63aced"/>
-								</StackPanel>
-
-								<ScrollView ClipToBounds="true">
-									<StackPanel>
-										<Each Items="{dbData}">
-											<Text Value="{nombre}" TextWrapping="Wrap" Margin="0,9" TextAlignment="Center"/>
-										</Each>
-									</StackPanel>
-								</ScrollView>
-
-								<Grid ColumnCount="2">
-									<Button Text="Alumno">
-										<Clicked>
-											<Set Target="leftControl.Active" Value="informe" />
-										</Clicked>
-									</Button>
-									<Button Text="Instructor" >
-										<Clicked>
-											<Set Target="leftControl.Active" Value="calificacion" />
-										</Clicked>
-									</Button>
-								</Grid>
-							</StackPanel>
-						</DockPanel>
-					</udPage>
-
-					<udPage ux:Name="bottom" Color="#A52A2A">
-						<Text Value="Bottom"/>
-					</udPage>
-				</Panel>
-			</Page>
-
-			<Page ux:Name="right">
-				<StackPanel Color="#FF00FF">
-					<Text Value="Right"/>
-				</StackPanel>
 			</Page>
 		</PageControl>
 	</DockPanel>

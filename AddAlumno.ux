@@ -12,29 +12,31 @@
 				</Clicked>
 			</Atras>
 
-			<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
-				<Grid Columns="auto,1*">
-					<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="AGREGAR " Font="museo700_letter"/>
-					<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ALUMNOS" Font="museo100_letter"/>
+			<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+				<Grid Columns="auto,auto">
+					<Text Value="AGREGAR " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
+					<Text Value="ALUMNOS" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
 				</Grid>
 			</StackPanel>
 
-			<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Alumnos Guardados" Margin="0,5,0,5" Visibility="{mensaje}"/>
+			<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Alumnos Guardados" Margin="0,0,0,5" Visibility="{mensaje}"/>
 
 			<ScrollView MaxHeight="400">
 				<StackPanel>
+					<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+
 					<Each Items="{alumnos}" >
 						<DockPanel Padding="15,5" Color="#FFF">
 							<Text Value="{nombres}" Alignment="CenterLeft" />
-							<Checkbox Alignment="Right" Value="{activo}" Clicked="{selectNewAlumno}"/>
-							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+							<Checkbox Alignment="Right" Value="{activo}" Clicked="{selectNewAlumno}" TextColor="#00D9C5"/>
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 						</DockPanel>
 					</Each>
 				</StackPanel>
 			</ScrollView>
 		</StackPanel>
 
-		<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5">
+		<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5" ZOffset="2">
 			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 			<Text Value="Agregar al curso!" Font="museo700_letter" Alignment="Center" FontSize="14"/>

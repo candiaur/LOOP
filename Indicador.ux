@@ -2,16 +2,19 @@
 
 	<JavaScript File="AdmAlumnos.js" />
 
+	<FileImageSource File="Assets/img_Check.png" ux:Key="check"/>
+	<FileImageSource File="Assets/img_X.png" ux:Key="falla"/>
+
 	<PageControl ux:Name="alumPage" Active="pagMiActividad" Interaction="None">
 		<Page ux:Name="pagMiActividad">
 			<DockPanel>
 				<StackPanel>
 					<Image Source="cabecera"/>
 
-					<StackPanel Color="#000" Margin="0,40,0,0" Padding="15,7">
-						<Grid Columns="auto,1*">
-							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
-							<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ACTIVIDAD" Font="museo100_letter"/>
+					<StackPanel Color="#000" Margin="0,35,0,0" Padding="15,7">
+						<Grid Columns="auto,auto">
+							<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
+							<Text Value="ACTIVIDAD" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
 						</Grid>
 					</StackPanel>
 
@@ -65,7 +68,8 @@
 					<Text Value="Evolución" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 					<Clicked>
-						<Set Target="alumPage.Active" Value="pagProgreso" />
+						<Set Target="alumPage.Active" Value="pagEvolucion" />
+						<Callback Handler="{getHabilidadesAlcanzadas}"/>
 					</Clicked>
 
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
@@ -79,13 +83,16 @@
 					<Text Value="Progresión" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 					<Clicked>
-						<Set Target="alumPage.Active" Value="pagEvolucion" />
+						<Callback Handler="{getFechasconActividades}"/>
+						<Set Target="alumPage.Active" Value="pagProgreso" />
 					</Clicked>
 
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 				</DockPanel>
 
 				<DockPanel Padding="10,20" Height="60" Color="#FFF" Dock="Bottom" ZOffset="2">
+					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
 					<Grid Layer="Background" Columns="1*,5*">
 						<Image File="Assets/img_Lista.png" Alignment="Center" Height="40" Margin="5,0"/>
 					</Grid>
@@ -93,6 +100,7 @@
 					<Text Value="Asistencia" Font="museo700_letter" Alignment="Center" FontSize="14"/>
 
 					<Clicked>
+						<Callback Handler="{getFechasClases}" />
 						<Set Target="alumPage.Active" Value="pagAsistencia" />
 					</Clicked>
 
@@ -110,12 +118,35 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
-					<Grid Columns="auto,1*">
-						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
-						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="ASISTENCIA" Font="museo100_letter"/>
+				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+					<Grid Columns="auto,auto">
+						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
+						<Text Value="ASISTENCIA" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
 					</Grid>
 				</StackPanel>
+
+				<ScrollView>
+					<StackPanel>
+						<Each Items="{clases}">
+							<DockPanel IsEnabled="{valido}">
+								<Grid Columns="8*,2*">
+									<Panel Margin="1" Padding="10,5" Color="#FFF">
+										<Text Value="{fecha}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" />
+									</Panel>
+
+									<Panel Margin="1" Padding="0,5" Color="#FFF">
+										<Image Source="{DataToResource asistencia}" Alignment="Center" Width="20" Height="20"/>
+									</Panel>
+								</Grid>
+
+								<Clicked>
+									<Callback Handler="{selectFechaCalificacion}" />
+									<Set Target="alumPage.Active" Value="pagProgreso" />
+								</Clicked>
+							</DockPanel>
+						</Each>
+					</StackPanel>
+				</ScrollView>
 			</StackPanel>
 
 			<WhileInactive>
@@ -138,12 +169,99 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
-					<Grid Columns="auto,1*">
-						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
-						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="PROGRESIÓN" Font="museo100_letter"/>
+				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+					<Grid Columns="auto,auto">
+						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
+						<Text Value="PROGRESIÓN" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
 					</Grid>
 				</StackPanel>
+
+				<Grid Columns="1*,9*,1*" Color="#00D9C5">
+					<DockPanel>
+						<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,5,0"/>
+						<Rotation Degrees="180"/>
+						<Clicked>
+							<Callback Handler="{lastFechaCalificacion}" />
+						</Clicked>
+					</DockPanel>
+					
+					<Grid Columns="auto,auto" Alignment="Center" Padding="0,5">
+						<Text Value="{dia}" TextColor="#FFF" Font="museo700_letter" />
+						<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter"/>
+					</Grid>
+
+					<DockPanel>
+						<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,5,1"/>
+						<Clicked>
+							<Callback Handler="{nextFechaCalificacion}" />
+						</Clicked>
+					</DockPanel>
+				</Grid>
+
+				<DockPanel Padding="15,10,15,5" Visibility="{mostrarCalificacion}">
+					<Grid Columns="7*,1*,1*,1*" >
+						<Text Value="HABILIDADES" Alignment="CenterLeft" Font="museo100_letter" TextColor="#535353"/>
+						<Text Value="S" TextColor="#535353" Font="museo700_letter" Alignment="Center"/>
+						<Text Value="C" TextColor="#535353" Font="museo700_letter" Alignment="Center"/>
+						<Text Value="L" TextColor="#535353" Font="museo700_letter" Alignment="Center"/>
+					</Grid>
+				</DockPanel>
+
+				<ScrollView MaxHeight="400">
+					<StackPanel>
+						<StackPanel>
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom"/>
+
+							<Each Items="{calificacionAct}">
+								<DockPanel>
+									<Grid Dock="Top" Color="#FFF" Padding="15,5">
+										<Text Value="{habilidad}" Alignment="TopLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap"/>
+										<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+									</Grid>
+
+									<StackPanel>
+										<Each Items="{subHabs}">
+											<Grid Columns="7*,1*,1*,1*" Color="#FCFBFC" Padding="15,5">
+												<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap"/>
+												<Panel>
+													<Image Source="{DataToResource noLogrado}" Alignment="Center" Width="20" Height="20"/>
+												</Panel>
+												<Panel>
+													<Image Source="{DataToResource medio}" Alignment="Center" Width="20" Height="20"/>
+												</Panel>
+												<Panel>
+													<Image Source="{DataToResource logrado}" Alignment="Center" Width="20" Height="20"/>
+												</Panel>
+												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+											</Grid>
+										</Each>
+									</StackPanel>
+								</DockPanel>
+							</Each>
+						</StackPanel>
+
+						<Grid Columns="1*,auto,auto,auto,auto,auto" Alignment="Right" Padding="15,5" Visibility="{mostrarCalificacion}">
+							<Text Value="S: " Font="museo700I_letter" FontSize="10" TextColor="#535353"/>
+							<Text Value="Seguir trabajando / " Font="museo300I_letter" FontSize="10" TextColor="#535353"/>
+							<Text Value="C: " Font="museo700I_letter" FontSize="10" TextColor="#535353"/>
+							<Text Value="Casi logrado / " Font="museo300I_letter" FontSize="10" TextColor="#535353"/>
+							<Text Value="L: " Font="museo700I_letter" FontSize="10" TextColor="#535353"/>
+							<Text Value="Logrado" Font="museo300I_letter" FontSize="10" TextColor="#535353"/>
+						</Grid>
+
+						<StackPanel Margin="0,5">
+							<Text Value="COMENTARIOS" Font="museo100_letter" TextColor="#535353" Padding="15,10,15,5"/>
+
+							<Panel Padding="15,0" Color="#FFF" MinHeight="80">
+								<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+								
+								<Text TextWrapping="Wrap" Font="museo300I_letter" FontSize="12" TextAlignment="Center" Alignment="Center" Value="{comentario}" TextColor="#535353"/>
+
+								<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+							</Panel>
+						</StackPanel>
+					</StackPanel>
+				</ScrollView>
 			</StackPanel>
 
 			<WhileInactive>
@@ -166,12 +284,51 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,15,0,8" Padding="15,7">
-					<Grid Columns="auto,1*">
-						<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#FFF" Value="MI " Font="museo700_letter"/>
-						<Text Dock="Top" Alignment="Left" FontSize="16" TextColor="#FFF" Value="EVOLUCIÓN" Font="museo100_letter"/>
+				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+					<Grid Columns="auto,auto">
+						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
+						<Text Value="EVOLUCIÓN" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
 					</Grid>
 				</StackPanel>
+
+				<Image File="Assets/img_CuadroProgreso.png" />
+
+				<StackPanel>
+					<Grid Columns="5*,2*" Padding="15,7" Margin="0,5,0,0">
+						<Grid Columns="auto,auto">
+							<Text Value="HABILIDADES " Font="museo100_letter" FontSize="16" TextColor="#535353"/>
+							<Text Value="ALCANZADAS" Font="museo700_letter" FontSize="16" TextColor="#535353"/>
+						</Grid>
+						<Text Value="Fecha" Font="museo100I_letter" FontSize="12" TextColor="#535353" Alignment="CenterRight"/>
+					</Grid>
+				</StackPanel>
+
+				<ScrollView MaxHeight="350">
+					<StackPanel>
+						<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>
+
+						<Each Items="{habilidadesAlcanzadas}" >
+							<DockPanel>
+								<Grid Dock="Top" Color="#FFF" Padding="15,5">
+									<Text Value="{habilidad}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="14" TextColor="#898989" TextWrapping="Wrap" Padding="0,0,10,0"/>
+
+									<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+								</Grid>
+
+								<StackPanel>
+									<Each Items="{subHabs}">
+										<Grid Columns="5*,2*" Color="#FCFBFC" Padding="15,5">
+											<Text Value="{subHab}" Alignment="CenterLeft" Font="museo700_letter" FontSize="14" TextWrapping="Wrap" />
+											<Text Value="{fecha}" Alignment="CenterRight" Font="museo100I_letter" FontSize="12" TextWrapping="Wrap" TextColor="#535353"/>
+
+											<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+										</Grid>
+									</Each>
+								</StackPanel>
+							</DockPanel>
+						</Each>
+					</StackPanel>
+				</ScrollView>
 			</StackPanel>
 
 			<WhileInactive>
