@@ -278,7 +278,9 @@ function getHabxCursoxDia()
 		{
 			e.habilidades.forEach(function(x)
 			{
-				x.subHabs.forEach(function(z)
+				if(x!= null)
+				{
+					x.subHabs.forEach(function(z)
 				{
 					z["habilidad"] = x.habilidad;
 				});
@@ -286,6 +288,7 @@ function getHabxCursoxDia()
 				aux.add(x);
 				hayAct.id = e.id;
 				hayAct.llave = e.llave;
+				}
 			});
 		}
 	});

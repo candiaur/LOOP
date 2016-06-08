@@ -2,13 +2,10 @@
 	<DockPanel>
 		<JavaScript>
 			var Observable = require("FuseJS/Observable");
-			var Timer = require('FuseJS/Timer');
-
+			
 			var tag = Observable();
 			var dbData = Observable();
-			
-			var timer = Timer.create(function(){
-				load();}, 1000, true);
+			var auxiliar = Observable({"cursos":"nuevos"});
 
 			var currentPage = Observable("middle");
 			
@@ -35,9 +32,9 @@
 				this.rol = rol;
 			}
 
-			function load()
+			function load(idUser)
 			{
-				fetch('https://firstloop.firebaseio.com/personas.json', {
+				fetch('http://loop.inhandy.com/loop.php?cargarPersona=' + idUser + ',' + 1, {
 					method: 'GET',
 					cache: 'default',
 					headers: { "Content-type": "application/json"}
@@ -53,46 +50,32 @@
 				})
 				.then(function(data)
 				{
-					var keys = Object.keys(data);
-					
-					
-					keys.forEach(function(key, index)
-					{
-						if (index >= dbData.length)
-						{
-							var nuevo = data[key];
-							dbData.add(nuevo);
-						}
-					})
+					var aux = Observable();
+					aux.add(data);
+					dbData = data;
+
+					auxiliar.replaceAll(aux);
 				});
 
-				dbData.forEach(function(e)
+				auxiliar.forEach(function(e)
 				{
-					if(e.id == "1")
-					{
-						var aux = Observable();
-
-						e.ramas.forEach(function(x)
-						{
-							aux.value = x.rol;
-						});
-
-						persona.value = new Person(e.nombre, e.apellido, e.correo, e.cel, e.nacimiento, e.imagen, aux.value);
-
-						if(changeAvailble == 0)
-						{
-							if(x.rol == "0")
-							{
-								leftPage.value = "informe";
-								changeAvailble.value = 1;
-							}else{
-								
-								leftPage.value = "calificacion";
-								changeAvailble.value = 1;
-							}
-						}
-					}
+					console.log("Valor: " + e.nombre);
 				});
+
+				persona.value = new Person(dbData.nombre, dbData.apellido, dbData.correo, dbData.cel, dbData.nacimiento, dbData.imagen, dbData.rol);
+
+				if(changeAvailble == 0)
+				{
+					if(dbData.rol == "0")
+					{
+						leftPage.value = "informe";
+						changeAvailble.value = 0;
+					}else{
+						
+						leftPage.value = "calificacion";
+						changeAvailble.value = 1;
+					}
+				}
 			};
 
 			function submit()
@@ -106,6 +89,56 @@
 				tag.value = "";
 			}
 
+			function loginUser()
+			{
+				var estadoLogin = Observable();
+				var link = 'http://loop.inhandy.com/loop.php?login=' + email.value +'&pwd=' + clave.value;
+
+				console.log("Link: " + link);
+
+				fetch(link, {
+					method: 'GET',
+					cache: 'default',
+					headers: { "Content-type": "application/json"}
+				})
+				.then(function(result)
+				{
+					if (result.status !== 200)
+					{
+						console.log("Something went wrong :(");
+						return;
+					}
+					console.log("Result");
+					return result.json();
+				})
+				.then(function(data)
+				{
+					console.log("Estado");
+					var keys = Object.keys(data);
+					
+					keys.forEach(function(key, index)
+					{
+						if (index >= estadoLogin.length)
+						{
+							var nuevo = data[key];
+							estadoLogin.add(nuevo);
+						}
+					})
+				});
+
+				console.log("Fin");
+
+				estadoLogin.forEach(function(e)
+				{
+					console.log("Estado: " + e.estado + " - ID:" + e.uid);
+					if(e.estado == 0)
+					{
+						load(e.uid);
+					}
+				});
+				load(3);
+			}
+
 			module.exports = {
 				tag: tag,
 				dbData: dbData,
@@ -114,7 +147,8 @@
 				currentPage: currentPage,
 				leftPage: leftPage,
 				email: email,
-				clave: clave
+				clave: clave,
+				loginUser: loginUser
 			};
 		</JavaScript>
 
@@ -174,6 +208,7 @@
 										<Text Value="INICIAR SESIÓN" TextColor="#FFF" Font="museo300_letter" Alignment="Center"/>
 
 										<Clicked>
+											<Callback Handler="{loginUser}"/>
 											<Set Target="principalPage.Active" Value="inicio"/>
 										</Clicked>
 									</Rectangle>
@@ -246,18 +281,22 @@
 
 							<udPage ux:Name="center" Color="#00D9C5">
 								<DockPanel>
-									<Grid  Alignment="TopCenter" Width="10%">
+									<Grid Alignment="TopCenter" Width="10%">
 										<StackPanel>
-											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,5,1"/>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,4,0,0"/>
 											<Rotation Degrees="270"/>
 										</StackPanel>
 
 										<Image File="Assets/img_Perfil.png" Alignment="Center" Margin="5,0"/>
+
+										<Clicked>
+											<SwipeNavigate SwipeDirection="Up"/>
+										</Clicked>
 									</Grid>
 
 									<Grid ColumnCount="2" Alignment="CenterLeft" Width="20%">
 										<StackPanel>
-											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,5,5,0"/>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 											<Rotation Degrees="180"/>
 										</StackPanel>
 
@@ -265,9 +304,9 @@
 									</Grid>
 
 									<Grid ColumnCount="2" Alignment="CenterRight" Width="20%">
-										<Image File="Assets/img_Instructores.png" Alignment="Left" Margin="5,0"/>
+										<Image File="Assets/img_Instructores.png" Alignment="Left"/>
 
-										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,4,5,1"/>
+										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 									</Grid>
 
 									<StackPanel Alignment="Bottom" Margin="0,125">
@@ -287,7 +326,7 @@
 										<Image File="Assets/img_Camara.png" Alignment="Center" Margin="5,0"/>
 
 										<StackPanel>
-											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Padding="0,1,5,4"/>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Margin="0,1,0,0"/>
 											<Rotation Degrees="90"/>
 										</StackPanel>
 									</Grid>

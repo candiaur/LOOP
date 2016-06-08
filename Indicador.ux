@@ -19,11 +19,11 @@
 					</StackPanel>
 
 					<StackPanel>
-						<Image File="Assets/img_Fondo.png" Layer="Background" StretchMode="UniformToFill" ContentAlignment="Top"/>
+						<Image File="Assets/img_Fondo.png" Layer="Background" ContentAlignment="Top" Width="100%"/>
 
-						<Grid ColumnCount="2">
-							<Text Margin="10,15,0,40" Value="Conoce tu rendimiento y evolución en la temporada, revisando diariamente tu resumen de habilidades logradas, asistencia, progreso y calificaciones."  TextColor="#535353" Font="museo300I_letter" TextWrapping="Wrap" FontSize="10"/>
-						</Grid>
+						<Panel Width="210" Alignment="Left">
+							<Text Margin="10,15,0,35" Value="Conoce tu rendimiento y evolución en la temporada, revisando diariamente tu resumen de habilidades logradas, asistencia, progreso y calificaciones."  TextColor="#535353" Font="museo300I_letter" TextWrapping="Wrap" FontSize="10"/>
+						</Panel>
 
 						<Grid Columns="auto,1*" Margin="10,0">
 							<Text Dock="Top" Alignment="Right" FontSize="16" TextColor="#535353" Value="MIS " Font="museo700_letter"/>

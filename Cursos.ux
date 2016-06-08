@@ -15,7 +15,7 @@
 						</Grid>
 					</StackPanel>
 
-					<ScrollView MaxHeight="400">
+					<ScrollView>
 						<DockPanel>
 							<StackPanel>
 								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
@@ -23,7 +23,7 @@
 									<DockPanel Padding="15,10" Color="#FFF">
 										<Grid Columns="7*,3*">
 											<Text Value="{rama}" Alignment="CenterLeft" Font="museo700_letter" FontSize="18" />
-											<Text Value=">" FontSize="26" Alignment="CenterRight" Padding="0,5,0,0" Font="pres_letter"/>
+											<Text Value=">" FontSize="26" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter"/>
 										</Grid>
 
 										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
@@ -73,7 +73,7 @@
 					</Grid>
 				</StackPanel>
 
-				<ScrollView MaxHeight="400">
+				<ScrollView>
 					<StackPanel>
 						<Each Items="{instructores}">
 							<DockPanel Color="#FFF" Padding="0,1">
@@ -94,7 +94,7 @@
 									<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
 								</Grid>
 								
-								<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,0" Padding="0,5,0,0"/>
+								<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,5,15,0"/>
 
 								<Clicked>
 								</Clicked>
@@ -145,7 +145,7 @@
 										<Text Value="{ramaAct.rama}" Alignment="CenterLeft" Font="museo300_letter" FontSize="12" TextColor="#535353"/>
 									</Grid>
 
-									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Padding="0,5,0,0"/>
+									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"/>
 								</Grid>
 
 								<Clicked>
@@ -175,20 +175,22 @@
 					</Grid>
 				</StackPanel>
 
-				<Grid Columns="1*,4*,4*,1*" Color="#00D9C5">
+				<Grid Columns="1*,8*,1*" Color="#00D9C5">
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,5,5,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 						<Rotation Degrees="180"/>
 						<Clicked>
 							<Callback Handler="{lastMonth}" />
 						</Clicked>
 					</DockPanel>
 					
-					<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" Alignment="CenterRight" Padding="0,5"/>
-					<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" Alignment="CenterLeft" Padding="0,5"/>
+					<Grid Columns="auto,auto" Alignment="Center">
+						<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter"/>
+						<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter"/>
+					</Grid>
 
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,4,5,1"/>
+						<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 						<Clicked>
 							<Callback Handler="{nextMonth}" />
 						</Clicked>
@@ -217,7 +219,7 @@
 									<DockPanel Padding="0,2" Margin="0,10" IsEnabled="{valido}">
 										<StackPanel>
 											<Circle Color="{color}">
-												<Text Value="{dia}" Padding="3" TextAlignment="Center" TextColor="{textColor}"/>
+												<Text Value="{dia}" Margin="0,3,0,0" TextAlignment="Center" TextColor="{textColor}"/>
 											</Circle>
 												
 											<Clicked>
@@ -277,7 +279,7 @@
 
 					<Grid Columns="1*,9*,1*" Color="#00D9C5" Margin="0,8">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,5,5,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -292,14 +294,14 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,4,5,1"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
 						</DockPanel>
 					</Grid>
 
-					<ScrollView MaxHeight="360">
+					<ScrollView>
 						<StackPanel>
 							<StackPanel>
 								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
@@ -384,7 +386,7 @@
 
 		<Page ux:Name="addActividad">
 			<DockPanel>
-				<StackPanel Dock="Top">
+				<StackPanel>
 					<Image Source="cabecera"/>
 					<Atras>
 						<Clicked>
@@ -402,7 +404,7 @@
 
 					<Grid Columns="1*,9*,1*" Color="#00D9C5">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,5,5,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -417,7 +419,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,4,5,1"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
@@ -426,7 +428,7 @@
 
 					<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Actividad Guardada" Margin="0,5,0,0" Visibility="{mensaje}"/>
 					
-					<ScrollView MaxHeight="350" Margin="0,8">
+					<ScrollView Margin="0,8">
 						<StackPanel>
 							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
@@ -461,10 +463,10 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5" ZOffset="2">
+				<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5" ZOffset="10">
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
-					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+					<Text Value="Guardar!" Font="museo700_letter" TextAlignment="Center" FontSize="14"/>
 
 					<Clicked>
 						<Callback Handler="{agregarActividad}" />
@@ -499,7 +501,7 @@
 					</Grid>
 				</StackPanel>
 
-				<ScrollView MaxHeight="400">
+				<ScrollView>
 					<StackPanel>
 						<StackPanel>
 							<Each Items="{alumnosCurso}">
@@ -521,7 +523,7 @@
 										<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
 									</Grid>
 									
-									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,0" Padding="0,5,0,0"/>
+									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,5,15,0"/>
 
 									<Clicked>
 										<Set Target="actPage.Active" Value="calificaAlumno" />
@@ -550,7 +552,7 @@
 
 		<Page ux:Name="addAlumnos">
 			<DockPanel>	
-				<StackPanel Dock="Top">
+				<StackPanel>
 					<Image Source="cabecera"/>
 					<Atras>
 						<Clicked>
@@ -568,7 +570,7 @@
 
 					<Text Alignment="Center" FontSize="12" TextColor="#00D9C5" Value="Alumnos Guardados" Margin="0,0,0,5" Visibility="{mensaje}"/>
 
-					<ScrollView MaxHeight="400">
+					<ScrollView>
 						<StackPanel>
 							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
@@ -607,7 +609,7 @@
 
 		<Page ux:Name="calificaAlumno">
 			<DockPanel>
-				<StackPanel Dock="Top">
+				<StackPanel>
 					<Image Source="cabecera"/>
 					<Atras>
 						<Clicked>
@@ -625,7 +627,7 @@
 
 					<Grid Columns="1*,9*,1*" Color="#00D9C5">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,5,5,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastFechaconActividad}" />
@@ -640,7 +642,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Padding="0,4,5,1"/>
+							<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 							<Clicked>
 								<Callback Handler="{nextFechaconActividad}" />
 							</Clicked>
@@ -681,7 +683,7 @@
 						</Grid>
 					</DockPanel>
 
-					<ScrollView MaxHeight="330">
+					<ScrollView>
 						<StackPanel Visibility="{mostrarCalificacion}">
 							<StackPanel>
 								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
@@ -718,7 +720,7 @@
 							</Grid>
 
 							<StackPanel Margin="0,5">
-								<Text Value="COMENTARIOS" Font="museo100_letter" TextColor="#535353" Padding="15,10,15,5"/>
+								<Text Value="COMENTARIOS" Font="museo100_letter" TextColor="#535353" Margin="15,10,15,5"/>
 
 								<Panel Padding="15,0" Color="#FFF" MinHeight="80">
 									<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
@@ -732,7 +734,7 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5" ZOffset="2">
+				<DockPanel Dock="Bottom" Padding="10,20" Height="60" Color="#00D9C5" ZOffset="3">
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="14"/>
