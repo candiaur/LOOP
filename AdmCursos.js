@@ -1,7 +1,8 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
+var GlobalE = require("GlobalElem");
 var mensaje = Observable("Collapsed");
-var personaActual = Observable(1);
+var personaActual = Observable();
 
 //---Cursos.ux---
 var ramas = Observable();
@@ -43,16 +44,29 @@ var anio = Observable();
 var today = new Date();
 
 var timer = Timer.create(function(){
-	cargarTodo();}, 1000, true);
+	cargarTodo(); getPersona();}, 1000, true);
 
-cargarCursos();
 cargarAlumnos();
 cargarActividades();
+
+function getPersona()
+{
+	personaActual.value = GlobalE.idPerson.value; 
+	
+	if(personaActual.value != null)
+	{
+		if(GlobalE.rolPerson.value != 0)
+		{
+			cargarRamas();
+		}
+
+		Timer.delete(timer);
+	}	
+}
 
 function cargarTodo()
 {
 	getDias();
-	cargarRamas();
 	cargarHabilidades();
 }
 
@@ -62,11 +76,11 @@ function desActivarMensaje()
 }
 
 //----Cursos.ux----
-
 //--Carga todas las ramas a las está asociado.
 function cargarRamas()
 {
-	fetch('https://firstloop.firebaseio.com/ramas.json', {
+	fetch('http://loop.inhandy.com/loop.php?cargarRamas=' + personaActual.value + 
+		',' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -82,6 +96,7 @@ function cargarRamas()
 	})
 	.then(function(data)
 	{
+		console.log("Ramas");
 		var keys = Object.keys(data);
 		
 		keys.forEach(function(key, index)
@@ -92,13 +107,72 @@ function cargarRamas()
 				ramas.add(nuevo);
 			}
 		});
+
+		ramas.forEach(function(e)
+		{
+			console.log("Rama: " + e.rama);
+		})
 	});
 }
 
-//--Carga todos los cursos del instructor de la rama activa.
-function cargarCursos()
+//--Carga todos los instructores de la instancia.
+function cargarInstructores()
 {
-	fetch('https://firstloop.firebaseio.com/cursos.json', {
+	fetch('http://loop.inhandy.com/loop.php?cargarInstructores=' + GlobalE.instancia.value, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("cargarInstructores: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var aux = Observable();
+
+		keys.forEach(function(key, index)
+		{
+			if (index >= aux.length)
+			{
+				var nuevo = data[key];
+				aux.add(nuevo);
+			}
+		});
+
+		instructores.replaceAll(aux);
+	});
+}
+
+function selectRama(arg)
+{
+	ramas.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			ramaAct.value = e;
+		}
+	});
+
+	cargarCursos(personaActual.value);
+}
+
+function selectInstructor(arg)
+{
+
+}
+
+//--Carga todos los cursos del instructor de la rama activa.
+function cargarCursos(idInstructor)
+{
+	fetch('http://loop.inhandy.com/loop.php?cargarCursos=' + idInstructor 
+		+ ',' + ramaAct.value.id, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -122,13 +196,31 @@ function cargarCursos()
 			if (index >= aux.length)
 			{
 				var nuevo = data[key];
-				nuevo["llave"] = key;
 				aux.add(nuevo);
 			}
 		});
 
 		cursos.replaceAll(aux);
 	});
+}
+
+function selectCurso(arg)
+{
+	cursos.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			cursoAct.value = e;
+		}
+	});
+	
+	cargarAlumnos();
+	cargarActividades();
+
+	timer = Timer.create(function(){ getAlumxCursos(); 
+		getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
+
+	getFecha();
 }
 
 //--Carga todas los actividades del día y curso seleccionado.
@@ -213,57 +305,6 @@ function cargarAlumnos()
 			}
 		});
 	});
-}
-
-function selectRama(arg)
-{
-	ramas.forEach(function(e)
-	{
-		if(e.id == arg.data.id)
-		{
-			ramaAct.value = e;
-		}
-	});
-
-	cargarCursos();
-	
-	timer = Timer.create(function(){
-	getCursosxRama();}, 1000, true);
-}
-
-//-- Carga todos los cursos de la rama seleccionada y del instructor.
-function getCursosxRama()
-{
-	var aux = Observable();
-
-	cursos.forEach(function(e)
-	{
-		if((e.rama == ramaAct.value.id) && (personaActual.value == e.instructor))
-		{
-			aux.add(e);
-		}
-	});
-
-	cursos.replaceAll(aux);
-}
-
-function selectCurso(arg)
-{
-	cursos.forEach(function(e)
-	{
-		if(e.id == arg.data.id)
-		{
-			cursoAct.value = e;
-		}
-	});
-	
-	cargarAlumnos();
-	cargarActividades();
-
-	timer = Timer.create(function(){ getAlumxCursos(); 
-		getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
-
-	getFecha();
 }
 
 //-- Carga todas las habilidades del curso y día seleccionado
@@ -404,11 +445,6 @@ function marcarActividadesxDia()
 	});
 
 	habilidades.replaceAll(aux);
-}
-
-function getInstructores()
-{
-	instructores.replaceAll(alumnos);
 }
 
 
@@ -1248,24 +1284,27 @@ function getFecha()
 module.exports = {
 	mensaje: mensaje,
 	desActivarMensaje: desActivarMensaje,
+	personaActual: personaActual,
+	getPersona: getPersona,
 
 //---Cursos.ux---
 	ramas: ramas,
 	cursos: cursos,
-	habilidadesAct: habilidadesAct,
 	removeItem: removeItem,
 	selectRama: selectRama,
 	selectCurso: selectCurso,
 	selectAlumno: selectAlumno,
+	selectInstructor: selectInstructor,
 	ramaAct: ramaAct,
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
 	alumnosCurso: alumnosCurso,
+	habilidadesAct: habilidadesAct,
+	cargarInstructores: cargarInstructores,
 	setDiaconActividad: setDiaconActividad,
 	marcarAlumnosxCurso: marcarAlumnosxCurso,
 	marcarActividadesxDia: marcarActividadesxDia,
 	instructores: instructores,
-	getInstructores: getInstructores,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,

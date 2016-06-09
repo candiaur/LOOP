@@ -22,15 +22,14 @@
 								<Each Items="{ramas}">
 									<DockPanel Padding="15,10" Color="#FFF">
 										<Grid Columns="7*,3*">
-											<Text Value="{rama}" Alignment="CenterLeft" Font="museo700_letter" FontSize="18" />
-											<Text Value=">" FontSize="26" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter"/>
+											<Text Value="{rama}" Alignment="CenterLeft" Font="museo700_letter" FontSize="18" TextColor="#000"/>
+											<Text Value=">" FontSize="26" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
 										</Grid>
 
 										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 
 										<Clicked>
 											<Set Target="actPage.Active" Value="pagCursos" />
-											<Callback Handler="{getFecha}" />
 											<Callback Handler="{selectRama}" />
 										</Clicked>
 									</DockPanel>
@@ -47,21 +46,23 @@
 
 					<Image File="Assets/img_Instructores.png" Layer="Background" Alignment="Left" Height="40" Margin="5,0"/>
 
-					<Text Value="Listado de instructores" Font="museo700_letter" Alignment="Center" FontSize="14"/>
+					<Text Value="Listado de instructores" Font="museo700_letter" FontSize="14" TextColor="#000" Alignment="Center"/>
 
 					<Clicked>
+						<Callback Handler="{cargarInstructores}"/>
 						<Set Target="actPage.Active" Value="pagInstructores" />
-						<Callback Handler="{getInstructores}"/>
+						<Set Target="showInstructores.Visibility" Value="Visible" />
 					</Clicked>
 				</DockPanel>
 			</DockPanel>
 		</Page>
 
 		<Page ux:Name="pagInstructores">
-			<StackPanel>
+			<StackPanel ux:Name="showInstructores" Visibility="Collapsed">
 				<Image Source="cabecera"/>
 				<Atras>
 					<Clicked>
+						<Set Target="showInstructores.Visibility" Value="Collapsed" />
 						<Set Target="actPage.Active" Value="pagRamas" />
 					</Clicked>
 				</Atras>
@@ -90,29 +91,20 @@
 								</Rectangle>
 
 								<Grid Margin="10,10">
-									<Text Value="{nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="75,0,0,0" FontSize="18"/>
-									<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18"/>
+									<Text Value="{nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="75,0,0,0" FontSize="18" TextColor="#000"/>
+									<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="70,0,0,0" FontSize="18" TextColor="#000"/>
 								</Grid>
 								
-								<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,5,15,0"/>
+								<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="15,5,15,0" TextColor="#000"/>
 
 								<Clicked>
+									<Callback Handler="{selectInstructor}" />
 								</Clicked>
 							</DockPanel>
 						</Each>
 					</StackPanel>
 				</ScrollView>
 			</StackPanel>
-
-			<WhileInactive>
-				<Change pagInstructores.IsEnabled="false"/>
-				<Change pagInstructores.Visibility="Hidden"/>
-			</WhileInactive>
-
-			<WhileActive>
-				<Change pagInstructores.IsEnabled="true"/>
-				<Change pagInstructores.Visibility="Visible"/>
-			</WhileActive>
 		</Page>
 
 		<Page ux:Name="pagCursos">
@@ -141,14 +133,15 @@
 
 								<Grid Columns="7*,3*">
 									<Grid>
-										<Text Value="{curso}" Alignment="CenterLeft" Font="museo700_letter" FontSize="18" Margin="0,0,0,2"/>
+										<Text Value="{curso}" Alignment="CenterLeft" Font="museo700_letter" FontSize="18" Margin="0,0,0,2" TextColor="#000"/>
 										<Text Value="{ramaAct.rama}" Alignment="CenterLeft" Font="museo300_letter" FontSize="12" TextColor="#535353"/>
 									</Grid>
 
-									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"/>
+									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000"/>
 								</Grid>
 
 								<Clicked>
+									<Callback Handler="{getFecha}"/>
 									<Callback Handler="{selectCurso}" />
 									<Set Target="actPage.Active" Value="pagActividad" />
 								</Clicked>

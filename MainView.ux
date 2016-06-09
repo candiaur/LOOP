@@ -1,156 +1,7 @@
 <App>
 	<DockPanel>
-		<JavaScript>
-			var Observable = require("FuseJS/Observable");
-			
-			var tag = Observable();
-			var dbData = Observable();
-			var auxiliar = Observable({"cursos":"nuevos"});
-
-			var currentPage = Observable("middle");
-			
-			var persona = Observable(
-				new Person("", "","","","Assets/FuseLogo.png","0"));
-			var email = Observable();
-			var clave = Observable();
-
-			var leftPage = Observable("calificacion");
-			var changeAvailble = Observable(0);
-
-			function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
-			{
-				var monthNames = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-				var fecha = nacio.substr(8) + " de " + monthNames[parseInt(nacio.substr(5,2))] + " de " + nacio.substr(0,4);
-
-				this.nombre = nombre.toUpperCase();;
-				this.apellido = apellido.toUpperCase();;
-				this.correo = correo;
-				this.cel = cel;
-				this.nacio = fecha;
-				this.imagen = imagen;
-				this.rol = rol;
-			}
-
-			function load(idUser)
-			{
-				fetch('http://loop.inhandy.com/loop.php?cargarPersona=' + idUser + ',' + 1, {
-					method: 'GET',
-					cache: 'default',
-					headers: { "Content-type": "application/json"}
-				})
-				.then(function(result)
-				{
-					if (result.status !== 200)
-					{
-						console.log("Something went wrong :(");
-						return;
-					}
-					return result.json();
-				})
-				.then(function(data)
-				{
-					var aux = Observable();
-					aux.add(data);
-					dbData = data;
-
-					auxiliar.replaceAll(aux);
-				});
-
-				auxiliar.forEach(function(e)
-				{
-					console.log("Valor: " + e.nombre);
-				});
-
-				persona.value = new Person(dbData.nombre, dbData.apellido, dbData.correo, dbData.cel, dbData.nacimiento, dbData.imagen, dbData.rol);
-
-				if(changeAvailble == 0)
-				{
-					if(dbData.rol == "0")
-					{
-						leftPage.value = "informe";
-						changeAvailble.value = 0;
-					}else{
-						
-						leftPage.value = "calificacion";
-						changeAvailble.value = 1;
-					}
-				}
-			};
-
-			function submit()
-			{
-				fetch('https://firstloop.firebaseio.com/instancia.json', {
-					method: 'POST',
-					headers: { "Content-type": "application/json"},
-					body: JSON.stringify({"nombre": tag.value})
-				});
-
-				tag.value = "";
-			}
-
-			function loginUser()
-			{
-				var estadoLogin = Observable();
-				var link = 'http://loop.inhandy.com/loop.php?login=' + email.value +'&pwd=' + clave.value;
-
-				console.log("Link: " + link);
-
-				fetch(link, {
-					method: 'GET',
-					cache: 'default',
-					headers: { "Content-type": "application/json"}
-				})
-				.then(function(result)
-				{
-					if (result.status !== 200)
-					{
-						console.log("Something went wrong :(");
-						return;
-					}
-					console.log("Result");
-					return result.json();
-				})
-				.then(function(data)
-				{
-					console.log("Estado");
-					var keys = Object.keys(data);
-					
-					keys.forEach(function(key, index)
-					{
-						if (index >= estadoLogin.length)
-						{
-							var nuevo = data[key];
-							estadoLogin.add(nuevo);
-						}
-					})
-				});
-
-				console.log("Fin");
-
-				estadoLogin.forEach(function(e)
-				{
-					console.log("Estado: " + e.estado + " - ID:" + e.uid);
-					if(e.estado == 0)
-					{
-						load(e.uid);
-					}
-				});
-				load(3);
-			}
-
-			module.exports = {
-				tag: tag,
-				dbData: dbData,
-				persona: persona,
-				submit: submit,
-				currentPage: currentPage,
-				leftPage: leftPage,
-				email: email,
-				clave: clave,
-				loginUser: loginUser
-			};
-		</JavaScript>
+		<JavaScript File="GlobalElements.js" ux:Global="GlobalElem" />
+		<JavaScript File="Main.js" />
 
 		<Font File="Assets/PrestigeEliteStd-Bd.otf" ux:Global="pres_letter" />
 		<Font File="Assets/MuseoSans-100.otf" ux:Global="museo100_letter" />
@@ -173,7 +24,7 @@
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
 		
-		<PageControl ux:Name="principalPage" Active="login" Interaction="None">
+		<PageControl ux:Name="principalPage" Active="{currentPage}" Interaction="None">
 			<Page ux:Name="login" Color="#00D9C5">
 				<DockPanel>
 					<Grid RowCount="2">
@@ -209,7 +60,6 @@
 
 										<Clicked>
 											<Callback Handler="{loginUser}"/>
-											<Set Target="principalPage.Active" Value="inicio"/>
 										</Clicked>
 									</Rectangle>
 								</Grid>
@@ -220,9 +70,9 @@
 			</Page>
 
 			<Page ux:Name="inicio">
-				<PageControl Active="{currentPage}">
+				<PageControl Active="middle">
 					
-					<DirectNavigation Active="{currentPage}"/>
+					<DirectNavigation Active="middle"/>
 
 					<Page ux:Name="left">
 						<PageControl ux:Name="leftControl" Active="{leftPage}" Interaction="None">
