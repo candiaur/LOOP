@@ -7,7 +7,7 @@ var personaActual = Observable();
 //---Cursos.ux---
 var ramas = Observable();
 var cursos = Observable({"cursos":"nuevos"});
-var actividades = Observable({"actividades":"nuevas"});
+var actividad = Observable({"actividad":"nueva"});
 var alumnos = Observable();
 var habilidadesAct = Observable({"habilidad":"nueva"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
@@ -16,6 +16,7 @@ var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
 var instructores = Observable({"instructor":"nuevo"});
+var movCurso = Observable(new MovimientoPag("pagRamas", "Collapsed", "Visible",true));
 
 //---CrearActividad.ux---
 var idMaxActividad = Observable(0);
@@ -29,7 +30,7 @@ var alumno = Observable(new Student( "","","","",""));
 //---CalificarAlumno.ux--
 var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
-var fechasAct = [];
+var fechasAct = Observable({"fecha": "nueva"});;
 var indexFechasAct = Observable(0);
 var calificaciones = Observable({"calificaciones": "nuevas"});
 var calificacionAct = Observable();
@@ -44,10 +45,9 @@ var anio = Observable();
 var today = new Date();
 
 var timer = Timer.create(function(){
-	cargarTodo(); getPersona();}, 1000, true);
+	 getPersona()}, 1000, true);
 
 cargarAlumnos();
-cargarActividades();
 
 function getPersona()
 {
@@ -66,13 +66,20 @@ function getPersona()
 
 function cargarTodo()
 {
-	getDias();
 	cargarHabilidades();
 }
 
 function desActivarMensaje()
 {
 	mensaje.value = "Collapsed";
+}
+
+function MovimientoPag(paginaAct, pagAnterior, flecha, isEnabled)
+{
+	this.paginaAct = paginaAct;
+	this.pagAnterior = pagAnterior;
+	this.flecha = flecha;
+	this.isEnabled = isEnabled;
 }
 
 //----Cursos.ux----
@@ -96,7 +103,6 @@ function cargarRamas()
 	})
 	.then(function(data)
 	{
-		console.log("Ramas");
 		var keys = Object.keys(data);
 		
 		keys.forEach(function(key, index)
@@ -107,11 +113,6 @@ function cargarRamas()
 				ramas.add(nuevo);
 			}
 		});
-
-		ramas.forEach(function(e)
-		{
-			console.log("Rama: " + e.rama);
-		})
 	});
 }
 
@@ -160,18 +161,58 @@ function selectRama(arg)
 		}
 	});
 
-	cargarCursos(personaActual.value);
+	movCurso.value = new MovimientoPag("pagRamas", "Collapsed", "Visible", true);
+
+	cargarCursos();
 }
 
 function selectInstructor(arg)
 {
+	movCurso.value = new MovimientoPag("pagInstructores", "Visible", "Hidden", false);
 
+	cargarCursosxInstructor(arg.data.id);
+}
+
+//--Carga todos los cursos del instructor seleccionado.
+function cargarCursosxInstructor()
+{
+	fetch('http://loop.inhandy.com/loop.php?cargarCursosxInstructor=' + personaActual.value 
+		+ ',' + GlobalE.instancia.value, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("cargarCursosxInstructor: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var aux = Observable();
+
+		keys.forEach(function(key, index)
+		{
+			if (index >= aux.length)
+			{
+				var nuevo = data[key];
+				aux.add(nuevo);
+			}
+		});
+
+		cursos.replaceAll(aux);
+	});
 }
 
 //--Carga todos los cursos del instructor de la rama activa.
-function cargarCursos(idInstructor)
+function cargarCursos()
 {
-	fetch('http://loop.inhandy.com/loop.php?cargarCursos=' + idInstructor 
+	fetch('http://loop.inhandy.com/loop.php?cargarCursos=' + personaActual.value 
 		+ ',' + ramaAct.value.id, {
 		method: 'GET',
 		cache: 'default',
@@ -195,7 +236,16 @@ function cargarCursos(idInstructor)
 		{
 			if (index >= aux.length)
 			{
+				var contador = 0;
 				var nuevo = data[key];
+
+				nuevo.habilidades.forEach(function(e)
+				{
+					contador++;
+				});
+
+				nuevo["rama"] = ramaAct.value.rama;
+				nuevo["habilidades"] = contador;
 				aux.add(nuevo);
 			}
 		});
@@ -214,21 +264,17 @@ function selectCurso(arg)
 		}
 	});
 	
-	cargarAlumnos();
+
 	cargarActividades();
-
-	timer = Timer.create(function(){ getAlumxCursos(); 
-		getFechasconActividades(); getHabxCursoxDia();}, 1000, true);
-
+	getFechasconActividades();
 	getFecha();
 }
 
 //--Carga todas los actividades del día y curso seleccionado.
 function cargarActividades()
 {
-	idMaxActividad.value = 0;
-
-	fetch('https://firstloop.firebaseio.com/actividades.json', {
+	fetch('http://loop.inhandy.com/loop.php?cargarActividades=' + cursoAct.value.id 
+		+ ',' + today.toISOString().slice(0, 10) , {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -237,7 +283,7 @@ function cargarActividades()
 	{
 		if (result.status !== 200)
 		{
-			console.log("CargarActividades: Something went wrong :(");
+			console.log("cargarActividades: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -246,23 +292,26 @@ function cargarActividades()
 	{
 		var keys = Object.keys(data);
 		var aux = Observable();
-
+		
 		keys.forEach(function(key, index)
 		{
 			if (index >= aux.length)
 			{
 				var nuevo = data[key];
-				nuevo["llave"] = key;
-				aux.add(nuevo);
-			}
 
-			if(nuevo.id > idMaxActividad.value)
-			{
-				idMaxActividad.value = nuevo.id;
+				nuevo.habilidades.forEach(function(e)
+				{
+					e.subHabs.forEach(function(x)
+					{
+						x["habilidad"] = e.habilidad;
+					});
+				});
+
+				aux.add(nuevo);
 			}
 		});
 
-		actividades.replaceAll(aux);
+		actividad.replaceAll(aux);
 	});
 }
 
@@ -313,7 +362,7 @@ function getHabxCursoxDia()
 	var aux = Observable();
 	hayAct.id = 0;
 
-	actividades.forEach(function(e)
+	actividad.forEach(function(e)
 	{
 		if((e.curso == cursoAct.value.id) && (e.fecha == today.toISOString().slice(0, 10)))
 		{
@@ -678,7 +727,6 @@ function agregarActividad()
 
 	mensaje.value = "Visible";
 	
-	cargarActividades();
 
 	getFechasconActividades();
 	getHabxCursoxDia();
@@ -836,18 +884,48 @@ function cargarCalificaciones()
 
 //-- Cargar lista de fechas con actividades
 function getFechasconActividades()
-{	
-	fechasAct = [];
-
-	actividades.forEach(function(e)
+{
+	console.log("Link: " + 'http://loop.inhandy.com/loop.php?getFechasconActividades=' + cursoAct.value.id);
+	fetch('http://loop.inhandy.com/loop.php?getFechasconActividades=' + cursoAct.value.id, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
 	{
-		if(e.curso == cursoAct.value.id)
+		if (result.status !== 200)
 		{
-			fechasAct.push(e.fecha + "T11:51:00");
+			console.log("getFechasconActividades: Something went wrong :(");
+			return;
 		}
-	});
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var auxFechas = [];
 
-	fechasAct.sort();
+		keys.forEach(function(key, index)
+		{
+			if (index >= auxFechas.length)
+			{
+				var nuevo = data[key];
+				var auxFecha = nuevo.fecha + "T11:51:00";
+				auxFechas.push({"fecha":auxFecha,"id":nuevo.id});
+				console.log("Fehcha: " + auxFecha);
+			}
+		});
+
+		auxFechas.sort(function(a, b)
+			{ return a.fecha.localeCompare(b.fecha); });
+
+		fechasAct.replaceAll(auxFechas);
+
+		fechasAct.forEach(function(e)
+		{
+			console.log("Fehcha1: " + e.fecha);
+		})
+	});
 }
 
 function setDiaconActividad()
@@ -900,7 +978,7 @@ function nextFechaconActividad()
 		indexFechasAct.value++;
 	}
 
-	today = new Date(fechasAct[indexFechasAct.value]);
+	today = new Date(fechasAct.getAt(indexFechasAct.value).fecha);
 
 	getHabxCursoxDia();
 	resetHabxAlumno();
@@ -916,7 +994,7 @@ function lastFechaconActividad()
 		indexFechasAct.value--;
 	}
 
-	today = new Date(fechasAct[indexFechasAct.value]);
+	today = new Date(fechasAct.getAt(indexFechasAct.value).fecha);
 
 	getHabxCursoxDia();
 	resetHabxAlumno();
@@ -1252,7 +1330,8 @@ function getDias()
 		
 		fechasAct.forEach(function(e)
 		{
-			var auxAct = new Date(e);
+			console.log("fecha1: " + e.fecha);
+			var auxAct = new Date(e.fecha);
 			
 			if(auxDia.toISOString().slice(0, 10) == auxAct.toISOString().slice(0, 10))
 			{
@@ -1284,18 +1363,17 @@ function getFecha()
 module.exports = {
 	mensaje: mensaje,
 	desActivarMensaje: desActivarMensaje,
-	personaActual: personaActual,
-	getPersona: getPersona,
 
 //---Cursos.ux---
 	ramas: ramas,
 	cursos: cursos,
+	instructores: instructores,
+	actividad: actividad,
 	removeItem: removeItem,
 	selectRama: selectRama,
 	selectCurso: selectCurso,
 	selectAlumno: selectAlumno,
 	selectInstructor: selectInstructor,
-	ramaAct: ramaAct,
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
 	alumnosCurso: alumnosCurso,
@@ -1304,7 +1382,7 @@ module.exports = {
 	setDiaconActividad: setDiaconActividad,
 	marcarAlumnosxCurso: marcarAlumnosxCurso,
 	marcarActividadesxDia: marcarActividadesxDia,
-	instructores: instructores,
+	movCurso: movCurso,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,
@@ -1312,13 +1390,13 @@ module.exports = {
 	selectSubHab: selectSubHab,
 	agregarActividad: agregarActividad,
 
-//---CrearAlumno.ux---
+//---AddAlumno.ux---
 	alumnos: alumnos,
 	alumno: alumno,
 	agregarAlumnosCurso: agregarAlumnosCurso,
 	selectNewAlumno: selectNewAlumno,
 
-//---CalificarAkumno.ux---
+//---CalificarAlumno.ux---
 	resetHabxAlumno: resetHabxAlumno,
 	selectN: selectN,
 	selectM: selectM,
@@ -1341,5 +1419,6 @@ module.exports = {
 	nextDay: nextDay,
 	lastDay: lastDay,
 	setDay: setDay,
-	getFecha: getFecha
+	getFecha: getFecha,
+	getDias: getDias
 };

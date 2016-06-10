@@ -8,7 +8,7 @@
 				<StackPanel>
 					<Image Source="cabecera"/>
 
-					<StackPanel Color="#000" Margin="0,33,0,8" Padding="15,7">
+					<StackPanel Color="#000" Margin="0,13,0,8" Padding="15,7">
 						<Grid Columns="auto,auto">
 							<Text Value="MIS " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
 							<Text Value="COLEGIOS" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
@@ -99,6 +99,8 @@
 
 								<Clicked>
 									<Callback Handler="{selectInstructor}" />
+									<Set Target="actPage.Active" Value="pagCursos" />
+									<Set Target="showInstructores.Visibility" Value="Collapsed" />
 								</Clicked>
 							</DockPanel>
 						</Each>
@@ -112,7 +114,8 @@
 				<Image Source="cabecera"/>
 				<Atras>
 					<Clicked>
-						<Set Target="actPage.Active" Value="pagRamas" />
+						<Set Target="actPage.Active" Value="{movCurso.paginaAct}" />
+						<Set Target="showInstructores.Visibility" Value="{movCurso.pagAnterior}" />
 					</Clicked>
 				</Atras>
 
@@ -126,7 +129,7 @@
 				<ScrollView MaxHeight="400">
 					<StackPanel>
 						<Each Items="{cursos}">
-							<DockPanel Padding="15,10" Margin="0,2" Color="#FFF">
+							<DockPanel Padding="15,10" Margin="0,2" Color="#FFF" IsEnabled="{movCurso.isEnabled}">
 								<Rectangle Layer="Background">
 									<Stroke Width="1" Color="#D2D2D2"/>
 								</Rectangle>
@@ -134,14 +137,13 @@
 								<Grid Columns="7*,3*">
 									<Grid>
 										<Text Value="{curso}" Alignment="CenterLeft" Font="museo700_letter" FontSize="18" Margin="0,0,0,2" TextColor="#000"/>
-										<Text Value="{ramaAct.rama}" Alignment="CenterLeft" Font="museo300_letter" FontSize="12" TextColor="#535353"/>
+										<Text Value="{rama}" Alignment="CenterLeft" Font="museo300_letter" FontSize="12" TextColor="#535353"/>
 									</Grid>
 
-									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000"/>
+									<Text Value=">" FontSize="26" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000" Visibility="{movCurso.flecha}"/>
 								</Grid>
 
 								<Clicked>
-									<Callback Handler="{getFecha}"/>
 									<Callback Handler="{selectCurso}" />
 									<Set Target="actPage.Active" Value="pagActividad" />
 								</Clicked>
@@ -153,7 +155,7 @@
 		</Page>
 
 		<Page ux:Name="pagCalendario">
-			<StackPanel>
+			<StackPanel ux:Name="showCalendario">
 				<Image Source="cabecera"/>
 				<Atras>
 					<Clicked>
@@ -233,13 +235,11 @@
 			</StackPanel>
 
 			<WhileInactive>
-				<Change pagCalendario.IsEnabled="false"/>
-				<Change pagCalendario.Visibility="Hidden"/>
+				<Change Target="showCalendario.Visibility" Value="Collapsed" />
 			</WhileInactive>
 
 			<WhileActive>
-				<Change pagCalendario.IsEnabled="true"/>
-				<Change pagCalendario.Visibility="Visible"/>
+				<Change Target="showCalendario.Visibility" Value="Visible" />
 			</WhileActive>
 		</Page>
 
@@ -266,6 +266,7 @@
 						<Image File="Assets/img_Calendario.png" Layer="Background" Alignment="Right" Width="23" Margin="10,0"/>
 						
 						<Clicked>
+							<Callback Handler="{getDias}"/>
 							<Set Target="actPage.Active" Value="pagCalendario" />
 						</Clicked>
 					</DockPanel>
@@ -299,7 +300,7 @@
 							<StackPanel>
 								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
-								<Each Items="{habilidadesAct}">
+								<Each Items="{actividad.habilidades}">
 									<StackPanel>
 										<Each Items="{subHabs}">
 											<Panel>

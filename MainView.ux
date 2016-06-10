@@ -16,8 +16,8 @@
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
 		
-		<DockPanel ux:Class="Atras" Margin="0,-55,0,23" Alignment="TopLeft" ZOffset="2">
-			<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Padding="15,0" TextAlignment="Center"/>
+		<DockPanel ux:Class="Atras" Margin="0,-35,0,23" Alignment="TopLeft" ZOffset="2">
+			<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Padding="14,0" TextAlignment="Center"/>
 			<Rotation Degrees="180"/>
 		</DockPanel>
 
