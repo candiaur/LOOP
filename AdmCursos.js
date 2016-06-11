@@ -1,7 +1,6 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
 var GlobalE = require("GlobalElem");
-var mensaje = Observable("Collapsed");
 var personaActual = Observable();
 
 //---Cursos.ux---
@@ -25,7 +24,7 @@ var subHabs = Observable();
 
 //---CrearAlumno.ux---
 var idMaxAlumno = Observable(0);
-var alumno = Observable(new Student( "","","","",""));
+var alumno = Observable(new Student( "","","","","",""));
 
 //---CalificarAlumno.ux--
 var asistio = Observable(false);
@@ -47,8 +46,6 @@ var today = new Date();
 var timer = Timer.create(function(){
 	 getPersona()}, 1000, true);
 
-cargarAlumnos();
-
 function getPersona()
 {
 	personaActual.value = GlobalE.idPerson.value; 
@@ -58,20 +55,11 @@ function getPersona()
 		if(GlobalE.rolPerson.value != 0)
 		{
 			cargarRamas();
+			cargarSubHabs();
 		}
 
 		Timer.delete(timer);
 	}	
-}
-
-function cargarTodo()
-{
-	cargarHabilidades();
-}
-
-function desActivarMensaje()
-{
-	mensaje.value = "Collapsed";
 }
 
 function MovimientoPag(paginaAct, pagAnterior, flecha, isEnabled)
@@ -264,14 +252,13 @@ function selectCurso(arg)
 		}
 	});
 	
-
-	cargarActividades();
-	getFechasconActividades();
 	getFecha();
+	cargarActividades(0);
+	getFechasconActividades();
 }
 
 //--Carga todas los actividades del día y curso seleccionado.
-function cargarActividades()
+function cargarActividades(reset)
 {
 	fetch('http://loop.inhandy.com/loop.php?cargarActividades=' + cursoAct.value.id 
 		+ ',' + today.toISOString().slice(0, 10) , {
@@ -292,6 +279,7 @@ function cargarActividades()
 	{
 		var keys = Object.keys(data);
 		var aux = Observable();
+		var contador = 0;
 		
 		keys.forEach(function(key, index)
 		{
@@ -304,6 +292,7 @@ function cargarActividades()
 					e.subHabs.forEach(function(x)
 					{
 						x["habilidad"] = e.habilidad;
+						contador ++;
 					});
 				});
 
@@ -311,16 +300,25 @@ function cargarActividades()
 			}
 		});
 
+		if(contador == 0)
+		{
+			aux.add({"id":0,"habilidades":[{"":""}]});
+		}
+
 		actividad.replaceAll(aux);
+		marcarActividadesxDia();
+
+		if(reset == 1)
+		{
+			cargarCalificaciones();
+		}
 	});
 }
 
-//--Carga todos los alumnos de la rama activa
-function cargarAlumnos()
+function eliminarSubHabActividad(sender)
 {
-	idMaxAlumno.value = 0;
-
-	fetch('https://firstloop.firebaseio.com/personas.json', {
+	fetch('http://loop.inhandy.com/loop.php?eliminarSubHabActividad=' + actividad.getAt(0).id 
+		+ ',' + sender.data.id, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -329,182 +327,21 @@ function cargarAlumnos()
 	{
 		if (result.status !== 200)
 		{
-			console.log("CargarAlumnos: Something went wrong :(");
+			console.log("eliminarSubHabActividad: Something went wrong :(");
 			return;
 		}
 		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		
-		keys.forEach(function(key, index)
-		{
-			if (index >= alumnos.length)
-			{
-				var nuevo = data[key];
-				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
-				nuevo["activo"] = false;
-				alumnos.add(nuevo);
-
-				if(nuevo.id > idMaxAlumno.value)
-				{
-					idMaxAlumno.value = nuevo.id;
-				}
-			}
-		});
-	});
-}
-
-//-- Carga todas las habilidades del curso y día seleccionado
-function getHabxCursoxDia()
-{
-	var aux = Observable();
-	hayAct.id = 0;
-
-	actividad.forEach(function(e)
-	{
-		if((e.curso == cursoAct.value.id) && (e.fecha == today.toISOString().slice(0, 10)))
-		{
-			e.habilidades.forEach(function(x)
-			{
-				if(x!= null)
-				{
-					x.subHabs.forEach(function(z)
-				{
-					z["habilidad"] = x.habilidad;
-				});
-
-				aux.add(x);
-				hayAct.id = e.id;
-				hayAct.llave = e.llave;
-				}
-			});
-		}
 	});
 
-	habilidadesAct.replaceAll(aux);
-}
-
-//-- Carga todos los alumnos del curso seleccionado
-function getAlumxCursos()
-{
-	var aux = Observable();
-
-	alumnos.forEach(function(e)
-	{
-		if (cursoAct.value.alumnos != null)
-		{
-			cursoAct.value.alumnos.forEach(function(x)
-			{
-				if(e.id == x.alumno)
-				{
-					aux.add(e);
-				}
-			});
-		}
-	});
-
-	alumnosCurso.replaceAll(aux);
-}
-
-function marcarAlumnosxCurso()
-{
-	var aux = Observable();
-
-	alumnos.forEach(function(e)
-	{
-		var encontrado = false;
-
-		if (cursoAct.value.alumnos != null)
-		{
-			cursoAct.value.alumnos.forEach(function(x)
-			{
-				if(e.id == x.alumno)
-				{
-					e.activo = true;
-					encontrado = true;
-				}
-			});
-		}
-
-		if (!encontrado)
-		{
-			e.activo = false;
-		}
-
-		aux.add(e);
-	});
-
-	alumnos.replaceAll(aux);
-}
-
-function removeItem(sender)
-{
-	cursos.remove(sender.data);
-}
-
-function selectAlumno(arg)
-{
-	alumnos.forEach(function(e)
-	{
-		if(e.id == arg.data.id)
-		{
-			alumnoAct.value = e;
-		}
-	});
-
-	cargarCalificaciones();
-	setDiaconActividad();
-}
-
-function marcarActividadesxDia()
-{
-	var aux = Observable();
-
-	habilidades.forEach(function(e)
-	{
-		e.activo = false;
-
-		e.subHabsId.forEach(function(x)
-		{
-			x.activo = false;
-		});
-
-		habilidadesAct.forEach(function(x)
-		{
-			if(x.id == e.id)
-			{
-				e.activo = true;
-
-				e.subHabsId.forEach(function(y)
-				{
-					x.subHabs.forEach(function(z)
-					{
-						if(z.id == y.id)
-						{
-							y.activo = true;
-						}
-					});
-				});
-			}
-		});
-
-		aux.add(e);
-	});
-
-	habilidades.replaceAll(aux);
+	cargarActividades(0);
 }
 
 
 //----CrearActividad.ux----
-
 //-- Carga todas las habilidades por default
 function cargarHabilidades()
 {
-	cargarSubHabs();
-
-	fetch('https://firstloop.firebaseio.com/habilidades.json', {
+	fetch('http://loop.inhandy.com/loop.php?cargarHabilidades', {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -550,7 +387,7 @@ function cargarHabilidades()
 //-- Carga todas las subHabilidades por default
 function cargarSubHabs()
 {
-	fetch('https://firstloop.firebaseio.com/subHabilidades.json', {
+	fetch('http://loop.inhandy.com/loop.php?cargarSubHabs', {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -576,73 +413,43 @@ function cargarSubHabs()
 				subHabs.add(nuevo);
 			}
 		});
+
+		cargarHabilidades();
 	});
 }
 
-function selectAll(arg)
+function marcarActividadesxDia()
 {
 	var aux = Observable();
 
 	habilidades.forEach(function(e)
 	{
-		if(e.id == arg.data.id)
+		e.activo = false;
+
+		e.subHabsId.forEach(function(x)
 		{
-			if (e.activo == true)
+			x.activo = false;
+		});
+
+		actividad.getAt(0).habilidades.forEach(function(x)
+		{
+			if(x.id == e.id)
 			{
-				e.activo = false;
-
-				e.subHabsId.forEach(function(x)
-				{
-					x.activo = false;
-				});
-			}else{
-
 				e.activo = true;
 
-				e.subHabsId.forEach(function(x)
+				e.subHabsId.forEach(function(y)
 				{
-					x.activo = true;
+					x.subHabs.forEach(function(z)
+					{
+						if(z.id == y.id)
+						{
+							y.activo = true;
+						}
+					});
 				});
 			}
-		}
-		aux.add(e);
-	});
+		});
 
-	habilidades.replaceAll(aux);
-}
-
-function selectSubHab(arg)
-{
-	var aux = Observable();
-
-	habilidades.forEach(function(e)
-	{
-		if(e.id == arg.data.habilidad)
-		{
-			var alguno = false;
-			
-			e.subHabsId.forEach(function(x)
-			{
-				if(x.id == arg.data.id)
-				{
-					if(x.activo == true)
-					{
-						x.activo = false;
-					}else{
-						x.activo = true;
-						alguno = true;
-					}
-				}else
-				{
-					if(x.activo == true)
-					{
-						alguno = true;
-					}
-				}
-			});
-
-			e.activo = alguno;
-		}
 		aux.add(e);
 	});
 
@@ -652,15 +459,11 @@ function selectSubHab(arg)
 //-- Guarda la nueva actividad por día y por curso
 function agregarActividad()
 {
-	var aux = "";
+	var aux = "{";
 
-	if(hayAct.id == 0)
+	if(actividad.getAt(0).id != 0)
 	{
-		idMaxActividad.value = idMaxActividad.value + 1;
-
-		aux = "{\"id\":" + idMaxActividad.value + ",";
-	}else{
-		aux = "{\"id\":" + hayAct.id + ",";
+		aux = "\"id\":" + actividad.getAt(0).id + ",";
 	}
 	
 	aux = aux + "\"curso\":" + cursoAct.value.id + ",";
@@ -682,8 +485,7 @@ function agregarActividad()
 				inicio++;
 			}
 
-			aux = aux + "{\"habilidad\":\"" + e.habilidad + "\",";
-			aux = aux + "\"id\":" + e.id + ",";
+			aux = aux + "{\"habilidad\":" + e.id + ",";
 			aux = aux + "\"subHabs\":[";
 
 			e.subHabsId.forEach(function(x)
@@ -697,8 +499,7 @@ function agregarActividad()
 						inicioSub++;
 					}
 
-					aux = aux + "{\"subHab\":\"" + x.subHab + "\",";
-					aux = aux + "\"id\":" + x.id + "}";
+					aux = aux + "{\"subHab\":" + x.id + "}";
 				}
 			});
 
@@ -708,38 +509,341 @@ function agregarActividad()
 
 	aux = aux + "]}";
 
-	if(hayAct.id == 0)
+	if(actividad.getAt(0).id == 0)
 	{
-		fetch('https://firstloop.firebaseio.com/actividades.json', {
-			method: 'POST',
-			headers: { "Content-type": "application/json"},
-			body: aux
+		fetch('http://loop.inhandy.com/loop.php?agregarActividad=' + aux, {
+			method: 'GET',
+			cache: 'default',
+			headers: { "Content-type": "application/json"}
+		})
+		.then(function(result)
+		{
+			if (result.status !== 200)
+			{
+				console.log("agregarActividad: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		})
+		.then(function(data)
+		{
+			if(data.id_actividad != -1)
+			{
+				getFechasconActividades();
+				cargarActividades(0);
+			}
 		});
 		
 	}else{
-
-		fetch('https://firstloop.firebaseio.com/actividades/' + hayAct.llave + '.json', {
-			method: 'PUT',
-			headers: { "Content-type": "application/json"},
-			body: aux
+		fetch('http://loop.inhandy.com/loop.php?actualizarActividad=' + aux, {
+			method: 'GET',
+			cache: 'default',
+			headers: { "Content-type": "application/json"}
+		})
+		.then(function(result)
+		{
+			if (result.status !== 200)
+			{
+				console.log("actualizarActividad: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		})
+		.then(function(data)
+		{
+			if(data.id_actividad != -1)
+			{
+				getFechasconActividades();
+				cargarActividades(0);
+			}
 		});
 	}
-
-	mensaje.value = "Visible";
-	
-
-	getFechasconActividades();
-	getHabxCursoxDia();
 }
 
-//----CrearAlumno.ux----
+//-- Carga todos los alumnos del curso seleccionado
+function getAlumxCursos()
+{
+	fetch('http://loop.inhandy.com/loop.php?getAlumxCursos=' + cursoAct.value.id, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("getAlumxCursos: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var aux = Observable();
 
-function Student(nombre, apellido, correo, cel, imagen)
+		keys.forEach(function(key, index)
+		{
+			if (index >= aux.length)
+			{
+				var nuevo = data[key];
+				aux.add(nuevo);
+			}
+		});
+
+		alumnosCurso.replaceAll(aux);
+	});
+}
+
+function selectAlumno(arg)
+{
+	alumnosCurso.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			alumnoAct.value = e;
+		}
+	});
+
+	setDiaconActividad();
+}
+
+
+//---CalificarAlumno.ux---
+function setDiaconActividad()
+{
+	var encontrado = false;
+	var backupFecha = "";
+	var aux = 0;
+	indexFechasAct.value = -1;
+	
+	fechasAct.forEach(function(e)
+	{
+		if(encontrado == false)
+		{
+			indexFechasAct.value++;
+
+			if(e.fecha == (today.toISOString().slice(0, 10) + "T11:51:00"))
+			{
+				encontrado = true;
+			}else{
+				if(e.fecha > (today.toISOString().slice(0, 10) + "T11:51:00"))
+				{
+					today = new Date(e.fecha);
+					encontrado = true;
+				}else
+				{
+					aux = indexFechasAct.value;
+					backupFecha = e.fecha;
+				}
+			}
+		}
+	});
+
+	if (!encontrado)
+	{
+		if(backupFecha != "")
+		{
+			today = new Date(backupFecha);
+		}
+
+		indexFechasAct.value = aux;
+	}
+
+	cargarActividades(1);
+	getFecha();
+}
+
+//--Carga las calificaciones de un alumno por actividad(curso y día).
+function cargarCalificaciones()
+{
+	fetch('http://loop.inhandy.com/loop.php?cargarCalificaciones=' + actividad.getAt(0).id 
+		+ ',' + alumnoAct.value.id, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("CargarCalificaciones: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var aux = Observable();
+		aux.add(data);
+
+		calificaciones.replaceAll(aux);
+		resetHabxAlumno();
+	});
+}
+
+function resetHabxAlumno()
+{
+	var aux = Observable();
+	asistio.value = false;
+	comentario.value = "";
+	calificacionAct.value = "";
+
+	actividad.forEach(function(e)
+	{
+		e.habilidades.forEach(function(x)
+		{
+			x.subHabs.forEach(function(y)
+			{
+				y["noLogrado"] = false;
+				y["medio"] = false;
+				y["logrado"] = false;
+			});
+		});
+	});
+
+	actividad.forEach(function(a)
+	{
+		calificaciones.forEach(function(b)
+		{
+			if(b.asistencia == 1)
+			{
+				asistio.value = true;
+				comentario.value = b.comentario;
+
+				a.habilidades.forEach(function(y)
+				{
+					b.habilidades.forEach(function(x)
+					{
+						if (y.id == x.id)
+						{
+							x.subHabs.forEach(function(z)
+							{
+								y.subHabs.forEach(function(d)
+								{
+									if (z.id == d.id)
+									{
+										if(z.nota == 3)
+										{
+											d.logrado = true;
+
+										}else{
+											if(z.nota == 2)
+											{
+												d.medio = true;
+											}else{
+												d.noLogrado = true;
+											}
+										}
+									}
+								});
+							});
+						}
+					});
+				});
+			}
+		});
+
+		aux.add(a);
+	});
+
+	actividad.replaceAll(aux);
+
+	if(asistio.value == true)
+	{
+		mostrarCalificacion.value = "Visible";
+	}else{
+		mostrarCalificacion.value = "Collapsed";
+	}
+}
+
+
+
+
+
+//--Carga todos los alumnos de la rama activa
+function cargarAlumnos()
+{
+	idMaxAlumno.value = 0;
+
+	fetch('https://firstloop.firebaseio.com/personas.json', {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("CargarAlumnos: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		
+		keys.forEach(function(key, index)
+		{
+			if (index >= alumnos.length)
+			{
+				var nuevo = data[key];
+				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
+				nuevo["activo"] = false;
+				alumnos.add(nuevo);
+
+				if(nuevo.id > idMaxAlumno.value)
+				{
+					idMaxAlumno.value = nuevo.id;
+				}
+			}
+		});
+	});
+}
+
+
+
+function marcarAlumnosxCurso()
+{
+	var aux = Observable();
+
+	alumnos.forEach(function(e)
+	{
+		var encontrado = false;
+
+		if (cursoAct.value.alumnos != null)
+		{
+			cursoAct.value.alumnos.forEach(function(x)
+			{
+				if(e.id == x.alumno)
+				{
+					e.activo = true;
+					encontrado = true;
+				}
+			});
+		}
+
+		if (!encontrado)
+		{
+			e.activo = false;
+		}
+
+		aux.add(e);
+	});
+
+	alumnos.replaceAll(aux);
+}
+
+
+//----CrearAlumno.ux----
+function Student(nombre, apellido, correo, cel, nacimiento, imagen)
 {
 	this.nombre = nombre;
 	this.apellido = apellido;
 	this.correo = correo;
 	this.cel = cel;
+	this.nacimiento = nacimiento;
 	this.imagen = imagen;
 }
 
@@ -762,7 +866,6 @@ function agregarAlumnoNuevo()
 		body: aux
 	});
 
-	mensaje.value = "Visible";
 	cargarAlumnos();
 }
 
@@ -801,376 +904,9 @@ function agregarAlumnosCurso()
 		body: aux
 	});
 
-	mensaje.value = "Visible";
-
 	var id = cursoAct.value.id;
 
 	cargarCursos();
-
-	timer = Timer.create(function(){
-	 actualizarCursoAct();}, 1000, true);	
-}
-
-function selectNewAlumno(arg)
-{
-	var aux = Observable();
-
-	alumnos.forEach(function(e)
-	{
-		if(e.id == arg.data.id)
-		{
-			if(e.activo == true)
-			{
-				e.activo = false;
-			}else
-			{
-				e.activo = true;
-			}
-		}
-
-		aux.add(e);
-	});
-
-	alumnos.replaceAll(aux);
-}
-
-function actualizarCursoAct()
-{
-	cursos.forEach(function(e)
-	{
-		if(e.id == cursoAct.value.id)
-		{
-			cursoAct.value = e;
-		}
-	});
-}
-
-//---CalificarAkumno.ux---
-//--Carga todas las calificaciones de un alumno del curso.
-function cargarCalificaciones()
-{
-	fetch('https://firstloop.firebaseio.com/calificaciones.json', {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("CargarCalificaciones: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		var aux = Observable();
-
-		keys.forEach(function(key, index)
-		{
-			if (index >= aux.length)
-			{
-				var nuevo = data[key];
-				nuevo["llave"] = key;
-				aux.add(nuevo);
-			}
-		});
-
-		calificaciones.replaceAll(aux);
-	});
-}
-
-//-- Cargar lista de fechas con actividades
-function getFechasconActividades()
-{
-	console.log("Link: " + 'http://loop.inhandy.com/loop.php?getFechasconActividades=' + cursoAct.value.id);
-	fetch('http://loop.inhandy.com/loop.php?getFechasconActividades=' + cursoAct.value.id, {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("getFechasconActividades: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		var auxFechas = [];
-
-		keys.forEach(function(key, index)
-		{
-			if (index >= auxFechas.length)
-			{
-				var nuevo = data[key];
-				var auxFecha = nuevo.fecha + "T11:51:00";
-				auxFechas.push({"fecha":auxFecha,"id":nuevo.id});
-				console.log("Fehcha: " + auxFecha);
-			}
-		});
-
-		auxFechas.sort(function(a, b)
-			{ return a.fecha.localeCompare(b.fecha); });
-
-		fechasAct.replaceAll(auxFechas);
-
-		fechasAct.forEach(function(e)
-		{
-			console.log("Fehcha1: " + e.fecha);
-		})
-	});
-}
-
-function setDiaconActividad()
-{
-	var encontrado = false;
-	var backupFecha = "";
-	var aux = 0;
-	indexFechasAct.value = -1;
-	
-	fechasAct.forEach(function(e)
-	{
-		if(encontrado == false)
-		{
-			indexFechasAct.value++;
-
-			if(e == (today.toISOString().slice(0, 10) + "T11:51:00"))
-			{
-				encontrado = true;
-			}else{
-				if(e > (today.toISOString().slice(0, 10) + "T11:51:00"))
-				{
-					today = new Date(e);
-					encontrado = true;
-				}else
-				{
-					aux = indexFechasAct.value;
-					backupFecha = e;
-				}
-			}
-		}
-	});
-
-	if (!encontrado)
-	{
-		today = new Date(backupFecha);
-		indexFechasAct.value = aux;
-	}
-
-	getHabxCursoxDia();
-	getFecha();
-	setTimeout(function(){ resetHabxAlumno();}, 1000);
-}
-
-function nextFechaconActividad()
-{
-	if(indexFechasAct.value == (fechasAct.length - 1))
-	{
-		indexFechasAct.value = 0;
-	}else{	
-		indexFechasAct.value++;
-	}
-
-	today = new Date(fechasAct.getAt(indexFechasAct.value).fecha);
-
-	getHabxCursoxDia();
-	resetHabxAlumno();
-	getFecha();
-}
-
-function lastFechaconActividad()
-{
-	if(indexFechasAct.value == 0)
-	{
-		indexFechasAct.value = fechasAct.length - 1;
-	}else{
-		indexFechasAct.value--;
-	}
-
-	today = new Date(fechasAct.getAt(indexFechasAct.value).fecha);
-
-	getHabxCursoxDia();
-	resetHabxAlumno();
-	getFecha();
-}
-
-function resetHabxAlumno()
-{
-	var aux = Observable();
-	var encontrado = false;
-	asistio.value = false;
-	comentario.value = "";
-	calificacionAct.value = "";
-
-	console.log("Id Actividad: " + hayAct.id);
-	
-	calificaciones.forEach(function(a)
-	{
-		if((hayAct.id == a.actividad) && (alumnoAct.value.id == a.alumno))
-		{
-			calificacionAct.value = a.llave;
-			
-			if(a.asistencia == 1)
-			{
-				asistio.value = true;
-
-				a.habilidades.forEach(function(x)
-				{
-					habilidadesAct.forEach(function(y)
-					{
-						if (y.id == x.habilidad)
-						{
-							x.subHabs.forEach(function(z)
-							{
-								y.subHabs.forEach(function(d)
-								{
-									if (z.id == d.id)
-									{
-										d["noLogrado"] = false;
-										d["medio"] = false;
-										d["logrado"] = false;
-										
-										if(z.nota == 3)
-										{
-											d.logrado = true;
-
-										}else{
-											if(z.nota == 2)
-											{
-												d.medio = true;
-											}else{
-												d.noLogrado = true;
-											}
-										}
-									}
-								});
-							});
-
-							aux.add(y);
-						}
-					});
-				});
-
-				encontrado = true;
-				comentario.value = a.comentario;
-			}
-		}
-	});
-
-	if (!encontrado)
-	{
-		habilidadesAct.forEach(function(x)
-		{
-			x.subHabs.forEach(function(y)
-			{
-				y["noLogrado"] = false;
-				y["medio"] = false;
-				y["logrado"] = false;
-			});
-
-			aux.add(x);
-		});
-	}
-
-	habilidadesAct.replaceAll(aux);
-
-	if(asistio.value == true)
-	{
-		mostrarCalificacion.value = "Visible";
-	}else{
-		mostrarCalificacion.value = "Collapsed";
-	}
-}
-
-function selectN(arg)
-{
-	var aux = Observable();
-	
-	habilidadesAct.forEach(function(e)
-	{
-		e.subHabs.forEach(function(x)
-		{
-			if(x.id == arg.data.id)
-			{
-				x.medio = false;
-				x.logrado = false;
-				
-				if(x.noLogrado == false)
-				{
-					x.noLogrado = true;
-				}else{
-					x.noLogrado = false;
-				}	
-			}
-		});
-
-		aux.add(e);
-	});
-
-	habilidadesAct.replaceAll(aux);
-}
-
-function selectM(arg)
-{
-	var aux = Observable();
-	
-	habilidadesAct.forEach(function(e)
-	{
-		e.subHabs.forEach(function(x)
-		{
-			if(x.id == arg.data.id)
-			{
-				x.noLogrado = false;
-				x.logrado = false;
-				
-				if(x.medio == false)
-				{
-					x.medio = true;
-				}else{
-					x.medio = false;
-				}	
-			}
-		});
-
-		aux.add(e);
-	});
-
-	habilidadesAct.replaceAll(aux);
-}
-
-function selectL(arg)
-{
-	var aux = Observable();
-	
-	habilidadesAct.forEach(function(e)
-	{
-		e.subHabs.forEach(function(x)
-		{
-			if(x.id == arg.data.id)
-			{
-				x.medio = false;
-				x.noLogrado = false;
-				
-				if(x.logrado == false)
-				{
-					x.logrado = true;
-				}else{
-					x.logrado = false;
-				}	
-			}
-		});
-
-		aux.add(e);
-	});
-
-	habilidadesAct.replaceAll(aux);
 }
 
 function marcaAsistencia()
@@ -1258,8 +994,255 @@ function agregarCalificaciones()
 			body: aux
 		});
 	}
+}
+
+
+//-------- FUNCION CHECKBOX------
+function selectHab(arg)
+{
+	var aux = Observable();
+
+	habilidades.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			if (e.activo == true)
+			{
+				e.activo = false;
+
+				e.subHabsId.forEach(function(x)
+				{
+					x.activo = false;
+				});
+			}else{
+
+				e.activo = true;
+
+				e.subHabsId.forEach(function(x)
+				{
+					x.activo = true;
+				});
+			}
+		}
+		aux.add(e);
+	});
+
+	habilidades.replaceAll(aux);
+}
+
+function selectSubHab(arg)
+{
+	var aux = Observable();
+
+	habilidades.forEach(function(e)
+	{
+		if(e.id == arg.data.habilidad)
+		{
+			var alguno = false;
+			
+			e.subHabsId.forEach(function(x)
+			{
+				if(x.id == arg.data.id)
+				{
+					if(x.activo == true)
+					{
+						x.activo = false;
+					}else{
+						x.activo = true;
+						alguno = true;
+					}
+				}else
+				{
+					if(x.activo == true)
+					{
+						alguno = true;
+					}
+				}
+			});
+
+			e.activo = alguno;
+		}
+		aux.add(e);
+	});
+
+	habilidades.replaceAll(aux);
+}
+
+function selectN(arg)
+{
+	var aux = Observable();
 	
-	mensaje.value = "Visible";
+	habilidadesAct.forEach(function(e)
+	{
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == arg.data.id)
+			{
+				x.medio = false;
+				x.logrado = false;
+				
+				if(x.noLogrado == false)
+				{
+					x.noLogrado = true;
+				}else{
+					x.noLogrado = false;
+				}	
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
+
+function selectM(arg)
+{
+	var aux = Observable();
+	
+	habilidadesAct.forEach(function(e)
+	{
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == arg.data.id)
+			{
+				x.noLogrado = false;
+				x.logrado = false;
+				
+				if(x.medio == false)
+				{
+					x.medio = true;
+				}else{
+					x.medio = false;
+				}	
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
+
+function selectL(arg)
+{
+	var aux = Observable();
+	
+	habilidadesAct.forEach(function(e)
+	{
+		e.subHabs.forEach(function(x)
+		{
+			if(x.id == arg.data.id)
+			{
+				x.medio = false;
+				x.noLogrado = false;
+				
+				if(x.logrado == false)
+				{
+					x.logrado = true;
+				}else{
+					x.logrado = false;
+				}	
+			}
+		});
+
+		aux.add(e);
+	});
+
+	habilidadesAct.replaceAll(aux);
+}
+
+function selectNewAlumno(arg)
+{
+	var aux = Observable();
+
+	alumnos.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			if(e.activo == true)
+			{
+				e.activo = false;
+			}else
+			{
+				e.activo = true;
+			}
+		}
+
+		aux.add(e);
+	});
+
+	alumnos.replaceAll(aux);
+}
+
+//---------FECHAS------
+//-- Cargar lista de fechas con actividades
+function getFechasconActividades()
+{
+	fetch('http://loop.inhandy.com/loop.php?getFechasconActividades=' + cursoAct.value.id, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("getFechasconActividades: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var auxFechas = [];
+
+		keys.forEach(function(key, index)
+		{
+			if (index >= auxFechas.length)
+			{
+				var nuevo = data[key];
+				var auxFecha = nuevo.fecha + "T11:51:00";
+				auxFechas.push({"fecha":auxFecha,"id":nuevo.id});
+			}
+		});
+
+		auxFechas.sort(function(a, b)
+			{ return a.fecha.localeCompare(b.fecha); });
+
+		fechasAct.replaceAll(auxFechas);
+	});
+}
+
+function nextFechaconActividad()
+{
+	if(indexFechasAct.value == (fechasAct.length - 1))
+	{
+		indexFechasAct.value = 0;
+	}else{	
+		indexFechasAct.value++;
+	}
+
+	today = new Date(fechasAct.getAt(indexFechasAct.value).fecha);
+
+	cargarActividades(1);
+	getFecha();
+}
+
+function lastFechaconActividad()
+{
+	if(indexFechasAct.value == 0)
+	{
+		indexFechasAct.value = fechasAct.length - 1;
+	}else{
+		indexFechasAct.value--;
+	}
+
+	today = new Date(fechasAct.getAt(indexFechasAct.value).fecha);
+
+	cargarActividades(1);
+	getFecha();
 }
 
 //---Calendar.ux---
@@ -1268,6 +1251,7 @@ function nextMonth()
 	today.setMonth(today.getMonth() + 1);
 	
 	getFecha();
+	getDias();
 }
 
 function lastMonth()
@@ -1275,6 +1259,7 @@ function lastMonth()
 	today.setMonth(today.getMonth() - 1);
 	
 	getFecha();
+	getDias();
 }
 
 function nextDay()
@@ -1282,6 +1267,7 @@ function nextDay()
 	today.setDate(today.getDate() + 1);
 	
 	getFecha();
+	cargarActividades(0);
 }
 
 function lastDay()
@@ -1289,6 +1275,7 @@ function lastDay()
 	today.setDate(today.getDate() - 1);
 	
 	getFecha();
+	cargarActividades(0);
 }
 
 function setDay(arg)
@@ -1299,9 +1286,7 @@ function setDay(arg)
 	}
 
 	getFecha();
-
-	timer = Timer.create(function(){
-	getHabxCursoxDia();}, 1000, true);
+	cargarActividades(0);
 }
 
 function getDias()
@@ -1330,7 +1315,6 @@ function getDias()
 		
 		fechasAct.forEach(function(e)
 		{
-			console.log("fecha1: " + e.fecha);
 			var auxAct = new Date(e.fecha);
 			
 			if(auxDia.toISOString().slice(0, 10) == auxAct.toISOString().slice(0, 10))
@@ -1360,33 +1344,33 @@ function getFecha()
 	anio.value = " / " + today.getFullYear();
 }
 
-module.exports = {
-	mensaje: mensaje,
-	desActivarMensaje: desActivarMensaje,
+function getHabxCursoxDia()
+{
+}
 
+module.exports = {
 //---Cursos.ux---
 	ramas: ramas,
 	cursos: cursos,
-	instructores: instructores,
 	actividad: actividad,
-	removeItem: removeItem,
+	instructores: instructores,
+	alumnosCurso: alumnosCurso,
 	selectRama: selectRama,
 	selectCurso: selectCurso,
 	selectAlumno: selectAlumno,
 	selectInstructor: selectInstructor,
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
-	alumnosCurso: alumnosCurso,
 	habilidadesAct: habilidadesAct,
 	cargarInstructores: cargarInstructores,
 	setDiaconActividad: setDiaconActividad,
 	marcarAlumnosxCurso: marcarAlumnosxCurso,
-	marcarActividadesxDia: marcarActividadesxDia,
+	eliminarSubHabActividad: eliminarSubHabActividad,
 	movCurso: movCurso,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,
-	selectAll: selectAll,
+	selectHab: selectHab,
 	selectSubHab: selectSubHab,
 	agregarActividad: agregarActividad,
 
@@ -1395,6 +1379,7 @@ module.exports = {
 	alumno: alumno,
 	agregarAlumnosCurso: agregarAlumnosCurso,
 	selectNewAlumno: selectNewAlumno,
+	getAlumxCursos: getAlumxCursos,
 
 //---CalificarAlumno.ux---
 	resetHabxAlumno: resetHabxAlumno,

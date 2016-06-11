@@ -11,7 +11,7 @@
 				<StackPanel>
 					<Image Source="cabecera"/>
 
-					<StackPanel Color="#000" Margin="0,17,0,0" Padding="14,0" Height="28" Alignment="VerticalCenter">
+					<StackPanel Color="#000" Margin="0,26,0,0" Padding="14,0" Height="28" Alignment="VerticalCenter">
 						<Grid Columns="auto,auto" Alignment="CenterLeft">
 							<Text Value="MI " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
 							<Text Value="ACTIVIDAD" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
@@ -120,7 +120,7 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,26,0,8" Padding="15,7">
 					<Grid Columns="auto,auto">
 						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
 						<Text Value="ASISTENCIA" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
@@ -171,7 +171,7 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,26,0,8" Padding="15,7">
 					<Grid Columns="auto,auto">
 						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
 						<Text Value="PROGRESIÓN" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
@@ -286,7 +286,7 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,35,0,8" Padding="15,7">
+				<StackPanel Color="#000" Margin="0,26,0,8" Padding="15,7">
 					<Grid Columns="auto,auto">
 						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
 						<Text Value="EVOLUCIÓN" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
