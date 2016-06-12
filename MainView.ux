@@ -15,6 +15,7 @@
 		<Font File="Assets/MuseoSans-100Italic.otf" ux:Global="museo100I_letter"/>
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
+		<FileImageSource File="Assets/Logos/logoencirculo.png" ux:Global="logoCircular"/>
 		
 		<DockPanel ux:Class="Atras" Margin="0,-50,0,23" Alignment="TopLeft" ZOffset="2">
 			<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" Padding="14,0" TextAlignment="Center"/>
@@ -28,43 +29,54 @@
 			<Page ux:Name="login" Color="#00D9C5">
 				<DockPanel>
 					<Grid RowCount="2">
-						<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-10"/>
+						<Panel>
+							<Image File="Assets/Logos/looplogo.png" Alignment="Center"/>
 
-						<StackPanel Width="100%" Margin="0,-10,0,0" ZOffset="2">
-							<Rectangle Alignment="Center" Color="#FFF" CornerRadius="5" Width="80%">
-								<Grid Padding="5,10,5,5">
-									<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,10">
-										<Grid Columns="1*,3*" Padding="5,5">
-											<DockPanel>
-												<Image File="Assets/img_Mail.png" Alignment="Center"/>
-												<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
-											</DockPanel>
-											
-											<TextInput PlaceholderText="Mail" Font="museo100_letter" PlaceholderColor="#535353" InputHint="Email" Padding="5,0" Value="{email}"/>
-										</Grid>
-									</Rectangle>
+							<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-10"/>
+						</Panel>
 
-									<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,5">
-										<Grid Columns="1*,3*" Padding="5,5">
-											<DockPanel>
-												<Image File="Assets/img_Candado.png"  Alignment="Center" />
-												<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
-											</DockPanel>
-											
-											<TextInput PlaceholderText="Contraseña" Font="museo100_letter" PlaceholderColor="#535353" IsPassword="true" Padding="5,0" Value="{clave}"/>
-										</Grid>
-									</Rectangle>
+						<Panel Width="100%" Margin="0,-10,0,0" ZOffset="2">
+							<StackPanel Width="100%">
+								<Rectangle Alignment="TopCenter" Color="#FFF" CornerRadius="5" Width="80%">
+									<Grid Padding="5,10,5,5">
+										<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,10">
+											<Grid Columns="1*,3*" Padding="5,5">
+												<DockPanel>
+													<Image File="Assets/img_Mail.png" Alignment="Center"/>
+													<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
+												</DockPanel>
+												
+												<TextInput PlaceholderText="Mail" Font="museo100_letter" PlaceholderColor="#535353" InputHint="Email" Padding="5,0" Value="{email}"/>
+											</Grid>
+										</Rectangle>
 
-									<Rectangle Color="#00D9C5" CornerRadius="5" Width="100%" Height="50">
-										<Text Value="INICIAR SESIÓN" TextColor="#FFF" Font="museo300_letter" Alignment="Center"/>
+										<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,5">
+											<Grid Columns="1*,3*" Padding="5,5">
+												<DockPanel>
+													<Image File="Assets/img_Candado.png"  Alignment="Center" />
+													<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
+												</DockPanel>
+												
+												<TextInput PlaceholderText="Contraseña" Font="museo100_letter" PlaceholderColor="#535353" IsPassword="true" Padding="5,0" Value="{clave}"/>
+											</Grid>
+										</Rectangle>
 
-										<Clicked>
-											<Callback Handler="{loginUser}"/>
-										</Clicked>
-									</Rectangle>
-								</Grid>
-							</Rectangle>
-						</StackPanel>
+										<Rectangle Color="#00D9C5" CornerRadius="5" Width="100%" Height="50">
+											<Text Value="INICIAR SESIÓN" TextColor="#FFF" Font="museo300_letter" Alignment="Center"/>
+
+											<Clicked>
+												<Callback Handler="{loginUser}"/>
+											</Clicked>
+										</Rectangle>
+									</Grid>
+								</Rectangle>
+
+								<Text Value="{mensajeError}" FontSize="12" Font="museo300_letter" Margin="10" TextAlignment="Center" TextColor="#FF0000" TextWrapping="Wrap" Width="200"/>
+
+							</StackPanel>
+
+							<Text Value="V. BETA" Font="museo700_letter" FontSize="14" TextColor="#FFF" Alignment="BottomRight" Margin="14" />
+						</Panel>
 					</Grid>
 				</DockPanel>
 			</Page>
@@ -102,31 +114,228 @@
 
 							<SwipeNavigate SwipeDirection="Up"/>
 
-							<udPage ux:Name="top" Color="#00D9C5">
-								<DockPanel>
-									<StackPanel Margin="0,35,0,10">
-										<Circle Height="250" Width="250" Margin="0,15">
-											<ImageFill Url="{persona.imagen}"/>
-										</Circle>
+							<udPage ux:Name="top">
+								<PageControl ux:Name="controlPerfil" Active="pagPerfil" Interaction="None">
+									<Page ux:Name="pagPerfil" Color="#00D9C5">
+										<DockPanel>
+											<Image File="Assets/img_configura.png" Alignment="TopRight" Margin="14" Width="40">
+												<Clicked>
+													<Set Target="controlPerfil.Active" Value="pagConfigura" />
+												</Clicked>
+											</Image>
+											<StackPanel Margin="0,100,0,10">
+												<!-- <Circle Height="250" Width="250" Margin="0,15">
+													<ImageFill Url="{persona.imagen}"/>
+												</Circle> -->
+												<Image File="Assets/Logos/logoconbeta.png" Width="70%" Margin="0,15,0,50"/>
 
-										<Grid Columns="auto,auto" Alignment="Center">
-											<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
-											<Text FontSize="27" TextColor="#FFF" Value="{persona.apellido}" Font="museo100_letter" Padding="5,0"/>
-											<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
-											<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
-										</Grid>
+												<Grid Columns="auto,auto" Alignment="Center">
+													<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
+													<Text FontSize="27" TextColor="#FFF" Value="{persona.apellido}" Font="museo100_letter" Padding="5,0"/>
+													<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
+													<Rectangle Height="1" Color="#FFF" Alignment="Bottom" Margin="0,10"/>
+												</Grid>
 
-										<Text Value="{persona.nacio}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
-										<Text Value="{persona.correo}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
-										<Text Value="{persona.cel}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
-									</StackPanel>
+												<Text Value="{persona.nacio}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter"  FontSize="14"/>
+												<Text Value="{persona.correo}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
+												<Text Value="{persona.cel}" TextColor="#FFF" Margin="8" TextAlignment="Center" Font="museo700_letter" FontSize="14"/>
+											</StackPanel>
 
-									<DockPanel Dock="Bottom">
-										<Text Value=">" Padding="20,10,10,10" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
-											<Rotation Degrees="-90"/>
-										</Text>
-									</DockPanel>
-								</DockPanel>
+											<DockPanel Dock="Bottom">
+												<Text Value=">" Margin="0,10,0,0" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
+													<Rotation Degrees="-90"/>
+												</Text>
+											</DockPanel>
+										</DockPanel>
+									</Page>
+									
+									<Page ux:Name="pagConfigura" Color="#EEEBF0">
+										<StackPanel>
+											<Image Source="cabecera"/>
+
+											<Atras>
+												<Clicked>
+													<Callback Handler="{limpiarDatos}"/>
+													<Set Target="controlPerfil.Active" Value="pagPerfil" />
+												</Clicked>
+											</Atras>
+
+											<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
+												<Text Value="CONFIGURACIÓN" Font="museo700_letter" FontSize="14" TextColor="#FFF" Alignment="CenterLeft"/>
+											</StackPanel>
+
+											<StackPanel>
+												<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
+												<DockPanel Padding="15,10" Color="#FFF">
+													<Grid Columns="7*,3*">
+														<Text Value="EDITAR PERFIL" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
+														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
+													</Grid>
+
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+
+													<Clicked>
+														<Callback Handler="{limpiarDatos}"/>
+														<Set Target="showEditaDatos.Visibility" Value="Visible" />
+														<Set Target="controlPerfil.Active" Value="pagEditaDatos" />
+													</Clicked>
+												</DockPanel>
+
+												<DockPanel Padding="15,10" Color="#FFF" Margin="0,3">
+													<Grid Columns="7*,3*">
+														<Text Value="CAMBIAR CONTRASEÑA" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
+														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
+													</Grid>
+
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+
+													<Clicked>
+														<Callback Handler="{limpiarClaves}"/>
+														<Set Target="controlPerfil.Active" Value="pagEditaClave" />
+													</Clicked>
+												</DockPanel>
+											</StackPanel>
+										</StackPanel>
+									</Page>
+
+									<Page ux:Name="pagEditaDatos" Color="#EEEBF0">
+										<DockPanel ux:Name="showEditaDatos" Visibility="Collapsed">
+											<StackPanel>
+												<Image Source="cabecera"/>
+												<Atras>
+													<Clicked>
+														<Set Target="showEditaDatos.Visibility" Value="Collapsed" />
+														<Set Target="controlPerfil.Active" Value="pagConfigura" />
+													</Clicked>
+												</Atras>
+
+												<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
+													<Grid Columns="auto,auto" Alignment="CenterLeft">
+														<Text Value="EDITAR " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+														<Text Value="DATOS" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
+													</Grid>
+												</StackPanel>
+
+												<Image Source="logoCircular" Margin="10" Width="150"/>
+
+												<ScrollView MaxHeight="250">
+													<StackPanel>
+														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+															
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Nombre" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nombre}" TextColor="#000"/>
+
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+														</Panel>
+
+														<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+															
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Apellido" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{apellido}" TextColor="#000"/>
+
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+														</Panel>
+
+														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+															
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="nombre@tumail.com" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{email}" InputHint="Email" TextColor="#000"/>
+
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+														</Panel>
+
+														<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+															
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="+56 9 91234567" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{cel}" InputHint="Phone" TextColor="#000"/>
+
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+														</Panel>
+
+														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+															
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="11-07-1990" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{fechaNacio}" TextColor="#000"/>
+
+															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+														</Panel>
+													</StackPanel>
+												</ScrollView>
+											</StackPanel>
+
+											<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="3">
+												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+												<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+
+												<Clicked>
+													<Callback Handler="{modificarDatos}" />
+													<Set Target="showEditaDatos.Visibility" Value="Collapsed" />
+													<Set Target="controlPerfil.Active" Value="pagConfigura" />
+												</Clicked>
+											</DockPanel>
+										</DockPanel>
+									</Page>
+
+									<Page ux:Name="pagEditaClave" Color="#EEEBF0">
+										<DockPanel>
+											<StackPanel>
+												<Image Source="cabecera"/>
+												
+												<Atras>
+													<Clicked>
+														<Set Target="controlPerfil.Active" Value="pagConfigura" />
+													</Clicked>
+												</Atras>
+
+												<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
+													<Grid Columns="auto,auto" Alignment="CenterLeft">
+														<Text Value="CAMBIAR " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+														<Text Value="CONTRASEÑA" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
+													</Grid>
+												</StackPanel>
+
+												<Panel Padding="14,5" Color="#FFF" MinHeight="50">
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+													
+													<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Contraseña Actual" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{claveAct}" TextColor="#000" IsPassword="true"/>
+
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+												</Panel>
+
+												<Panel Padding="14,5" Color="#FFF" MinHeight="50" Margin="0,8">
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+													
+													<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Nueva Contraseña" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nuevaClave1}" TextColor="#000" IsPassword="true"/>
+
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+												</Panel>
+
+												<Panel Padding="14,5" Color="#FFF" MinHeight="50">
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+													
+													<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Repetir Nueva Contraseña" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nuevaClave2}" TextColor="#000" IsPassword="true"/>
+
+													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+												</Panel>
+
+												<Panel Height="50">
+													<Text Value="{mensajeClave}" FontSize="12" Font="museo300_letter" Margin="20" TextAlignment="Center" TextColor="#FF0000" TextWrapping="Wrap" Width="200"/>
+												</Panel>
+											</StackPanel>
+
+											<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="2">
+												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+												<Text Value="Cambiar!" Font="museo700_letter" TextAlignment="Center" FontSize="12.5" TextColor="#000" Alignment="VerticalCenter"/>
+
+												<Clicked>
+													<Callback Handler="{modificarClave}"/>
+												</Clicked>
+											</DockPanel>
+										</DockPanel>
+									</Page>
+								</PageControl>
 							</udPage>
 
 							<udPage ux:Name="center" Color="#00D9C5">
@@ -159,18 +368,24 @@
 										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 									</Grid>
 
-									<StackPanel Alignment="Bottom" Margin="0,125">
-										<Text Value="¡HOLA" TextAlignment="Center" TextColor="#FFF" Font="museo700_letter" FontSize="26"/>
+									<Grid Alignment="VerticalCenter">
+										<Image File="Assets/Logos/logoconbeta.png" Width="70%"/>
 
-										<Grid Columns="auto,auto" Alignment="Center">
-											<Text Value="{persona.nombre}" Font="museo300_letter" FontSize="26" TextColor="#FFF"/>
-											<Text Value="!" Font="museo300_letter" FontSize="24" TextColor="#FFF"/>
-										</Grid>
+										<Panel Height="150" />
 
-										<Rectangle Height="1" Color="#FFF" Margin="0,15"/>
+										<StackPanel Alignment="Center" Width="100%">
+												<Text Value="¡HOLA" TextAlignment="Center" TextColor="#FFF" Font="museo700_letter" FontSize="26"/>
 
-										<Text Value="¿Qué quieres hacer hoy?" TextAlignment="Center" TextColor="#FFF" Font="museo700_letter" FontSize="14"/>
-									</StackPanel>
+												<Grid Columns="auto,auto" Alignment="Center">
+													<Text Value="{persona.nombre}" Font="museo300_letter" FontSize="26" TextColor="#FFF"/>
+													<Text Value="!" Font="museo300_letter" FontSize="24" TextColor="#FFF"/>
+												</Grid>
+
+												<Rectangle Height="1" Color="#FFF" Margin="0,15"/>
+
+												<Text Value="¿Qué quieres hacer hoy?" TextAlignment="Center" TextColor="#FFF" Font="museo700_letter" FontSize="14"/>
+										</StackPanel>
+									</Grid>
 
 									<Grid Alignment="BottomCenter" Width="10%">
 										<Image File="Assets/img_Camara.png" Alignment="Center" Margin="5,0"/>
@@ -183,13 +398,13 @@
 								</DockPanel>
 							</udPage>
 
-							<udPage ux:Name="bottom" Color="#A52A2A">
+							<!-- <udPage ux:Name="bottom" Color="#A52A2A">
 								<Text Value="Bottom"/>
-							</udPage>
+							</udPage> -->
 						</Panel>
 					</Page>
 
-					<Page ux:Name="right">
+					<!-- <Page ux:Name="right">
 						<StackPanel Color="#3366CC">
 							<DockPanel>
 								<StackPanel>
@@ -223,7 +438,7 @@
 								</StackPanel>
 							</DockPanel>
 						</StackPanel>
-					</Page>
+					</Page> -->
 				</PageControl>
 			</Page>
 		</PageControl>

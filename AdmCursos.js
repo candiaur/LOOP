@@ -5,12 +5,11 @@ var personaActual = Observable();
 
 //---Cursos.ux---
 var ramas = Observable();
+var curso = Observable("");
 var cursos = Observable({"cursos":"nuevos"});
 var actividad = Observable({"actividad":"nueva"});
-var alumnos = Observable();
-var habilidadesAct = Observable({"habilidad":"nueva"});
+var alumnos = Observable({"alumnos":"nuevos"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
-var hayAct = Observable({"id":0,"llave":" "});
 var ramaAct = Observable();
 var cursoAct = Observable();
 var alumnoAct = Observable();
@@ -18,26 +17,34 @@ var instructores = Observable({"instructor":"nuevo"});
 var movCurso = Observable(new MovimientoPag("pagRamas", "Collapsed", "Visible",true));
 
 //---CrearActividad.ux---
-var idMaxActividad = Observable(0);
 var habilidades = Observable();
 var subHabs = Observable();
 
 //---CrearAlumno.ux---
 var idMaxAlumno = Observable(0);
-var alumno = Observable(new Student( "","","","","",""));
+var editarAlumnos = Observable("Collapsed");
+
+//--- Datos Persona---
+var nombre = Observable("");
+var apellido = Observable("");
+var correo = Observable("");
+var cel = Observable("");
+var nacimiento = Observable("");
+var imagen = Observable("");
+
 
 //---CalificarAlumno.ux--
+var isAbleCalifica = Observable(true);
 var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
 var fechasAct = Observable({"fecha": "nueva"});;
 var indexFechasAct = Observable(0);
 var calificaciones = Observable({"calificaciones": "nuevas"});
-var calificacionAct = Observable();
+var hayCalificacion = Observable(0);
 var comentario = Observable("");
 
 //---Calendar.ux---
 var dias = Observable({"dias":""});
-var nombreDia = Observable();
 var dia = Observable();
 var mes = Observable();
 var anio = Observable();
@@ -242,6 +249,37 @@ function cargarCursos()
 	});
 }
 
+function limpiarCurso()
+{
+	curso.value = "";
+}
+
+function agregarCurso()
+{
+	var aux = "{ \"nombre\":\"" + curso.value + "\",";
+	aux = aux + "\"id_rama\":" + ramaAct.value.id + ",";
+	aux = aux + "\"id_instructor\":" + personaActual.value + "}";
+
+	fetch('http://loop.inhandy.com/loop.php?crearCurso=' + aux, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("CargarCursos: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		cargarCursos();	
+	});
+}
+
 function selectCurso(arg)
 {
 	cursos.forEach(function(e)
@@ -331,9 +369,11 @@ function eliminarSubHabActividad(sender)
 			return;
 		}
 		return result.json();
+	})
+	.then(function(data)
+	{
+		cargarActividades(0);
 	});
-
-	cargarActividades(0);
 }
 
 
@@ -463,7 +503,7 @@ function agregarActividad()
 
 	if(actividad.getAt(0).id != 0)
 	{
-		aux = "\"id\":" + actividad.getAt(0).id + ",";
+		aux = aux + "\"id\":" + actividad.getAt(0).id + ",";
 	}
 	
 	aux = aux + "\"curso\":" + cursoAct.value.id + ",";
@@ -592,6 +632,8 @@ function getAlumxCursos()
 		});
 
 		alumnosCurso.replaceAll(aux);
+		editarAlumnos.value = "Collapsed";
+		isAbleCalifica.value = true;
 	});
 }
 
@@ -605,9 +647,55 @@ function selectAlumno(arg)
 		}
 	});
 
+	editarAlumnos.value = "Collapsed";
 	setDiaconActividad();
 }
 
+function mostrarEdicionAlumnos()
+{
+	if(editarAlumnos.value == "Visible")
+	{
+		isAbleCalifica.value = true;
+		editarAlumnos.value = "Collapsed";
+	}else{
+		isAbleCalifica.value = false;
+		editarAlumnos.value = "Visible";
+	}
+}
+
+function eliminarAlumnoCurso(arg)
+{
+
+	fetch('http://loop.inhandy.com/loop.php?eliminarAlumnosCurso=' + cursoAct.value.id
+		+ ',' + arg.data.id, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("eliminarAlumno: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		getAlumxCursos();
+	});
+}
+
+function limpiarDatos()
+{
+	nombre.value = "";
+	apellido.value = "";
+	correo.value = "";
+	cel.value = "";
+	nacimiento.value = "";
+	imagen.value = "";
+}
 
 //---CalificarAlumno.ux---
 function setDiaconActividad()
@@ -687,7 +775,7 @@ function resetHabxAlumno()
 	var aux = Observable();
 	asistio.value = false;
 	comentario.value = "";
-	calificacionAct.value = "";
+	hayCalificacion.value = 0;
 
 	actividad.forEach(function(e)
 	{
@@ -742,6 +830,8 @@ function resetHabxAlumno()
 					});
 				});
 			}
+
+			hayCalificacion.value ++;
 		});
 
 		aux.add(a);
@@ -757,6 +847,193 @@ function resetHabxAlumno()
 	}
 }
 
+function marcaAsistencia()
+{
+	if(asistio.value == true)
+	{
+		mostrarCalificacion.value = "Visible";
+	}else{
+		mostrarCalificacion.value = "Collapsed";
+	}
+}
+
+//-- Guarda las notas del día del estudiante seleccionado
+function agregarCalificaciones()
+{
+	var aux = "{\"actividad\":" + actividad.getAt(0).id + ",";
+	aux = aux + "\"alumno\":" + alumnoAct.value.id + ",";
+
+	if(asistio == false)
+	{
+		aux = aux + "\"asistencia\": 0 }";
+	}else{
+		
+		aux = aux + "\"asistencia\": 1 ,";
+		aux = aux + "\"comentario\":\"" + comentario.value + "\",";
+		aux = aux + "\"habilidades\":[";
+
+		var inicio = 0;
+
+		actividad.getAt(0).habilidades.forEach(function(e)
+		{
+			var inicioSub = 0;
+
+			if(inicio > 0)
+			{
+				aux = aux + ","
+			}else{
+				inicio++;
+			}
+
+			aux = aux + "{\"habilidad\":" + e.id + ",";
+			aux = aux + "\"subHabs\":[";
+
+			e.subHabs.forEach(function(x)
+			{
+				if(inicioSub > 0)
+				{
+					aux = aux + ","
+				}else{
+					inicioSub++;
+				}
+
+				aux = aux + "{\"id\":" + x.id + ",";
+
+				if(x.logrado == true)
+				{
+					aux = aux + "\"nota\": 3}";
+				}else{
+					if(x.medio == true)
+					{
+						aux = aux + "\"nota\": 2}";
+					}else{
+						aux = aux + "\"nota\": 1}";
+					}
+				}
+			});
+
+			aux = aux + "]}";
+		});
+
+		aux = aux + "]}";
+	}
+
+	if (hayCalificacion.value == 0)
+	{
+		fetch('http://loop.inhandy.com/loop.php?agregarCalificaciones=' + aux, {
+			method: 'GET',
+			cache: 'default',
+			headers: { "Content-type": "application/json"}
+		})
+		.then(function(result)
+		{
+			if (result.status !== 200)
+			{
+				console.log("agregarCalificaciones: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		});
+	}else{
+		fetch('http://loop.inhandy.com/loop.php?actualizarCalificaciones=' + aux, {
+			method: 'GET',
+			cache: 'default',
+			headers: { "Content-type": "application/json"}
+		})
+		.then(function(result)
+		{
+			if (result.status !== 200)
+			{
+				console.log("actualizarCalificaciones: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		});
+	}
+}
+
+//----CrearAlumno.ux----
+//-- Guarda un nuevo Alumno de 0(aún no se va a usar)
+function agregarAlumnoNuevo(arg)
+{
+	//var aux = "\"id\":" + idMaxAlumno.value + ",";
+	var aux = "{\"nombre\": \"" + nombre.value + "\",";
+	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
+	aux = aux + "\"cel\": \"" + cel.value + "\",";
+	aux = aux + "\"correo\": \"" + correo.value + "\",";
+	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
+	aux = aux + "\"nacimiento\": \"" + nacimiento.value + "\",";
+	aux = aux + "\"rol\": 0}";
+
+	fetch('http://loop.inhandy.com/loop.php?crearPersona=' + aux, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("agregarAlumnoNuevo: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var auxAlumnos = Observable();
+
+		auxAlumnos.add({"id":data.id_persona,"activo":true});
+		alumnos.replaceAll(auxAlumnos);
+		agregarAlumnosCurso();
+	});
+}
+
+//-- Agrega alumnos de la rama a un curso específico
+function agregarAlumnosCurso()
+{
+	var aux = "{\"id\":" + cursoAct.value.id + ",";
+	aux = aux + "\"alumnos\":[";
+
+	var inicio = 0;
+
+	alumnos.forEach(function(e)
+	{
+		if(e.activo == true)
+		{
+			if(inicio > 0)
+			{
+				aux = aux + ","
+			}else{
+				inicio++;
+			}
+
+			aux = aux + "{\"alumno\":" + e.id + "}";
+		}
+	});
+
+	aux = aux + "]}";
+
+	console.log(" Link Agrega Curso: " + 'http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux);
+	fetch('http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("agregarAlumnosCurso: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		getAlumxCursos();
+	});
+}
 
 
 
@@ -804,6 +1081,8 @@ function cargarAlumnos()
 
 
 
+
+
 function marcarAlumnosxCurso()
 {
 	var aux = Observable();
@@ -835,166 +1114,6 @@ function marcarAlumnosxCurso()
 	alumnos.replaceAll(aux);
 }
 
-
-//----CrearAlumno.ux----
-function Student(nombre, apellido, correo, cel, nacimiento, imagen)
-{
-	this.nombre = nombre;
-	this.apellido = apellido;
-	this.correo = correo;
-	this.cel = cel;
-	this.nacimiento = nacimiento;
-	this.imagen = imagen;
-}
-
-//-- Guarda un nuevo Alumno de 0(aún no se va a usar)
-function agregarAlumnoNuevo()
-{
-	idMaxAlumno.value = idMaxAlumno.value + 1;
-
-	var aux = "{\"id\":" + idMaxAlumno.value + ",";
-	aux = aux + "\"nombre\": \"" + alumno.nombre + "\",";
-	aux = aux + "\"apellido\": \"" + alumno.apellido + "\",";
-	aux = aux + "\"correo\": \"" + alumno.correo + "\",";
-	aux = aux + "\"cel\": \"" + alumno.cel + "\",";
-	aux = aux + "\"imagen\": \"" + alumno.imagen + "\",";
-	aux = aux + "\"rol\": 0}";
-
-	fetch('https://firstloop.firebaseio.com/personas.json', {
-		method: 'POST',
-		headers: { "Content-type": "application/json"},
-		body: aux
-	});
-
-	cargarAlumnos();
-}
-
-//-- Agrega alumnos de la rama a un curso específico
-function agregarAlumnosCurso()
-{
-	var aux = "{\"id\":" + cursoAct.value.id + ",";
-	aux = aux + "\"curso\":\"" + cursoAct.value.curso + "\",";
-	aux = aux + "\"instructor\":\"" + cursoAct.value.instructor + "\",";
-	aux = aux + "\"rama\":\"" + cursoAct.value.rama + "\",";
-	aux = aux + "\"alumnos\":[";
-
-	var inicio = 0;
-
-	alumnos.forEach(function(e)
-	{
-		if(e.activo == true)
-		{
-			if(inicio > 0)
-			{
-				aux = aux + ","
-			}else{
-				inicio++;
-			}
-
-			aux = aux + "{\"alumno\":" + e.id + "}";
-		}
-	});
-
-	aux = aux + "]}";
-
-
-	fetch('https://firstloop.firebaseio.com/cursos/' + cursoAct.value.llave + '.json', {
-		method: 'PUT',
-		headers: { "Content-type": "application/json"},
-		body: aux
-	});
-
-	var id = cursoAct.value.id;
-
-	cargarCursos();
-}
-
-function marcaAsistencia()
-{
-	if(asistio.value == true)
-	{
-		mostrarCalificacion.value = "Visible";
-	}else{
-		mostrarCalificacion.value = "Collapsed";
-	}
-}
-
-//-- Guarda las notas del día del estudiante seleccionado
-function agregarCalificaciones()
-{
-	var aux = "{\"actividad\":" + hayAct.id + ",";
-	aux = aux + "\"alumno\":" + alumnoAct.value.id + ",";
-
-	if(asistio == false)
-	{
-		aux = aux + "\"asistencia\": 0 }";
-	}else{
-		
-		aux = aux + "\"asistencia\": 1 ,";
-		aux = aux + "\"comentario\":\"" + comentario.value + "\",";
-		aux = aux + "\"habilidades\":[";
-
-		var inicio = 0;
-
-		habilidadesAct.forEach(function(e)
-		{
-			var inicioSub = 0;
-
-			if(inicio > 0)
-			{
-				aux = aux + ","
-			}else{
-				inicio++;
-			}
-
-			aux = aux + "{\"habilidad\":" + e.id + ",";
-			aux = aux + "\"subHabs\":[";
-
-			e.subHabs.forEach(function(x)
-			{
-				if(inicioSub > 0)
-				{
-					aux = aux + ","
-				}else{
-					inicioSub++;
-				}
-
-				aux = aux + "{\"id\":" + x.id + ",";
-
-				if(x.logrado == true)
-				{
-					aux = aux + "\"nota\": 3}";
-				}else{
-					if(x.medio == true)
-					{
-						aux = aux + "\"nota\": 2}";
-					}else{
-						aux = aux + "\"nota\": 1}";
-					}
-				}
-			});
-
-			aux = aux + "]}";
-		});
-
-		aux = aux + "]}";
-	}
-
-	if (calificacionAct.value == "")
-	{
-		fetch('https://firstloop.firebaseio.com/calificaciones.json', {
-			method: 'POST',
-			headers: { "Content-type": "application/json"},
-			body: aux
-		});
-	}else{
-		fetch('https://firstloop.firebaseio.com/calificaciones/' + calificacionAct.value + '.json', {
-			method: 'PUT',
-			headers: { "Content-type": "application/json"},
-			body: aux
-		});
-	}
-}
 
 
 //-------- FUNCION CHECKBOX------
@@ -1072,84 +1191,92 @@ function selectN(arg)
 {
 	var aux = Observable();
 	
-	habilidadesAct.forEach(function(e)
+	actividad.forEach(function(e)
 	{
-		e.subHabs.forEach(function(x)
+		e.habilidades.forEach(function(x)
 		{
-			if(x.id == arg.data.id)
+			x.subHabs.forEach(function(y)
 			{
-				x.medio = false;
-				x.logrado = false;
-				
-				if(x.noLogrado == false)
+				if(y.id == arg.data.id)
 				{
-					x.noLogrado = true;
-				}else{
-					x.noLogrado = false;
-				}	
-			}
+					y.medio = false;
+					y.logrado = false;
+					
+					if(y.noLogrado == false)
+					{
+						y.noLogrado = true;
+					}else{
+						y.noLogrado = false;
+					}	
+				}
+			});
 		});
-
 		aux.add(e);
-	});
+	})
 
-	habilidadesAct.replaceAll(aux);
+	actividad.replaceAll(aux);
 }
 
 function selectM(arg)
 {
 	var aux = Observable();
 	
-	habilidadesAct.forEach(function(e)
+	actividad.forEach(function(e)
 	{
-		e.subHabs.forEach(function(x)
+		e.habilidades.forEach(function(x)
 		{
-			if(x.id == arg.data.id)
+			x.subHabs.forEach(function(y)
 			{
-				x.noLogrado = false;
-				x.logrado = false;
-				
-				if(x.medio == false)
+				if(y.id == arg.data.id)
 				{
-					x.medio = true;
-				}else{
-					x.medio = false;
-				}	
-			}
+					y.noLogrado = false;
+					y.logrado = false;
+					
+					if(y.medio == false)
+					{
+						y.medio = true;
+					}else{
+						y.medio = false;
+					}	
+				}
+			});
 		});
 
 		aux.add(e);
 	});
 
-	habilidadesAct.replaceAll(aux);
+	actividad.replaceAll(aux);
 }
 
 function selectL(arg)
 {
 	var aux = Observable();
 	
-	habilidadesAct.forEach(function(e)
+	actividad.forEach(function(e)
 	{
-		e.subHabs.forEach(function(x)
+		e.habilidades.forEach(function(x)
 		{
-			if(x.id == arg.data.id)
+			x.subHabs.forEach(function(y)
 			{
-				x.medio = false;
-				x.noLogrado = false;
-				
-				if(x.logrado == false)
+				if(y.id == arg.data.id)
 				{
-					x.logrado = true;
-				}else{
-					x.logrado = false;
-				}	
-			}
+					y.medio = false;
+					y.noLogrado = false;
+					
+					if(y.logrado == false)
+					{
+						y.logrado = true;
+					}else{
+						y.logrado = false;
+					}	
+				}
+			});
 		});
 
 		aux.add(e);
 	});
 
-	habilidadesAct.replaceAll(aux);
+	actividad.replaceAll(aux);
 }
 
 function selectNewAlumno(arg)
@@ -1361,12 +1488,14 @@ module.exports = {
 	selectInstructor: selectInstructor,
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
-	habilidadesAct: habilidadesAct,
 	cargarInstructores: cargarInstructores,
 	setDiaconActividad: setDiaconActividad,
 	marcarAlumnosxCurso: marcarAlumnosxCurso,
 	eliminarSubHabActividad: eliminarSubHabActividad,
 	movCurso: movCurso,
+	curso: curso,
+	limpiarCurso: limpiarCurso,
+	agregarCurso: agregarCurso,
 
 //---CreaActividad.ux---
 	habilidades: habilidades,
@@ -1376,12 +1505,23 @@ module.exports = {
 
 //---AddAlumno.ux---
 	alumnos: alumnos,
-	alumno: alumno,
 	agregarAlumnosCurso: agregarAlumnosCurso,
 	selectNewAlumno: selectNewAlumno,
 	getAlumxCursos: getAlumxCursos,
+	agregarAlumnoNuevo: agregarAlumnoNuevo,
+	limpiarDatos: limpiarDatos,
+	eliminarAlumnoCurso: eliminarAlumnoCurso,
+	editarAlumnos: editarAlumnos,
+	mostrarEdicionAlumnos: mostrarEdicionAlumnos,
+//---Datos Persona---
+	nombre: nombre,
+	apellido: apellido,
+	correo: correo,
+	cel: cel,
+	nacimiento: nacimiento,
 
 //---CalificarAlumno.ux---
+	isAbleCalifica: isAbleCalifica,
 	resetHabxAlumno: resetHabxAlumno,
 	selectN: selectN,
 	selectM: selectM,

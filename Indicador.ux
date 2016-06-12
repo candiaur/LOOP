@@ -3,7 +3,7 @@
 	<JavaScript File="AdmAlumnos.js" />
 
 	<FileImageSource File="Assets/img_Check.png" ux:Key="check"/>
-	<FileImageSource File="Assets/img_X.png" ux:Key="falla"/>
+	<FileImageSource File="Assets/img_XRoja.png" ux:Key="falla"/>
 
 	<PageControl ux:Name="alumPage" Active="pagMiActividad" Interaction="None">
 		<Page ux:Name="pagMiActividad">
@@ -120,10 +120,10 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,26,0,8" Padding="15,7">
-					<Grid Columns="auto,auto">
-						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
-						<Text Value="ASISTENCIA" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
+				<StackPanel Color="#000" Margin="0,26,0,0" Padding="14,0" Height="28" Alignment="VerticalCenter">
+					<Grid Columns="auto,auto" Alignment="CenterLeft">
+						<Text Value="MI " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+						<Text Value="ASISTENCIA" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
 					</Grid>
 				</StackPanel>
 
@@ -171,10 +171,10 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,26,0,8" Padding="15,7">
-					<Grid Columns="auto,auto">
-						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
-						<Text Value="PROGRESIÓN" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
+				<StackPanel Color="#000" Margin="0,26,0,0" Padding="14,0" Height="28" Alignment="VerticalCenter">
+					<Grid Columns="auto,auto" Alignment="CenterLeft">
+						<Text Value="MI " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+						<Text Value="PROGRESIÓN" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
 					</Grid>
 				</StackPanel>
 
@@ -286,10 +286,10 @@
 					</Clicked>
 				</Atras>
 
-				<StackPanel Color="#000" Margin="0,26,0,8" Padding="15,7">
-					<Grid Columns="auto,auto">
-						<Text Value="MI " Font="museo700_letter" FontSize="16" TextColor="#FFF"/>
-						<Text Value="EVOLUCIÓN" Font="museo100_letter" FontSize="16" TextColor="#FFF"/>
+				<StackPanel Color="#000" Margin="0,26,0,0" Padding="14,0" Height="28" Alignment="VerticalCenter">
+					<Grid Columns="auto,auto" Alignment="CenterLeft">
+						<Text Value="MI " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+						<Text Value="EVOLUCIÓN" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
 					</Grid>
 				</StackPanel>
 
