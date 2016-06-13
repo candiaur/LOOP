@@ -16,6 +16,8 @@
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
 		<FileImageSource File="Assets/Logos/logoencirculo.png" ux:Global="logoCircular"/>
+		<FileImageSource File="Assets/img_EditaNegro.png" ux:Global="editNegro"/>
+		<FileImageSource File="Assets/img_EditaVerde.png" ux:Global="editVerde"/>
 		
 		<DockPanel ux:Class="Atras" Margin="0,-50,0,23" Alignment="TopLeft" ZOffset="2">
 			<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" Padding="14,0" TextAlignment="Center"/>
@@ -30,9 +32,15 @@
 				<DockPanel>
 					<Grid RowCount="2">
 						<Panel>
-							<Image File="Assets/Logos/looplogo.png" Alignment="Center"/>
+							<Image File="Assets/Logos/looplogo.png" Alignment="VerticalCenter" Width="80%"/>
 
-							<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-10"/>
+							<!-- <Rectangle Color="#FFF" Alignment="BottomCenter" Margin="0,0,0,-8" Width="30" Height="30">
+								<Rotation Degrees="-39" />
+								<WhileEnabled>
+									<Skew DegreesX="15" Duration="0.4"/>
+								</WhileEnabled>
+							</Rectangle> -->
+							<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-15"/>
 						</Panel>
 
 						<Panel Width="100%" Margin="0,-10,0,0" ZOffset="2">
@@ -40,7 +48,7 @@
 								<Rectangle Alignment="TopCenter" Color="#FFF" CornerRadius="5" Width="80%">
 									<Grid Padding="5,10,5,5">
 										<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,10">
-											<Grid Columns="1*,3*" Padding="5,5">
+											<Grid Columns="1*,3*" Padding="0,10,5,10">
 												<DockPanel>
 													<Image File="Assets/img_Mail.png" Alignment="Center"/>
 													<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
@@ -51,7 +59,7 @@
 										</Rectangle>
 
 										<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,5">
-											<Grid Columns="1*,3*" Padding="5,5">
+											<Grid Columns="1*,3*" Padding="0,10,5,10">
 												<DockPanel>
 													<Image File="Assets/img_Candado.png"  Alignment="Center" />
 													<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
@@ -142,7 +150,7 @@
 											</StackPanel>
 
 											<DockPanel Dock="Bottom">
-												<Text Value=">" Margin="0,10,0,0" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
+												<Text Value=">" Margin="6,0,0,0" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
 													<Rotation Degrees="-90"/>
 												</Text>
 											</DockPanel>
@@ -342,7 +350,7 @@
 								<DockPanel>
 									<Grid Alignment="TopCenter" Width="10%">
 										<StackPanel>
-											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,4,0,0"/>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,2,0,0"/>
 											<Rotation Degrees="270"/>
 										</StackPanel>
 
@@ -391,7 +399,7 @@
 										<Image File="Assets/img_Camara.png" Alignment="Center" Margin="5,0"/>
 
 										<StackPanel>
-											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" Margin="0,1,0,0"/>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" />
 											<Rotation Degrees="90"/>
 										</StackPanel>
 									</Grid>

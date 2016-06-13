@@ -229,9 +229,9 @@
 					</Grid>
 				</StackPanel>
 
-				<Grid Columns="1*,8*,1*" Color="#00D9C5">
+				<Grid Columns="2*,6*,2*" Color="#00D9C5" Height="28">
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 						<Rotation Degrees="180"/>
 						<Clicked>
 							<Callback Handler="{lastMonth}" />
@@ -244,36 +244,36 @@
 					</Grid>
 
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 						<Clicked>
 							<Callback Handler="{nextMonth}" />
 						</Clicked>
 					</DockPanel>
 				</Grid>
 
-				<StackPanel Color="#FFF" Margin="0,8" Padding="15,20">
+				<StackPanel Color="#FFF" Margin="0,8" Padding="14,20,14,15">
 					<Rectangle Layer="Background">
 						<Stroke Width="1" Color="#D2D2D2"/>
 					</Rectangle>
 
-					<Grid ColumnCount="7">
-						<Text Value="L" TextColor="#C9C9C9" TextAlignment="Center"/>
-						<Text Value="M" TextColor="#C9C9C9" TextAlignment="Center"/>
-						<Text Value="M" TextColor="#C9C9C9" TextAlignment="Center"/>
-						<Text Value="J" TextColor="#C9C9C9" TextAlignment="Center"/>
-						<Text Value="V" TextColor="#C9C9C9" TextAlignment="Center"/>
-						<Text Value="S" TextColor="#C9C9C9" TextAlignment="Center"/>
-						<Text Value="D" TextColor="#C9C9C9" TextAlignment="Center"/>
+					<Grid ColumnCount="7" Margin="0,5,0,10">
+						<Text Value="L" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
+						<Text Value="M" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
+						<Text Value="M" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
+						<Text Value="J" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
+						<Text Value="V" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
+						<Text Value="S" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
+						<Text Value="D" TextColor="#C9C9C9" TextAlignment="Center" Font="museo700_letter" FontSize="12"/>
 					</Grid>
 
 					<StackPanel>
 						<Grid ColumnCount="7">	
 							<Each Items="{dias}">
 								<Grid>
-									<DockPanel Padding="0,2" Margin="0,10" IsEnabled="{valido}">
+									<DockPanel Padding="0,2" Margin="0,8" IsEnabled="{valido}">
 										<StackPanel>
-											<Circle Color="{color}">
-												<Text Value="{dia}" Margin="0,3,0,0" TextAlignment="Center" TextColor="{textColor}"/>
+											<Circle Color="{color}" Padding="1">
+												<Text Value="{dia}" Font="museo700_letter" FontSize="12" TextAlignment="Center" TextColor="{textColor}" Margin="0,3,0,0"/>
 											</Circle>
 												
 											<Clicked>
@@ -324,9 +324,9 @@
 						</Clicked>
 					</DockPanel>
 
-					<Grid Columns="1*,9*,1*" Color="#00D9C5" Margin="0,8">
+					<Grid Columns="2*,7*,2*" Color="#00D9C5" Margin="0,8" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -334,14 +334,14 @@
 						</DockPanel>
 						
 						<Grid Columns="auto,auto,auto,auto" Alignment="Center" Padding="0,5">
-							<Text Value="{dia}" TextColor="#FFF" Font="museo700_letter"/>
-							<Text Value=" de " TextColor="#FFF" Font="museo700_letter" />
-							<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" />
-							<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" />
+							<Text Value="{dia}" TextColor="#FFF" Font="museo700_letter" FontSize="14"/>
+							<Text Value=" de " TextColor="#FFF" Font="museo700_letter" FontSize="14"/>
+							<Text Value="{mes}" TextColor="#FFF" Font="museo700_letter" FontSize="14"/>
+							<Text Value="{anio}" TextColor="#FFF" Font="museo100_letter" FontSize="14"/>
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
@@ -450,9 +450,9 @@
 						</Grid>
 					</StackPanel>
 
-					<Grid Columns="1*,9*,1*" Color="#00D9C5">
+					<Grid Columns="2*,7*,2*" Color="#00D9C5" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -467,7 +467,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
@@ -535,7 +535,13 @@
 				</Atras>
 
 				<Panel Alignment="Right" ZOffset="2" Margin="0,-10,14,6">
-					<Image File="Assets/img_EditaNegro.png" Width="30" />
+					<WhileTrue Value="{isAbleCalifica}">
+						<Image Source="editNegro" Width="30" />
+					</WhileTrue>
+
+					<WhileFalse Value="{isAbleCalifica}">
+						<Image Source="editVerde" Width="30" />
+					</WhileFalse>
 
 					<Clicked>
 						<Callback Handler="{mostrarEdicionAlumnos}" />
@@ -552,29 +558,43 @@
 				<ScrollView>
 					<StackPanel>
 						<StackPanel>
+							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
+
 							<Each Items="{alumnosCurso}">
-								<DockPanel Color="#FFF" Padding="0,1" Margin="0,0,0,1">
-									<Rectangle Layer="Background" Opacity="0.5">
-										<Stroke Width="1" Color="#D2D2D2"/>
-									</Rectangle>
+								<DockPanel Color="#FFF">
+									<Grid Columns="auto,auto" >
+										<WhileTrue Value="{isAbleCalifica}">
+											<DockPanel Width="70">
+												<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
 
-									<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
+												<Rectangle Fill="#FFF" Height="60" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
+													<WhileEnabled>
+														<Skew DegreesX="-15" Duration="0.4"/>
+													</WhileEnabled>
+												</Rectangle>
+											</DockPanel>
+										</WhileTrue>
 
-									<Rectangle Fill="#FFF" Height="60" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
-										<WhileEnabled>
-											<Skew DegreesX="-15" Duration="0.4"/>
-										</WhileEnabled>
-									</Rectangle>
-
-									<Grid Margin="10,10">
-										<Text Value="{nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="65,0,0,0" FontSize="16" TextColor="#000"/>
-										<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" Margin="60,0,0,0" FontSize="16" TextColor="#000"/>
+										<Grid Margin="14,10">
+											<Text Value="{nombre}" Alignment="CenterLeft" Font="museo300I_letter" Margin="5,0,0,0" FontSize="16" TextColor="#000"/>
+											<Text Value="{apellido}" Alignment="CenterLeft" Font="museo700I_letter" FontSize="16" TextColor="#000"/>
+										</Grid>
 									</Grid>
 									
 									<Text Value=">" FontSize="24" Alignment="CenterRight" Font="pres_letter" Margin="15,5,15,0" TextColor="#000"/>
 
+									<Rectangle Color="#00D9C5" Height="60" Width="60" Alignment="Right" ZOffset="2" Visibility="{editarAlumnos}" Margin="0,0,60,0">
+										<Image File="Assets/img_EditaBlanco.png" Width="25" />
+
+										<Clicked>
+											<Callback Handler="{editarAlumnoCurso}" />
+											<Set Target="showCreaAlumno.Visibility" Value="Visible" />
+											<Set Target="actPage.Active" Value="crearAlumno" />
+										</Clicked>
+									</Rectangle>
+
 									<Rectangle Color="#E0464D" Height="60" Width="60" Alignment="Right" ZOffset="2" Visibility="{editarAlumnos}">
-										<Image File="Assets/img_XBlanca.png" Width="30" />
+										<Image File="Assets/img_XBlanca.png" Width="25" />
 
 										<Clicked>
 											<Callback Handler="{eliminarAlumnoCurso}" />
@@ -587,6 +607,8 @@
 											<Set Target="actPage.Active" Value="calificaAlumno" />
 										</Clicked>
 									</WhileTrue>
+
+									<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 								</DockPanel>
 							</Each>
 						</StackPanel>
@@ -682,7 +704,7 @@
 					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
 
 					<Clicked>
-						<Callback Handler="{agregarAlumnoNuevo}" />
+						<Callback Handler="{creaEditaAlumno}" />
 						<Set Target="showCreaAlumno.Visibility" Value="Collapsed" />
 						<Set Target="actPage.Active" Value="pagAlumnos" />
 					</Clicked>
@@ -707,9 +729,9 @@
 						</Grid>
 					</StackPanel>
 
-					<Grid Columns="1*,9*,1*" Color="#00D9C5" Padding="14,0">
+					<Grid Columns="2*,7*,2*" Color="#00D9C5" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Left" Margin="0,5,0,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastFechaconActividad}" />
@@ -724,7 +746,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,5,0,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextFechaconActividad}" />
 							</Clicked>

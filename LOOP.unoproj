@@ -1,11 +1,52 @@
 {
-    "Packages": [
-        "Fuse",
-        "FuseJS",
-        "Fuse.GeoLocation",
-        "Fuse.BasicTheme"
-    ],
-    "Includes": [
-        "*"
-    ]
+	"Version": "1.0.0",
+	"VersionCount": 1,
+	"RootNamespace":"com.uanbai.loop",
+	"Packages":	[
+		"Fuse",
+		"FuseJS",
+		"Fuse.GeoLocation",
+		"Fuse.BasicTheme"
+	],
+	"Includes": [
+		"*"
+	],
+	"Android": {
+		"Key": {
+			"Alias": "loop",
+			"AliasPassword": "uanbai",
+			"Store": "tridente.keystore",
+			"StorePassword": "uanbai"
+		},
+		"Package": "com.uanbai.loop",
+		"ApplicationLabel": "My Loop",
+		"VersionCode": "$(VersionCount)",
+		"VersionName": "$(Version)",
+		"Icons": {
+			"LDPI": "ico/mipmap-ldpi/icon.png",
+			"MDPI": "ico/mipmap-mdpi/icon.png",
+			"HDPI": "ico/mipmap-hdpi/icon.png",
+			"XHDPI": "ico/mipmap-xhdpi/icon.png",
+			"XXHDPI": "ico/mipmap-xxhdpi/icon.png",
+			"XXXHDPI": "ico/mipmap-xxxhdpi/icon.png"
+		}
+	},
+	"iOS": {
+		"BundleIdentifier": "com.uanbai.loop",
+		"BundleName": "My Loop",
+		"Icons": {
+			"iPhone_29_2x": "ico/ios/appicon-Small_2x.png",
+			"iPhone_29_3x": "ico/ios/appicon-Small_3x.png",
+			"iPhone_40_2x": "ico/ios/appicon-Small-40_2x.png",
+			"iPhone_40_3x": "ico/ios/appicon-Small-40_3x.png",
+			"iPhone_60_2x": "ico/ios/appicon-60_2x.png",
+			"iPhone_60_3x": "ico/ios/appicon-60_3x.png",
+			"iPad_29_1x": "ico/ios/appicon-Small_2x.png",
+			"iPad_29_2x": "ico/ios/appicon-Small_2x.png",
+			"iPad_40_1x": "ico/ios/appicon-Small-40_2x.png",
+			"iPad_40_2x": "ico/ios/appicon-Small-40_2x.png",
+			"iPad_76_1x": "ico/ios/appicon_2x.png",
+			"iPad_76_2x": "ico/ios/appicon_2x.png"
+		}
+	}
 }

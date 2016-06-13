@@ -648,6 +648,7 @@ function selectAlumno(arg)
 	});
 
 	editarAlumnos.value = "Collapsed";
+	isAbleCalifica.value = true;
 	setDiaconActividad();
 }
 
@@ -661,6 +662,147 @@ function mostrarEdicionAlumnos()
 		isAbleCalifica.value = false;
 		editarAlumnos.value = "Visible";
 	}
+}
+
+function editarAlumnoCurso(arg)
+{
+	alumnosCurso.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			alumnoAct.value = e;
+		}
+	});
+
+	editarAlumnos.value = "Collapsed";
+	isAbleCalifica.value = true;
+
+	nombre.value = alumnoAct.value.nombre;
+	apellido.value = alumnoAct.value.apellido;
+	correo.value = alumnoAct.value.correo;
+	cel.value = alumnoAct.value.cel;
+	nacimiento.value = alumnoAct.value.nacimiento;
+	imagen.value = "";
+}
+
+function limpiarDatos()
+{
+	alumnoAct.value = alumnosCurso.getAt(0);
+	alumnoAct.value.id = 0;
+
+	nombre.value = "";
+	apellido.value = "";
+	correo.value = "";
+	cel.value = "";
+	nacimiento.value = "";
+	imagen.value = "";
+}
+
+//----CrearAlumno.ux----
+//-- Crea un nuevo Alumno
+function creaEditaAlumno()
+{
+	var aux = "\"nombre\": \"" + nombre.value + "\",";
+	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
+	aux = aux + "\"cel\": \"" + cel.value + "\",";
+	aux = aux + "\"correo\": \"" + correo.value + "\",";
+	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
+	aux = aux + "\"nacimiento\": \"" + nacimiento.value + "\"";
+	
+	if(alumnoAct.value.id == 0)
+	{
+		aux = "{" + aux + ",\"rol\": 0}";
+
+		fetch('http://loop.inhandy.com/loop.php?crearPersona=' + aux, {
+			method: 'GET',
+			cache: 'default',
+			headers: { "Content-type": "application/json"}
+		})
+		.then(function(result)
+		{
+			if (result.status !== 200)
+			{
+				console.log("creaAlumno: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		})
+		.then(function(data)
+		{
+			var auxAlumnos = Observable();
+
+			auxAlumnos.add({"id":data.id_persona,"activo":true});
+			alumnos.replaceAll(auxAlumnos);
+			agregarAlumnosCurso();
+		});
+	}else{
+		aux = "{\"id\":" + alumnoAct.value.id + "," + aux + "}";
+
+		fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
+			method: 'GET',
+			cache: 'default',
+			headers: { "Content-type": "application/json"}
+		})
+		.then(function(result)
+		{
+			if (result.status !== 200)
+			{
+				console.log("editaAlumno: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		})
+		.then(function(data)
+		{
+			getAlumxCursos();
+		});
+	}
+}
+
+//-- Agrega alumnos de la rama a un curso específico
+function agregarAlumnosCurso()
+{
+	var aux = "{\"id\":" + cursoAct.value.id + ",";
+	aux = aux + "\"alumnos\":[";
+
+	var inicio = 0;
+
+	alumnos.forEach(function(e)
+	{
+		if(e.activo == true)
+		{
+			if(inicio > 0)
+			{
+				aux = aux + ","
+			}else{
+				inicio++;
+			}
+
+			aux = aux + "{\"alumno\":" + e.id + "}";
+		}
+	});
+
+	aux = aux + "]}";
+
+	console.log(" Link Agrega Curso: " + 'http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux);
+	fetch('http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("agregarAlumnosCurso: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		getAlumxCursos();
+	});
 }
 
 function eliminarAlumnoCurso(arg)
@@ -687,14 +829,78 @@ function eliminarAlumnoCurso(arg)
 	});
 }
 
-function limpiarDatos()
+
+
+//--Carga todos los alumnos de la rama activa
+function cargarAlumnos()
 {
-	nombre.value = "";
-	apellido.value = "";
-	correo.value = "";
-	cel.value = "";
-	nacimiento.value = "";
-	imagen.value = "";
+	idMaxAlumno.value = 0;
+
+	fetch('https://firstloop.firebaseio.com/personas.json', {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("CargarAlumnos: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		
+		keys.forEach(function(key, index)
+		{
+			if (index >= alumnos.length)
+			{
+				var nuevo = data[key];
+				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
+				nuevo["activo"] = false;
+				alumnos.add(nuevo);
+
+				if(nuevo.id > idMaxAlumno.value)
+				{
+					idMaxAlumno.value = nuevo.id;
+				}
+			}
+		});
+	});
+}
+
+function marcarAlumnosxCurso()
+{
+	var aux = Observable();
+
+	alumnos.forEach(function(e)
+	{
+		var encontrado = false;
+
+		if (cursoAct.value.alumnos != null)
+		{
+			cursoAct.value.alumnos.forEach(function(x)
+			{
+				if(e.id == x.alumno)
+				{
+					e.activo = true;
+					encontrado = true;
+				}
+			});
+		}
+
+		if (!encontrado)
+		{
+			e.activo = false;
+		}
+
+		aux.add(e);
+	});
+
+	alumnos.replaceAll(aux);
 }
 
 //---CalificarAlumno.ux---
@@ -951,170 +1157,6 @@ function agregarCalificaciones()
 		});
 	}
 }
-
-//----CrearAlumno.ux----
-//-- Guarda un nuevo Alumno de 0(aún no se va a usar)
-function agregarAlumnoNuevo(arg)
-{
-	//var aux = "\"id\":" + idMaxAlumno.value + ",";
-	var aux = "{\"nombre\": \"" + nombre.value + "\",";
-	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
-	aux = aux + "\"cel\": \"" + cel.value + "\",";
-	aux = aux + "\"correo\": \"" + correo.value + "\",";
-	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
-	aux = aux + "\"nacimiento\": \"" + nacimiento.value + "\",";
-	aux = aux + "\"rol\": 0}";
-
-	fetch('http://loop.inhandy.com/loop.php?crearPersona=' + aux, {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("agregarAlumnoNuevo: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var auxAlumnos = Observable();
-
-		auxAlumnos.add({"id":data.id_persona,"activo":true});
-		alumnos.replaceAll(auxAlumnos);
-		agregarAlumnosCurso();
-	});
-}
-
-//-- Agrega alumnos de la rama a un curso específico
-function agregarAlumnosCurso()
-{
-	var aux = "{\"id\":" + cursoAct.value.id + ",";
-	aux = aux + "\"alumnos\":[";
-
-	var inicio = 0;
-
-	alumnos.forEach(function(e)
-	{
-		if(e.activo == true)
-		{
-			if(inicio > 0)
-			{
-				aux = aux + ","
-			}else{
-				inicio++;
-			}
-
-			aux = aux + "{\"alumno\":" + e.id + "}";
-		}
-	});
-
-	aux = aux + "]}";
-
-	console.log(" Link Agrega Curso: " + 'http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux);
-	fetch('http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux, {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("agregarAlumnosCurso: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		getAlumxCursos();
-	});
-}
-
-
-
-
-//--Carga todos los alumnos de la rama activa
-function cargarAlumnos()
-{
-	idMaxAlumno.value = 0;
-
-	fetch('https://firstloop.firebaseio.com/personas.json', {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("CargarAlumnos: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		
-		keys.forEach(function(key, index)
-		{
-			if (index >= alumnos.length)
-			{
-				var nuevo = data[key];
-				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
-				nuevo["activo"] = false;
-				alumnos.add(nuevo);
-
-				if(nuevo.id > idMaxAlumno.value)
-				{
-					idMaxAlumno.value = nuevo.id;
-				}
-			}
-		});
-	});
-}
-
-
-
-
-
-function marcarAlumnosxCurso()
-{
-	var aux = Observable();
-
-	alumnos.forEach(function(e)
-	{
-		var encontrado = false;
-
-		if (cursoAct.value.alumnos != null)
-		{
-			cursoAct.value.alumnos.forEach(function(x)
-			{
-				if(e.id == x.alumno)
-				{
-					e.activo = true;
-					encontrado = true;
-				}
-			});
-		}
-
-		if (!encontrado)
-		{
-			e.activo = false;
-		}
-
-		aux.add(e);
-	});
-
-	alumnos.replaceAll(aux);
-}
-
-
 
 //-------- FUNCION CHECKBOX------
 function selectHab(arg)
@@ -1471,10 +1513,6 @@ function getFecha()
 	anio.value = " / " + today.getFullYear();
 }
 
-function getHabxCursoxDia()
-{
-}
-
 module.exports = {
 //---Cursos.ux---
 	ramas: ramas,
@@ -1508,10 +1546,11 @@ module.exports = {
 	agregarAlumnosCurso: agregarAlumnosCurso,
 	selectNewAlumno: selectNewAlumno,
 	getAlumxCursos: getAlumxCursos,
-	agregarAlumnoNuevo: agregarAlumnoNuevo,
+	creaEditaAlumno: creaEditaAlumno,
 	limpiarDatos: limpiarDatos,
-	eliminarAlumnoCurso: eliminarAlumnoCurso,
 	editarAlumnos: editarAlumnos,
+	editarAlumnoCurso: editarAlumnoCurso,
+	eliminarAlumnoCurso: eliminarAlumnoCurso,
 	mostrarEdicionAlumnos: mostrarEdicionAlumnos,
 //---Datos Persona---
 	nombre: nombre,
