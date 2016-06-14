@@ -677,11 +677,18 @@ function editarAlumnoCurso(arg)
 	editarAlumnos.value = "Collapsed";
 	isAbleCalifica.value = true;
 
+	var nacio = alumnoAct.value.nacimiento;
+
+	if(nacio.trim().length == 10)
+	{
+		nacio = nacio.substr(8) + nacio.substr(4,4) + nacio.substr(0,4);
+	}
+
 	nombre.value = alumnoAct.value.nombre;
 	apellido.value = alumnoAct.value.apellido;
 	correo.value = alumnoAct.value.correo;
 	cel.value = alumnoAct.value.cel;
-	nacimiento.value = alumnoAct.value.nacimiento;
+	nacimiento.value = nacio;
 	imagen.value = "";
 }
 
@@ -699,9 +706,14 @@ function limpiarDatos()
 }
 
 //----CrearAlumno.ux----
-//-- Crea un nuevo Alumno
+//--- Crea un nuevo Alumno ---
 function creaEditaAlumno()
 {
+	if(nacimiento.value.trim().length == 10)
+	{
+		nacimiento.value = nacimiento.value.substr(6) + nacimiento.value.substr(2,4) + nacimiento.value.substr(0,2);
+	}
+	
 	var aux = "\"nombre\": \"" + nombre.value + "\",";
 	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
 	aux = aux + "\"cel\": \"" + cel.value + "\",";

@@ -231,7 +231,7 @@
 
 				<Grid Columns="2*,6*,2*" Color="#00D9C5" Height="28">
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 						<Rotation Degrees="180"/>
 						<Clicked>
 							<Callback Handler="{lastMonth}" />
@@ -244,7 +244,7 @@
 					</Grid>
 
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 						<Clicked>
 							<Callback Handler="{nextMonth}" />
 						</Clicked>
@@ -326,7 +326,7 @@
 
 					<Grid Columns="2*,7*,2*" Color="#00D9C5" Margin="0,8" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -341,14 +341,14 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
 						</DockPanel>
 					</Grid>
 
-					<ScrollView MaxHeight="400">
+					<ScrollView MaxHeight="450">
 						<StackPanel>
 							<StackPanel>
 								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
@@ -412,7 +412,7 @@
 								</Clicked>
 							</StackPanel>
 
-							<Panel Height="60" />
+							<Panel Height="100" />
 						</StackPanel>
 					</ScrollView>
 				</StackPanel>
@@ -452,7 +452,7 @@
 
 					<Grid Columns="2*,7*,2*" Color="#00D9C5" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -467,14 +467,14 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
 						</DockPanel>
 					</Grid>
 
-					<ScrollView Margin="0,8" MaxHeight="400">
+					<ScrollView Margin="0,8" MaxHeight="450">
 						<StackPanel>
 							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
@@ -506,7 +506,7 @@
 								</DockPanel>
 							</Each>
 
-							<Panel Height="60" />
+							<Panel Height="100" />
 						</StackPanel>
 					</ScrollView>
 				</StackPanel>
@@ -731,7 +731,7 @@
 
 					<Grid Columns="2*,7*,2*" Color="#00D9C5" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastFechaconActividad}" />
@@ -746,7 +746,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,3,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextFechaconActividad}" />
 							</Clicked>

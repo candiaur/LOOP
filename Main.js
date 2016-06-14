@@ -33,6 +33,7 @@ function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
 		nacio = nacio.substr(8) + nacio.substr(4,4) + nacio.substr(0,4);
 	}catch(err){
 		fecha = "";
+		nacio = "";
 	}
 
 	this.nombre = nombre.toUpperCase();
@@ -189,8 +190,10 @@ function limpiarDatos()
 
 function modificarDatos()
 {	
-	console.log("Fecha: " + fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2));
-	fechaNacio.value = fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2);
+	if(fechaNacio.value.trim().length == 10)
+	{
+		fechaNacio.value = fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2);
+	}
 
 	var aux = "{\"id\":" + GlobalE.idPerson.value + ",";
 	aux = aux + "\"nombre\": \"" + nombre.value + "\",";

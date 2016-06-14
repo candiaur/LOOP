@@ -33,13 +33,6 @@
 					<Grid RowCount="2">
 						<Panel>
 							<Image File="Assets/Logos/looplogo.png" Alignment="VerticalCenter" Width="80%"/>
-
-							<!-- <Rectangle Color="#FFF" Alignment="BottomCenter" Margin="0,0,0,-8" Width="30" Height="30">
-								<Rotation Degrees="-39" />
-								<WhileEnabled>
-									<Skew DegreesX="15" Duration="0.4"/>
-								</WhileEnabled>
-							</Rectangle> -->
 							<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-15"/>
 						</Panel>
 
@@ -83,7 +76,7 @@
 
 							</StackPanel>
 
-							<Text Value="V. BETA" Font="museo700_letter" FontSize="14" TextColor="#FFF" Alignment="BottomRight" Margin="14" />
+							<!-- <Text Value="V. BETA" Font="museo700_letter" FontSize="14" TextColor="#FFF" Alignment="BottomRight" Margin="14" /> -->
 						</Panel>
 					</Grid>
 				</DockPanel>
@@ -135,7 +128,7 @@
 												<!-- <Circle Height="250" Width="250" Margin="0,15">
 													<ImageFill Url="{persona.imagen}"/>
 												</Circle> -->
-												<Image File="Assets/Logos/logoconbeta.png" Width="70%" Margin="0,15,0,50"/>
+												<Image File="Assets/Logos/looplogo.png" Width="70%" Margin="0,15,0,50"/>
 
 												<Grid Columns="auto,auto" Alignment="Center">
 													<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
@@ -369,15 +362,15 @@
 
 										<Image File="Assets/img_Progreso.png" Alignment="Left" Margin="5,0"/>
 									</Grid>
-
+<!-- 
 									<Grid ColumnCount="2" Alignment="CenterRight" Width="20%">
 										<Image File="Assets/img_Instructores.png" Alignment="Left"/>
 
 										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
-									</Grid>
+									</Grid> -->
 
 									<Grid Alignment="VerticalCenter">
-										<Image File="Assets/Logos/logoconbeta.png" Width="70%"/>
+										<Image File="Assets/Logos/looplogo.png" Width="70%"/>
 
 										<Panel Height="150" />
 
@@ -395,14 +388,14 @@
 										</StackPanel>
 									</Grid>
 
-									<Grid Alignment="BottomCenter" Width="10%">
+									<!-- <Grid Alignment="BottomCenter" Width="10%">
 										<Image File="Assets/img_Camara.png" Alignment="Center" Margin="5,0"/>
 
 										<StackPanel>
 											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" />
 											<Rotation Degrees="90"/>
 										</StackPanel>
-									</Grid>
+									</Grid> -->
 								</DockPanel>
 							</udPage>
 
