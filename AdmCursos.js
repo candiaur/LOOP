@@ -17,12 +17,10 @@ var instructores = Observable({"instructor":"nuevo"});
 var movCurso = Observable(new MovimientoPag("pagRamas", "Collapsed", "Visible",true));
 
 //---CrearActividad.ux---
-var habilidades = Observable();
-var subHabs = Observable();
+var niveles = Observable();
 
 //---CrearAlumno.ux---
-var idMaxAlumno = Observable(0);
-var editarAlumnos = Observable("Collapsed");
+var editarAlumnos = Observable(false);
 
 //--- Datos Persona---
 var nombre = Observable("");
@@ -34,7 +32,6 @@ var imagen = Observable("");
 
 
 //---CalificarAlumno.ux--
-var isAbleCalifica = Observable(true);
 var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
 var fechasAct = Observable({"fecha": "nueva"});;
@@ -62,7 +59,7 @@ function getPersona()
 		if(GlobalE.rolPerson.value != 0)
 		{
 			cargarRamas();
-			cargarSubHabs();
+			cargarNiveles();
 		}
 
 		Timer.delete(timer);
@@ -111,6 +108,56 @@ function cargarRamas()
 	});
 }
 
+//----CrearActividad.ux----
+//-- Carga todos los niveles con sus habilidades y subhabilidades por default
+function cargarNiveles()
+{
+	fetch('http://loop.inhandy.com/loop.php?cargarNiveles', {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("cargarNiveles: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		
+		keys.forEach(function(key, index)
+		{
+			if (index >= niveles.length)
+			{
+				var nuevo = data[key];
+				nuevo["isVisible"] = "Collapsed";
+				nuevo["activo"] = false;
+
+				nuevo.habilidades.forEach(function(e)
+				{
+					e["activo"] = false;
+					e["isVisible"] = "Collapsed";
+					e["nivel"] = nuevo.id
+
+					e.subHabs.forEach(function(x)
+					{
+						x["activo"] = false;
+						x["nivel"] = nuevo.id;
+						x["habilidad"] = e.id;
+					});
+				});
+				
+				niveles.add(nuevo);
+			}
+		});
+	});
+}
+
 //--Carga todos los instructores de la instancia.
 function cargarInstructores()
 {
@@ -123,7 +170,7 @@ function cargarInstructores()
 	{
 		if (result.status !== 200)
 		{
-			console.log("cargarInstructores: Something went wrong :(");
+			console.log("CargarInstructores: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -181,7 +228,7 @@ function cargarCursosxInstructor()
 	{
 		if (result.status !== 200)
 		{
-			console.log("cargarCursosxInstructor: Something went wrong :(");
+			console.log("CargarCursosxInstructor: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -196,6 +243,7 @@ function cargarCursosxInstructor()
 			if (index >= aux.length)
 			{
 				var nuevo = data[key];
+				nuevo["habilidadesC"] = nuevo.habilidades;
 				aux.add(nuevo);
 			}
 		});
@@ -240,7 +288,7 @@ function cargarCursos()
 				});
 
 				nuevo["rama"] = ramaAct.value.rama;
-				nuevo["habilidades"] = contador;
+				nuevo["habilidadesC"] = contador;
 				aux.add(nuevo);
 			}
 		});
@@ -260,16 +308,16 @@ function agregarCurso()
 	aux = aux + "\"id_rama\":" + ramaAct.value.id + ",";
 	aux = aux + "\"id_instructor\":" + personaActual.value + "}";
 
-	fetch('http://loop.inhandy.com/loop.php?crearCurso=' + aux, {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
+	fetch('http://loop.inhandy.com/loop.php?crearCurso=', {
+		method: 'POST',
+		headers: { "Content-type": "application/json"},
+		body: aux
 	})
 	.then(function(result)
 	{
 		if (result.status !== 200)
 		{
-			console.log("CargarCursos: Something went wrong :(");
+			console.log("CrearCurso: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -308,7 +356,7 @@ function cargarActividades(reset)
 	{
 		if (result.status !== 200)
 		{
-			console.log("cargarActividades: Something went wrong :(");
+			console.log("CargarActividades: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -317,7 +365,10 @@ function cargarActividades(reset)
 	{
 		var keys = Object.keys(data);
 		var aux = Observable();
-		var contador = 0;
+		var auxiliar = Observable();
+		var hayActividad = 0;
+
+		actividad.replaceAll(data);
 		
 		keys.forEach(function(key, index)
 		{
@@ -325,25 +376,40 @@ function cargarActividades(reset)
 			{
 				var nuevo = data[key];
 
-				nuevo.habilidades.forEach(function(e)
+				nuevo.niveles.forEach(function(e)
 				{
-					e.subHabs.forEach(function(x)
-					{
-						x["habilidad"] = e.habilidad;
-						contador ++;
-					});
-				});
+					var hayHabs = 0;
 
-				aux.add(nuevo);
+					e.habilidades.forEach(function(x)
+					{
+						x["nivel"] = e.id;
+
+						x.subHabs.forEach(function(y)
+						{
+							y["habilidad"] = x.habilidad;
+							y["nivel"] = e.id;
+						});
+
+						hayHabs ++;
+						hayActividad = nuevo.id;
+					});
+
+					if(hayHabs > 0)
+					{
+						aux.add(e);
+					}
+				});
 			}
 		});
 
-		if(contador == 0)
+		if(hayActividad == 0)
 		{
-			aux.add({"id":0,"habilidades":[{"":""}]});
+			auxiliar.add({"id":0,"niveles":[]});
+		}else{
+			auxiliar.add({"id":hayActividad,"niveles":aux});	
 		}
 
-		actividad.replaceAll(aux);
+		actividad.replaceAll(auxiliar);
 		marcarActividadesxDia();
 
 		if(reset == 1)
@@ -365,7 +431,7 @@ function eliminarSubHabActividad(sender)
 	{
 		if (result.status !== 200)
 		{
-			console.log("eliminarSubHabActividad: Something went wrong :(");
+			console.log("EliminarSubHabActividad: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -376,124 +442,111 @@ function eliminarSubHabActividad(sender)
 	});
 }
 
-
-//----CrearActividad.ux----
-//-- Carga todas las habilidades por default
-function cargarHabilidades()
-{
-	fetch('http://loop.inhandy.com/loop.php?cargarHabilidades', {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("CargarHabilidades: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		
-		keys.forEach(function(key, index)
-		{
-			if (index >= habilidades.length)
-			{
-				var nuevo = data[key];
-
-				nuevo["subHabsId"] = Observable();
-
-				subHabs.forEach(function(e)
-				{
-					if (e.habilidad == nuevo.id)
-					{
-						e["activo"] = false;
-						nuevo["subHabsId"].add(e);
-					}
-				});
-				
-				nuevo["activo"] = false;
-
-				habilidades.add(nuevo);
-			}
-		});
-	});
-}
-
-//-- Carga todas las subHabilidades por default
-function cargarSubHabs()
-{
-	fetch('http://loop.inhandy.com/loop.php?cargarSubHabs', {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("CargarSubHabs: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		
-		keys.forEach(function(key, index)
-		{
-			if (index >= subHabs.length)
-			{
-				var nuevo = data[key];
-				subHabs.add(nuevo);
-			}
-		});
-
-		cargarHabilidades();
-	});
-}
-
 function marcarActividadesxDia()
 {
 	var aux = Observable();
 
-	habilidades.forEach(function(e)
-	{
-		e.activo = false;
+	niveles.forEach(function(a)
+	{	
+		a.activo = false;
+		a.isVisible = "Collapsed";
 
-		e.subHabsId.forEach(function(x)
+		actividad.getAt(0).niveles.forEach(function(b)
 		{
-			x.activo = false;
-		});
-
-		actividad.getAt(0).habilidades.forEach(function(x)
-		{
-			if(x.id == e.id)
+			if(a.id == b.id)
 			{
-				e.activo = true;
-
-				e.subHabsId.forEach(function(y)
+				a.habilidades.forEach(function(e)
 				{
-					x.subHabs.forEach(function(z)
+					e.activo = false;
+					e.isVisible = "Collapsed";
+
+					e.subHabs.forEach(function(x)
 					{
-						if(z.id == y.id)
+						x.activo = false;
+					});
+
+					b.habilidades.forEach(function(x)
+					{
+						if(x.id == e.id)
 						{
-							y.activo = true;
+							e.activo = true;
+							e.isVisible = "Visible";
+							a.activo = true;
+							a.isVisible = "Visible";
+
+							e.subHabs.forEach(function(y)
+							{
+								x.subHabs.forEach(function(z)
+								{
+									if(z.id == y.id)
+									{
+										y.activo = true;
+									}
+								});
+							});
 						}
 					});
 				});
 			}
 		});
 
+		aux.add(a);
+	});
+
+	niveles.replaceAll(aux);
+}
+
+function mostrarHabs(arg)
+{
+	var aux = Observable();
+
+	niveles.forEach(function(e)
+	{
+		if(e.id == arg.data.id)
+		{
+			if (e.isVisible == "Visible")
+			{
+				e.activo = false;
+				e.isVisible = "Collapsed";
+			}else{
+				e.isVisible = "Visible";
+				e.activo = true;
+			}
+		}
 		aux.add(e);
 	});
 
-	habilidades.replaceAll(aux);
+	niveles.replaceAll(aux);
+}
+
+function mostrarSubHabs(arg)
+{
+	if((arg.data.isVisible == "Collapsed") || (arg.data.activo == false))
+	{
+		var aux = Observable();
+
+		niveles.forEach(function(e)
+		{
+			if(e.id == arg.data.nivel)
+			{
+				e.habilidades.forEach(function(x)
+				{
+					if(x.id == arg.data.id)
+					{
+						if (x.isVisible == "Visible")
+						{
+							x.isVisible = "Collapsed";
+						}else{
+							x.isVisible = "Visible";
+						}
+					}
+				});
+			}
+			aux.add(e);
+		});
+
+		niveles.replaceAll(aux);
+	}
 }
 
 //-- Guarda la nueva actividad por día y por curso
@@ -512,39 +565,42 @@ function agregarActividad()
 
 	var inicio = 0;
 
-	habilidades.forEach(function(e)
+	niveles.forEach(function(e)
 	{
-		var inicioSub = 0;
-
-		if(e.activo == true)
+		e.habilidades.forEach(function(x)
 		{
-			if(inicio > 0)
-			{
-				aux = aux + ","
-			}else{
-				inicio++;
-			}
+			var inicioSub = 0;
 
-			aux = aux + "{\"habilidad\":" + e.id + ",";
-			aux = aux + "\"subHabs\":[";
-
-			e.subHabsId.forEach(function(x)
+			if(x.activo == true)
 			{
-				if(x.activo == true)
+				if(inicio > 0)
 				{
-					if(inicioSub > 0)
-					{
-						aux = aux + ","
-					}else{
-						inicioSub++;
-					}
-
-					aux = aux + "{\"subHab\":" + x.id + "}";
+					aux = aux + ","
+				}else{
+					inicio++;
 				}
-			});
 
-			aux = aux + "]}";
-		}
+				aux = aux + "{\"habilidad\":" + e.id + ",";
+				aux = aux + "\"subHabs\":[";
+
+				x.subHabs.forEach(function(y)
+				{
+					if(y.activo == true)
+					{
+						if(inicioSub > 0)
+						{
+							aux = aux + ","
+						}else{
+							inicioSub++;
+						}
+
+						aux = aux + "{\"subHab\":" + y.id + "}";
+					}
+				});
+
+				aux = aux + "]}";
+			}
+		});
 	});
 
 	aux = aux + "]}";
@@ -560,7 +616,7 @@ function agregarActividad()
 		{
 			if (result.status !== 200)
 			{
-				console.log("agregarActividad: Something went wrong :(");
+				console.log("AgregarActividad: Something went wrong :(");
 				return;
 			}
 			return result.json();
@@ -584,7 +640,7 @@ function agregarActividad()
 		{
 			if (result.status !== 200)
 			{
-				console.log("actualizarActividad: Something went wrong :(");
+				console.log("ActualizarActividad: Something went wrong :(");
 				return;
 			}
 			return result.json();
@@ -612,7 +668,7 @@ function getAlumxCursos()
 	{
 		if (result.status !== 200)
 		{
-			console.log("getAlumxCursos: Something went wrong :(");
+			console.log("GetAlumxCursos: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -632,8 +688,7 @@ function getAlumxCursos()
 		});
 
 		alumnosCurso.replaceAll(aux);
-		editarAlumnos.value = "Collapsed";
-		isAbleCalifica.value = true;
+		editarAlumnos.value = false;
 	});
 }
 
@@ -647,20 +702,17 @@ function selectAlumno(arg)
 		}
 	});
 
-	editarAlumnos.value = "Collapsed";
-	isAbleCalifica.value = true;
+	editarAlumnos.value = false;
 	setDiaconActividad();
 }
 
 function mostrarEdicionAlumnos()
 {
-	if(editarAlumnos.value == "Visible")
+	if(editarAlumnos.value == true)
 	{
-		isAbleCalifica.value = true;
-		editarAlumnos.value = "Collapsed";
+		editarAlumnos.value = false;
 	}else{
-		isAbleCalifica.value = false;
-		editarAlumnos.value = "Visible";
+		editarAlumnos.value = true;
 	}
 }
 
@@ -674,8 +726,7 @@ function editarAlumnoCurso(arg)
 		}
 	});
 
-	editarAlumnos.value = "Collapsed";
-	isAbleCalifica.value = true;
+	editarAlumnos.value = false;
 
 	var nacio = alumnoAct.value.nacimiento;
 
@@ -694,8 +745,7 @@ function editarAlumnoCurso(arg)
 
 function limpiarDatos()
 {
-	alumnoAct.value = alumnosCurso.getAt(0);
-	alumnoAct.value.id = 0;
+	alumnoAct.value = {"id":0};
 
 	nombre.value = "";
 	apellido.value = "";
@@ -713,7 +763,7 @@ function creaEditaAlumno()
 	{
 		nacimiento.value = nacimiento.value.substr(6) + nacimiento.value.substr(2,4) + nacimiento.value.substr(0,2);
 	}
-	
+
 	var aux = "\"nombre\": \"" + nombre.value + "\",";
 	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
 	aux = aux + "\"cel\": \"" + cel.value + "\",";
@@ -734,7 +784,7 @@ function creaEditaAlumno()
 		{
 			if (result.status !== 200)
 			{
-				console.log("creaAlumno: Something went wrong :(");
+				console.log("CrearAlumno: Something went wrong :(");
 				return;
 			}
 			return result.json();
@@ -759,7 +809,7 @@ function creaEditaAlumno()
 		{
 			if (result.status !== 200)
 			{
-				console.log("editaAlumno: Something went wrong :(");
+				console.log("EditarAlumno: Something went wrong :(");
 				return;
 			}
 			return result.json();
@@ -796,7 +846,6 @@ function agregarAlumnosCurso()
 
 	aux = aux + "]}";
 
-	console.log(" Link Agrega Curso: " + 'http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux);
 	fetch('http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux, {
 		method: 'GET',
 		cache: 'default',
@@ -806,7 +855,7 @@ function agregarAlumnosCurso()
 	{
 		if (result.status !== 200)
 		{
-			console.log("agregarAlumnosCurso: Something went wrong :(");
+			console.log("AgregarAlumnosCurso: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -830,7 +879,7 @@ function eliminarAlumnoCurso(arg)
 	{
 		if (result.status !== 200)
 		{
-			console.log("eliminarAlumno: Something went wrong :(");
+			console.log("EliminarAlumno: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -846,8 +895,6 @@ function eliminarAlumnoCurso(arg)
 //--Carga todos los alumnos de la rama activa
 function cargarAlumnos()
 {
-	idMaxAlumno.value = 0;
-
 	fetch('https://firstloop.firebaseio.com/personas.json', {
 		method: 'GET',
 		cache: 'default',
@@ -874,11 +921,6 @@ function cargarAlumnos()
 				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
 				nuevo["activo"] = false;
 				alumnos.add(nuevo);
-
-				if(nuevo.id > idMaxAlumno.value)
-				{
-					idMaxAlumno.value = nuevo.id;
-				}
 			}
 		});
 	});
@@ -995,7 +1037,7 @@ function resetHabxAlumno()
 	comentario.value = "";
 	hayCalificacion.value = 0;
 
-	actividad.forEach(function(e)
+	actividad.getAt(0).niveles.forEach(function(e)
 	{
 		e.habilidades.forEach(function(x)
 		{
@@ -1008,7 +1050,7 @@ function resetHabxAlumno()
 		});
 	});
 
-	actividad.forEach(function(a)
+	actividad.getAt(0).niveles.forEach(function(a)
 	{
 		calificaciones.forEach(function(b)
 		{
@@ -1017,28 +1059,28 @@ function resetHabxAlumno()
 				asistio.value = true;
 				comentario.value = b.comentario;
 
-				a.habilidades.forEach(function(y)
+				a.habilidades.forEach(function(e)
 				{
 					b.habilidades.forEach(function(x)
 					{
-						if (y.id == x.id)
+						if (e.id == x.id)
 						{
-							x.subHabs.forEach(function(z)
+							x.subHabs.forEach(function(y)
 							{
-								y.subHabs.forEach(function(d)
+								e.subHabs.forEach(function(z)
 								{
-									if (z.id == d.id)
+									if (y.id == z.id)
 									{
-										if(z.nota == 3)
+										if(y.nota == 3)
 										{
-											d.logrado = true;
+											z.logrado = true;
 
 										}else{
-											if(z.nota == 2)
+											if(y.nota == 2)
 											{
-												d.medio = true;
+												z.medio = true;
 											}else{
-												d.noLogrado = true;
+												z.noLogrado = true;
 											}
 										}
 									}
@@ -1051,9 +1093,9 @@ function resetHabxAlumno()
 
 			hayCalificacion.value ++;
 		});
-
-		aux.add(a);
 	});
+
+	aux.add(actividad.getAt(0));
 
 	actividad.replaceAll(aux);
 
@@ -1092,45 +1134,48 @@ function agregarCalificaciones()
 
 		var inicio = 0;
 
-		actividad.getAt(0).habilidades.forEach(function(e)
+		actividad.getAt(0).niveles.forEach(function(e)
 		{
-			var inicioSub = 0;
-
-			if(inicio > 0)
+			e.habilidades.forEach(function(x)
 			{
-				aux = aux + ","
-			}else{
-				inicio++;
-			}
+				var inicioSub = 0;
 
-			aux = aux + "{\"habilidad\":" + e.id + ",";
-			aux = aux + "\"subHabs\":[";
-
-			e.subHabs.forEach(function(x)
-			{
-				if(inicioSub > 0)
+				if(inicio > 0)
 				{
 					aux = aux + ","
 				}else{
-					inicioSub++;
+					inicio++;
 				}
 
-				aux = aux + "{\"id\":" + x.id + ",";
+				aux = aux + "{\"habilidad\":" + x.id + ",";
+				aux = aux + "\"subHabs\":[";
 
-				if(x.logrado == true)
+				x.subHabs.forEach(function(y)
 				{
-					aux = aux + "\"nota\": 3}";
-				}else{
-					if(x.medio == true)
+					if(inicioSub > 0)
 					{
-						aux = aux + "\"nota\": 2}";
+						aux = aux + ","
 					}else{
-						aux = aux + "\"nota\": 1}";
+						inicioSub++;
 					}
-				}
-			});
 
-			aux = aux + "]}";
+					aux = aux + "{\"id\":" + y.id + ",";
+
+					if(y.logrado == true)
+					{
+						aux = aux + "\"nota\": 3}";
+					}else{
+						if(y.medio == true)
+						{
+							aux = aux + "\"nota\": 2}";
+						}else{
+							aux = aux + "\"nota\": 1}";
+						}
+					}
+				});
+
+				aux = aux + "]}";
+			});
 		});
 
 		aux = aux + "]}";
@@ -1147,7 +1192,7 @@ function agregarCalificaciones()
 		{
 			if (result.status !== 200)
 			{
-				console.log("agregarCalificaciones: Something went wrong :(");
+				console.log("AgregarCalificaciones: Something went wrong :(");
 				return;
 			}
 			return result.json();
@@ -1162,7 +1207,7 @@ function agregarCalificaciones()
 		{
 			if (result.status !== 200)
 			{
-				console.log("actualizarCalificaciones: Something went wrong :(");
+				console.log("ActualizarCalificaciones: Something went wrong :(");
 				return;
 			}
 			return result.json();
@@ -1175,77 +1220,91 @@ function selectHab(arg)
 {
 	var aux = Observable();
 
-	habilidades.forEach(function(e)
+	niveles.forEach(function(e)
 	{
-		if(e.id == arg.data.id)
+		if(e.id == arg.data.nivel)
 		{
-			if (e.activo == true)
+			e.habilidades.forEach(function(x)
 			{
-				e.activo = false;
-
-				e.subHabsId.forEach(function(x)
+				if(x.id == arg.data.id)
 				{
-					x.activo = false;
-				});
-			}else{
+					if (x.activo == true)
+					{
+						x.activo = false;
 
-				e.activo = true;
+						x.subHabs.forEach(function(y)
+						{
+							y.activo = false;
+						});
+					}else{
 
-				e.subHabsId.forEach(function(x)
-				{
-					x.activo = true;
-				});
-			}
+						x.activo = true;
+
+						x.subHabs.forEach(function(y)
+						{
+							y.activo = true;
+						});
+					}
+				}
+			});
 		}
+
 		aux.add(e);
 	});
 
-	habilidades.replaceAll(aux);
+	niveles.replaceAll(aux);
 }
 
 function selectSubHab(arg)
 {
 	var aux = Observable();
 
-	habilidades.forEach(function(e)
+	niveles.forEach(function(e)
 	{
-		if(e.id == arg.data.habilidad)
+		if( e.id == arg.data.nivel)
 		{
-			var alguno = false;
-			
-			e.subHabsId.forEach(function(x)
+			e.habilidades.forEach(function(x)
 			{
-				if(x.id == arg.data.id)
+				if(x.id == arg.data.habilidad)
 				{
-					if(x.activo == true)
+					var alguno = false;
+					
+					x.subHabs.forEach(function(y)
 					{
-						x.activo = false;
-					}else{
-						x.activo = true;
-						alguno = true;
-					}
-				}else
-				{
-					if(x.activo == true)
-					{
-						alguno = true;
-					}
+						if(y.id == arg.data.id)
+						{
+							if(y.activo == true)
+							{
+								y.activo = false;
+							}else{
+								y.activo = true;
+								alguno = true;
+							}
+						}else
+						{
+							if(y.activo == true)
+							{
+								alguno = true;
+							}
+						}
+					});
+
+					x.activo = alguno;
 				}
 			});
-
-			e.activo = alguno;
 		}
+
 		aux.add(e);
 	});
 
-	habilidades.replaceAll(aux);
+	niveles.replaceAll(aux);
 }
 
 function selectN(arg)
 {
 	var aux = Observable();
 	
-	actividad.forEach(function(e)
+	actividad.getAt(0).niveles.forEach(function(e)
 	{
 		e.habilidades.forEach(function(x)
 		{
@@ -1265,9 +1324,9 @@ function selectN(arg)
 				}
 			});
 		});
-		aux.add(e);
-	})
+	});
 
+	aux.add(actividad.getAt(0));
 	actividad.replaceAll(aux);
 }
 
@@ -1275,7 +1334,7 @@ function selectM(arg)
 {
 	var aux = Observable();
 	
-	actividad.forEach(function(e)
+	actividad.getAt(0).niveles.forEach(function(e)
 	{
 		e.habilidades.forEach(function(x)
 		{
@@ -1295,10 +1354,9 @@ function selectM(arg)
 				}
 			});
 		});
-
-		aux.add(e);
 	});
 
+	aux.add(actividad.getAt(0));
 	actividad.replaceAll(aux);
 }
 
@@ -1306,7 +1364,7 @@ function selectL(arg)
 {
 	var aux = Observable();
 	
-	actividad.forEach(function(e)
+	actividad.getAt(0).niveles.forEach(function(e)
 	{
 		e.habilidades.forEach(function(x)
 		{
@@ -1326,10 +1384,9 @@ function selectL(arg)
 				}
 			});
 		});
-
-		aux.add(e);
 	});
 
+	aux.add(actividad.getAt(0));
 	actividad.replaceAll(aux);
 }
 
@@ -1369,7 +1426,7 @@ function getFechasconActividades()
 	{
 		if (result.status !== 200)
 		{
-			console.log("getFechasconActividades: Something went wrong :(");
+			console.log("GetFechasconActividades: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -1529,6 +1586,7 @@ module.exports = {
 //---Cursos.ux---
 	ramas: ramas,
 	cursos: cursos,
+	niveles: niveles,
 	actividad: actividad,
 	instructores: instructores,
 	alumnosCurso: alumnosCurso,
@@ -1548,9 +1606,10 @@ module.exports = {
 	agregarCurso: agregarCurso,
 
 //---CreaActividad.ux---
-	habilidades: habilidades,
 	selectHab: selectHab,
 	selectSubHab: selectSubHab,
+	mostrarHabs: mostrarHabs,
+	mostrarSubHabs: mostrarSubHabs,
 	agregarActividad: agregarActividad,
 
 //---AddAlumno.ux---
@@ -1572,7 +1631,6 @@ module.exports = {
 	nacimiento: nacimiento,
 
 //---CalificarAlumno.ux---
-	isAbleCalifica: isAbleCalifica,
 	resetHabxAlumno: resetHabxAlumno,
 	selectN: selectN,
 	selectM: selectM,

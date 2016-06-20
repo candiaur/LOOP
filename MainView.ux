@@ -3,21 +3,21 @@
 		<JavaScript File="GlobalElements.js" ux:Global="GlobalElem" />
 		<JavaScript File="Main.js" />
 
-		<Font File="Assets/PrestigeEliteStd-Bd.otf" ux:Global="pres_letter" />
-		<Font File="Assets/MuseoSans-100.otf" ux:Global="museo100_letter" />
-		<Font File="Assets/MuseoSans-300.otf" ux:Global="museo300_letter" />
-		<Font File="Assets/MuseoSans_700.otf" ux:Global="museo700_letter" />
-		<Font File="Assets/MuseoSans_900.otf" ux:Global="museo900_letter" />
+		<Font File="Assets/Fonts/PrestigeEliteStd-Bd.otf" ux:Global="pres_letter" />
+		<Font File="Assets/Fonts/MuseoSans-100.otf" ux:Global="museo100_letter" />
+		<Font File="Assets/Fonts/MuseoSans-300.otf" ux:Global="museo300_letter" />
+		<Font File="Assets/Fonts/MuseoSans_700.otf" ux:Global="museo700_letter" />
+		<Font File="Assets/Fonts/MuseoSans_900.otf" ux:Global="museo900_letter" />
 
-		<Font File="Assets/MuseoSans-700Italic.otf" ux:Global="museo700I_letter"/>
-		<Font File="Assets/MuseoSans_500_Italic.otf" ux:Global="museo500I_letter"/>
-		<Font File="Assets/MuseoSans-300Italic.otf" ux:Global="museo300I_letter"/>
-		<Font File="Assets/MuseoSans-100Italic.otf" ux:Global="museo100I_letter"/>
+		<Font File="Assets/Fonts/MuseoSans-700Italic.otf" ux:Global="museo700I_letter"/>
+		<Font File="Assets/Fonts/MuseoSans_500_Italic.otf" ux:Global="museo500I_letter"/>
+		<Font File="Assets/Fonts/MuseoSans-300Italic.otf" ux:Global="museo300I_letter"/>
+		<Font File="Assets/Fonts/MuseoSans-100Italic.otf" ux:Global="museo100I_letter"/>
 
 		<FileImageSource File="Assets/img_Cabecera.png" ux:Global="cabecera"/>
 		<FileImageSource File="Assets/Logos/logoencirculo.png" ux:Global="logoCircular"/>
-		<FileImageSource File="Assets/img_EditaNegro.png" ux:Global="editNegro"/>
-		<FileImageSource File="Assets/img_EditaVerde.png" ux:Global="editVerde"/>
+		<FileImageSource File="Assets/Iconos/img_EditaNegro.png" ux:Global="editNegro"/>
+		<FileImageSource File="Assets/Iconos/img_EditaVerde.png" ux:Global="editVerde"/>
 		
 		<DockPanel ux:Class="Atras" Margin="0,-50,0,23" Alignment="TopLeft" ZOffset="2">
 			<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" Padding="14,0" TextAlignment="Center"/>
@@ -33,7 +33,7 @@
 					<Grid RowCount="2">
 						<Panel>
 							<Image File="Assets/Logos/looplogo.png" Alignment="VerticalCenter" Width="80%"/>
-							<Image File="Assets/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-15"/>
+							<Image File="Assets/Iconos/img_Triangulo.png" Alignment="BottomCenter" Margin="0,0,0,-15"/>
 						</Panel>
 
 						<Panel Width="100%" Margin="0,-10,0,0" ZOffset="2">
@@ -43,7 +43,7 @@
 										<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,10">
 											<Grid Columns="1*,3*" Padding="0,10,5,10">
 												<DockPanel>
-													<Image File="Assets/img_Mail.png" Alignment="Center"/>
+													<Image File="Assets/Iconos/img_Mail.png" Alignment="Center"/>
 													<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
 												</DockPanel>
 												
@@ -54,7 +54,7 @@
 										<Rectangle Color="#EEEEEE" CornerRadius="5" Width="100%" Height="50" Margin="0,0,0,5">
 											<Grid Columns="1*,3*" Padding="0,10,5,10">
 												<DockPanel>
-													<Image File="Assets/img_Candado.png"  Alignment="Center" />
+													<Image File="Assets/Iconos/img_Candado.png" Alignment="Center" />
 													<Rectangle Alignment="Right" Width="1" Color="#C9C9C9"/>
 												</DockPanel>
 												
@@ -75,8 +75,6 @@
 								<Text Value="{mensajeError}" FontSize="12" Font="museo300_letter" Margin="10" TextAlignment="Center" TextColor="#FF0000" TextWrapping="Wrap" Width="200"/>
 
 							</StackPanel>
-
-							<!-- <Text Value="V. BETA" Font="museo700_letter" FontSize="14" TextColor="#FFF" Alignment="BottomRight" Margin="14" /> -->
 						</Panel>
 					</Grid>
 				</DockPanel>
@@ -116,10 +114,10 @@
 							<SwipeNavigate SwipeDirection="Up"/>
 
 							<udPage ux:Name="top">
-								<PageControl ux:Name="controlPerfil" Active="pagPerfil" Interaction="None">
+								<PageControl ux:Name="controlPerfil" Active="{perfilPage}" Interaction="None">
 									<Page ux:Name="pagPerfil" Color="#00D9C5">
 										<DockPanel>
-											<Image File="Assets/img_configura.png" Alignment="TopRight" Margin="14" Width="40">
+											<Image File="Assets/Iconos/img_configura.png" Alignment="TopRight" Margin="14" Width="40">
 												<Clicked>
 													<Set Target="controlPerfil.Active" Value="pagConfigura" />
 												</Clicked>
@@ -217,10 +215,10 @@
 													</Grid>
 												</StackPanel>
 
-												<Image Source="logoCircular" Margin="10" Width="150"/>
-
-												<ScrollView MaxHeight="250">
+												<ScrollView MaxHeight="500">
 													<StackPanel>
+														<Image Source="logoCircular" Margin="10" Width="150"/>
+
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 															
@@ -260,6 +258,8 @@
 
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>
+
+														<Panel Height="100" />
 													</StackPanel>
 												</ScrollView>
 											</StackPanel>
@@ -347,7 +347,7 @@
 											<Rotation Degrees="270"/>
 										</StackPanel>
 
-										<Image File="Assets/img_Perfil.png" Alignment="Center" Margin="5,0"/>
+										<Image File="Assets/Iconos/img_Perfil.png" Alignment="Center" Margin="5,0"/>
 
 										<Clicked>
 											<SwipeNavigate SwipeDirection="Up"/>
@@ -360,11 +360,11 @@
 											<Rotation Degrees="180"/>
 										</StackPanel>
 
-										<Image File="Assets/img_Progreso.png" Alignment="Left" Margin="5,0"/>
+										<Image File="Assets/Iconos/img_Progreso.png" Alignment="Left" Margin="5,0"/>
 									</Grid>
 <!-- 
 									<Grid ColumnCount="2" Alignment="CenterRight" Width="20%">
-										<Image File="Assets/img_Instructores.png" Alignment="Left"/>
+										<Image File="Assets/Iconos/img_Instructores.png" Alignment="Left"/>
 
 										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
 									</Grid> -->
@@ -389,7 +389,7 @@
 									</Grid>
 
 									<!-- <Grid Alignment="BottomCenter" Width="10%">
-										<Image File="Assets/img_Camara.png" Alignment="Center" Margin="5,0"/>
+										<Image File="Assets/Iconos/img_Camara.png" Alignment="Center" Margin="5,0"/>
 
 										<StackPanel>
 											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" Alignment="Center" />
