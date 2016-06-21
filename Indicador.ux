@@ -2,8 +2,8 @@
 
 	<JavaScript File="AdmAlumnos.js" />
 
-	<FileImageSource File="Assets/img_Check.png" ux:Key="check"/>
-	<FileImageSource File="Assets/img_XRoja.png" ux:Key="falla"/>
+	<FileImageSource File="Assets/Iconos/img_Check.png" ux:Key="check"/>
+	<FileImageSource File="Assets/Iconos/img_XRoja.png" ux:Key="falla"/>
 
 	<PageControl ux:Name="alumPage" Active="pagMiActividad" Interaction="None">
 		<Page ux:Name="pagMiActividad">
@@ -64,7 +64,7 @@
 
 				<DockPanel Padding="10,20" Height="9%" Color="#FFF" Dock="Bottom" ZOffset="2">
 					<Grid Layer="Background" Columns="1*,5*">
-						<Image File="Assets/img_Progreso.png" Alignment="Center" Height="34" Margin="5,0"/>
+						<Image File="Assets/Iconos/img_Progreso.png" Alignment="Center" Height="34" Margin="5,0"/>
 					</Grid>
 
 					<Text Value="Evolución" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
@@ -79,7 +79,7 @@
 
 				<DockPanel Padding="10,20" Height="9%" Color="#FFF" Dock="Bottom" ZOffset="2">
 					<Grid Layer="Background" Columns="1*,5*">
-						<Image File="Assets/img_Califica.png" Alignment="Center" Height="34" Margin="5,0"/>
+						<Image File="Assets/Iconos/img_Califica.png" Alignment="Center" Height="34" Margin="5,0"/>
 					</Grid>
 
 					<Text Value="Progresión" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
@@ -96,7 +96,7 @@
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 					<Grid Layer="Background" Columns="1*,5*">
-						<Image File="Assets/img_Lista.png" Alignment="Center" Height="30" Margin="5,0"/>
+						<Image File="Assets/Iconos/img_Lista.png" Alignment="Center" Height="30" Margin="5,0"/>
 					</Grid>
 
 					<Text Value="Asistencia" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
@@ -293,7 +293,7 @@
 					</Grid>
 				</StackPanel>
 
-				<Image File="Assets/img_CuadroProgreso.png" />
+				<Image File="Assets/Iconos/img_CuadroProgreso.png" />
 
 				<StackPanel>
 					<Grid Columns="5*,2*" Padding="15,7" Margin="0,5,0,0">

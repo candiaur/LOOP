@@ -3,7 +3,7 @@
 		<Toggle Target="this"/>
 	</Clicked>
 
-	<Font File="Assets/fontawesome-webfont.ttf" ux:Global="fa_icons" />
+	<Font File="Assets/Fonts/fontawesome-webfont.ttf" ux:Global="fa_icons" />
 	<Rectangle Width="18" Height="18" Fill="#FFF">
 		<Stroke Color="#D2D2D2" Width="1"/>
 		<Text ux:Name="checkbox" Font="fa_icons" TextColor="{Property this.TextColor}" FontSize="18">

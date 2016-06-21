@@ -1,17 +1,17 @@
 {
-    "Version": "1.0.0",
-    "VersionCount": 1,
-    "RootNamespace":"com.uanbai.loop",
-    "Packages": [
-        "Fuse",
-        "FuseJS",
-        "Fuse.GeoLocation",
-        "Fuse.BasicTheme"
-    ],
-    "Includes": [
-        "*"
-    ],
-    "Android": {
+	"Version": "1.0.5",
+	"VersionCount": 3,
+	"RootNamespace":"com.uanbai.loop",
+	"Packages":	[
+		"Fuse",
+		"FuseJS",
+		"Fuse.GeoLocation",
+		"Fuse.BasicTheme"
+	],
+	"Includes": [
+		"*"
+	],
+	"Android": {
 		"Key": {
 			"Alias": "loop",
 			"AliasPassword": "uanbai",
@@ -50,3 +50,4 @@
         }
     }
 }
+

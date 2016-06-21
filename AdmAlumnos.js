@@ -1,5 +1,6 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
+var GlobalE = require("GlobalElem");
 var personaActual = Observable(1);
 
 var calificacionesAl = Observable({"calificaciones": "nuevas"});
@@ -18,14 +19,71 @@ var today = new Date();
 var dia = Observable();
 var anio = Observable();
 
-var timer = Timer.create(function(){
-	cargarFunciones();}, 1000, true);
+// var timer = Timer.create(function(){
+	// cargarFunciones();getPersona();}, 1000, true);
 
 function cargarFunciones()
 {
 	cargarCalificacionesAlumno();
 	cargarActividadesAlumno();
 	getResumenNotasAlumno();
+}
+
+function getPersona()
+{
+	personaActual.value = GlobalE.idPerson.value; 
+	
+	if(personaActual.value != null)
+	{
+		if(GlobalE.rolPerson.value == 0)
+		{
+			getResumenNotasAlumno();
+		}
+
+		Timer.delete(timer);
+	}	
+}
+
+function getResumenNotasAlumno()
+{
+	fetch('http://loop.inhandy.com/loop.php?getResumenNotasAlumno=' + personaActual.value, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("getResumenNotasAlumno: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var aux = Observable();
+		total.value = 0;
+
+		keys.forEach(function(key, index)
+		{
+			if (index >= aux.length)
+			{
+				var nuevo = data[key];
+				aux.add(nuevo);
+
+				total.value = total.value + nuevo.nombre;
+			}
+		});
+
+		aux.forEach(function(e)
+		{
+			e["radio"] = (e.nota/total.value)*360;
+		});
+
+		resumenNotas.replaceAll(aux);
+	});
 }
 
 //--Carga todas las calificaciones del alumno.
@@ -95,51 +153,6 @@ function cargarActividadesAlumno()
 
 		actividadesAl.replaceAll(aux);
 	});
-}
-
-function getResumenNotasAlumno()
-{
-	var aux = Observable();
-	var aux1 = 0;
-	var aux2 = 0;
-	var aux3 = 0;
-	total.value = 0;
-
-	calificacionesAl.forEach(function(e)
-	{
-		if(personaActual.value == e.alumno)
-		{
-			e.habilidades.forEach(function(x)
-			{
-				x.subHabs.forEach(function(y)
-				{
-					if (y.nota == 3)
-					{
-						aux3 ++;
-					}else{
-						if (y.nota == 2)
-						{
-							aux2 ++;
-						}else{
-							aux1 ++;
-						}
-					}
-					total.value ++;
-				});
-			});
-		}
-	});
-
-	aux.add({"nota": aux1, "nombre":"SEGUIR TRABAJANDO"});
-	aux.add({"nota": aux2, "nombre":"CASI LOGRADAS"});
-	aux.add({"nota": aux3, "nombre":"LOGRADAS!"});
-
-	aux.forEach(function(e)
-	{
-		e["radio"] = (e.nota/total.value)*360;
-	});
-
-	resumenNotas.replaceAll(aux);
 }
 
 function getFechasClases()

@@ -4,6 +4,7 @@ var GlobalE = require("GlobalElem");
 var tag = Observable();
 var currentPage = Observable("login");
 var leftPage = Observable("calificacion");
+var perfilPage = Observable("pagPerfil");
 var mensajeError = Observable("");
 var mensajeClave = Observable("");
 
@@ -33,6 +34,7 @@ function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
 		nacio = nacio.substr(8) + nacio.substr(4,4) + nacio.substr(0,4);
 	}catch(err){
 		fecha = "";
+		nacio = "";
 	}
 
 	this.nombre = nombre.toUpperCase();
@@ -57,23 +59,23 @@ function load(idUser)
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarPersona: Something went wrong :(");
 			return;
 		}
 		return result.json();
 	})
 	.then(function(data)
-	{	
+	{
 		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, data.imagen, data.rol);
 		GlobalE.rolPerson.value = data.rol;
 
-		// if(data.rol == "0")
-		// {
-		// 	leftPage.value = "informe";
-		// }else{
+		if(data.rol == "0")
+		{
+			leftPage.value = "informe";
+		}else{
 			
 			leftPage.value = "calificacion";
-		// }
+		}
 	});
 };
 
@@ -101,7 +103,7 @@ function loginUser()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("Login: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -145,6 +147,7 @@ function modificarClave()
 			{
 				var aux = "{ \"id\":" + GlobalE.idPerson.value + ",";
 				aux = aux + "\"clave\":\"" + nuevaClave1.value + "\"}";
+				aux = encodeURIComponent(aux);
 
 				fetch('http://loop.inhandy.com/loop.php?cambiarClave=' + aux, {
 					method: 'GET',
@@ -163,7 +166,8 @@ function modificarClave()
 				.then(function(data)
 				{
 					clave.value = nuevaClave1.value;
-					mensajeClave.value = "Clave ha sido cambiada con Éxito";
+					perfilPage.value = "pagConfigura";
+					mensajeClave.value = "";
 				});
 			}else{
 				mensajeClave.value = "Claves Nuevas no coinciden";
@@ -189,8 +193,10 @@ function limpiarDatos()
 
 function modificarDatos()
 {	
-	console.log("Fecha: " + fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2));
-	fechaNacio.value = fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2);
+	if(fechaNacio.value.trim().length == 10)
+	{
+		fechaNacio.value = fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2);
+	}
 
 	var aux = "{\"id\":" + GlobalE.idPerson.value + ",";
 	aux = aux + "\"nombre\": \"" + nombre.value + "\",";
@@ -199,8 +205,8 @@ function modificarDatos()
 	aux = aux + "\"correo\": \"" + email.value + "\",";
 	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
 	aux = aux + "\"nacimiento\": \"" + fechaNacio.value + "\"}";
+	aux = encodeURIComponent(aux);
 
-	console.log("Link: " + 'http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux);
 	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
 		method: 'GET',
 		cache: 'default',
@@ -223,10 +229,11 @@ function modificarDatos()
 
 module.exports = {
 	tag: tag,
-	persona: persona,
 	submit: submit,
-	currentPage: currentPage,
+	persona: persona,
 	leftPage: leftPage,
+	perfilPage: perfilPage,
+	currentPage: currentPage,
 	nombre: nombre,
 	apellido: apellido,
 	cel: cel,
