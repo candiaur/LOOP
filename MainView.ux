@@ -73,7 +73,6 @@
 								</Rectangle>
 
 								<Text Value="{mensajeError}" FontSize="12" Font="museo300_letter" Margin="10" TextAlignment="Center" TextColor="#FF0000" TextWrapping="Wrap" Width="200"/>
-
 							</StackPanel>
 						</Panel>
 					</Grid>
@@ -164,14 +163,15 @@
 											</StackPanel>
 
 											<StackPanel>
-												<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
-												<DockPanel Padding="15,10" Color="#FFF">
+												<DockPanel Padding="14,10" Color="#FFF">
+													<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+
 													<Grid Columns="7*,3*">
 														<Text Value="EDITAR PERFIL" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
 														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
 													</Grid>
 
-													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 													<Clicked>
 														<Callback Handler="{limpiarDatos}"/>
@@ -180,13 +180,15 @@
 													</Clicked>
 												</DockPanel>
 
-												<DockPanel Padding="15,10" Color="#FFF" Margin="0,3">
+												<DockPanel Padding="14,10" Color="#FFF" Margin="0,3">
+													<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+
 													<Grid Columns="7*,3*">
 														<Text Value="CAMBIAR CONTRASEÑA" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
 														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
 													</Grid>
 
-													<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 													<Clicked>
 														<Callback Handler="{limpiarClaves}"/>

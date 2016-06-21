@@ -6,7 +6,7 @@ var personaActual = Observable();
 //---Cursos.ux---
 var ramas = Observable();
 var curso = Observable("");
-var cursos = Observable({"curso":"nuevos"});
+var cursos = Observable({"curso":"nuevos","alumnos":0});
 var actividad = Observable({"actividad":"nueva"});
 var alumnos = Observable({"alumnos":"nuevos"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
@@ -21,6 +21,7 @@ var niveles = Observable();
 
 //---CrearAlumno.ux---
 var editarAlumnos = Observable(false);
+var editaAlumno = Observable(new MovimientoPag("pagNuevoAlumno", "Visible", "CREAR ",true));
 
 //--- Datos Persona---
 var nombre = Observable("");
@@ -66,11 +67,11 @@ function getPersona()
 	}	
 }
 
-function MovimientoPag(paginaAct, pagAnterior, flecha, isEnabled)
+function MovimientoPag(paginaAct, pagAnterior, objeto, isEnabled)
 {
 	this.paginaAct = paginaAct;
 	this.pagAnterior = pagAnterior;
-	this.flecha = flecha;
+	this.objeto = objeto;
 	this.isEnabled = isEnabled;
 }
 
@@ -216,9 +217,9 @@ function selectInstructor(arg)
 }
 
 //--Carga todos los cursos del instructor seleccionado.
-function cargarCursosxInstructor()
+function cargarCursosxInstructor(instructor)
 {
-	fetch('http://loop.inhandy.com/loop.php?cargarCursosxInstructor=' + personaActual.value 
+	fetch('http://loop.inhandy.com/loop.php?cargarCursosxInstructor=' + instructor
 		+ ',' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
@@ -380,13 +381,14 @@ function cargarActividades(reset)
 			{
 				var nuevo = data[key];
 
-				nuevo.niveles.forEach(function(e)
+				for(var i = 0; i < nuevo.niveles.length; i++)
 				{
 					var hayHabs = 0;
 
-					e.habilidades.forEach(function(x)
+					for(var j = 0; j < nuevo.niveles[i].habilidades.length; j++)
 					{
-						x["nivel"] = e.id;
+						var x = nuevo.niveles[i].habilidades[j];
+						x["nivel"] = nuevo.niveles[i].id;
 
 						x.subHabs.forEach(function(y)
 						{
@@ -396,13 +398,13 @@ function cargarActividades(reset)
 
 						hayHabs ++;
 						hayActividad = nuevo.id;
-					});
+					}
 
 					if(hayHabs > 0)
 					{
-						aux.add(e);
+						aux.add(nuevo.niveles[i]);
 					}
-				});
+				}
 			}
 		});
 
@@ -454,77 +456,90 @@ function marcarActividadesxDia()
 {
 	var aux = Observable();
 
-	niveles.forEach(function(a)
+	for(var i = 0; i < niveles.length; i++)
 	{	
+		var a = niveles.getAt(i);
+
 		a.activo = false;
 		a.isVisible = "Collapsed";
 
-		actividad.getAt(0).niveles.forEach(function(b)
+		for(var l = 0; l < actividad.getAt(0).niveles.length; l++)
 		{
+			var b = actividad.getAt(0).niveles[l];
+
 			if(a.id == b.id)
 			{
-				a.habilidades.forEach(function(e)
+				for(var j = 0; j < a.habilidades.length; i++)
 				{
-					e.activo = false;
-					e.isVisible = "Collapsed";
+					a.habilidades[j].activo = false;
+					a.habilidades[j].isVisible = "Collapsed";
 
-					e.subHabs.forEach(function(x)
+					for(var m = 0; m < a.habilidades[j].subHabs.length; m++)
 					{
-						x.activo = false;
-					});
+						a.habilidades[j].subHabs[m].activo = false;
+					}
 
-					b.habilidades.forEach(function(x)
+					for(var m = 0; m < b.habilidades.length; m++)
 					{
-						if(x.id == e.id)
+						var x = b.habilidades[m];
+
+						if(x.id == a.habilidades[j].id)
 						{
-							e.activo = true;
-							e.isVisible = "Visible";
+							a.habilidades[j].activo = true;
+							a.habilidades[j].isVisible = "Visible";
 							a.activo = true;
 							a.isVisible = "Visible";
 
-							e.subHabs.forEach(function(y)
+							for(var o = 0; o < a.habilidades[j].subHabs.length; o++)
 							{
-								x.subHabs.forEach(function(z)
+								for(var p = 0; p < x.subHabs.length; p++)
 								{
-									if(z.id == y.id)
+									if(a.habilidades[j].subHabs[o].id == x.subHabs[p].id)
 									{
-										y.activo = true;
+										a.habilidades[j].subHabs[o].activo = true;
+										break;
 									}
-								});
-							});
+								}
+							};
+
+							break;
 						}
-					});
-				});
+					}
+				}
+
+				break;
 			}
-		});
+		}
 
 		aux.add(a);
-	});
+	}
 
-	niveles.replaceAll(aux);
+	niveles.replaceAt(aux);
 }
 
 function mostrarHabs(arg)
 {
 	var aux = Observable();
 
-	niveles.forEach(function(e)
+	for(var i = 0; i < niveles.length; i++)
 	{
-		if(e.id == arg.data.id)
+		if(niveles.getAt(i).id == arg.data.id)
 		{
-			if (e.isVisible == "Visible")
-			{
-				e.activo = false;
-				e.isVisible = "Collapsed";
-			}else{
-				e.isVisible = "Visible";
-				e.activo = true;
-			}
-		}
-		aux.add(e);
-	});
+			aux = niveles.getAt(i);
 
-	niveles.replaceAll(aux);
+			if (aux.isVisible == "Visible")
+			{
+				aux.activo = false;
+				aux.isVisible = "Collapsed";
+			}else{
+				aux.isVisible = "Visible";
+				aux.activo = true;
+			}
+			
+			niveles.replaceAt(i, aux);
+			break;
+		}
+	}
 }
 
 function mostrarSubHabs(arg)
@@ -533,27 +548,31 @@ function mostrarSubHabs(arg)
 	{
 		var aux = Observable();
 
-		niveles.forEach(function(e)
+		for(var i = 0; i < niveles.length; i++)
 		{
-			if(e.id == arg.data.nivel)
+			if(niveles.getAt(i).id == arg.data.nivel)
 			{
-				e.habilidades.forEach(function(x)
-				{
-					if(x.id == arg.data.id)
-					{
-						if (x.isVisible == "Visible")
-						{
-							x.isVisible = "Collapsed";
-						}else{
-							x.isVisible = "Visible";
-						}
-					}
-				});
-			}
-			aux.add(e);
-		});
+				aux = niveles.getAt(i);
 
-		niveles.replaceAll(aux);
+				for(var j = 0; j < aux.habilidades.length; j++)
+				{
+					if(aux.habilidades[j].id == arg.data.id)
+					{
+						if (aux.habilidades[j].isVisible == "Visible")
+						{
+							aux.habilidades[j].isVisible = "Collapsed";
+						}else{
+							aux.habilidades[j].isVisible = "Visible";
+						}
+
+						break;
+					}
+				}
+
+				niveles.replaceAt(i, aux);
+				break;
+			}
+		}
 	}
 }
 
@@ -736,6 +755,7 @@ function editarAlumnoCurso(arg)
 	});
 
 	editarAlumnos.value = false;
+	editaAlumno.value = new MovimientoPag("pagAlumnos", "Collapsed", "EDITA ",true);
 
 	var nacio = alumnoAct.value.nacimiento;
 
@@ -755,6 +775,7 @@ function editarAlumnoCurso(arg)
 function limpiarDatos()
 {
 	alumnoAct.value = {"id":0};
+	editaAlumno.value = new MovimientoPag("pagNuevoAlumno", "Visible", "CREAR ",true);
 
 	nombre.value = "";
 	apellido.value = "";
@@ -902,12 +923,10 @@ function eliminarAlumnoCurso(arg)
 	});
 }
 
-
-
 //--Carga todos los alumnos de la rama activa
 function cargarAlumnos()
 {
-	fetch('https://firstloop.firebaseio.com/personas.json', {
+	fetch('http://loop.inhandy.com/loop.php?cargarAlumnos=' + ramaAct.value.id, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -924,17 +943,21 @@ function cargarAlumnos()
 	.then(function(data)
 	{
 		var keys = Object.keys(data);
+		var aux = Observable();
 		
 		keys.forEach(function(key, index)
 		{
-			if (index >= alumnos.length)
+			if (index >= aux.length)
 			{
 				var nuevo = data[key];
 				nuevo["nombres"] = nuevo.nombre + " " + nuevo.apellido;
 				nuevo["activo"] = false;
-				alumnos.add(nuevo);
+				aux.add(nuevo);
 			}
 		});
+
+		alumnos.replaceAll(aux);
+		marcarAlumnosxCurso();
 	});
 }
 
@@ -946,17 +969,14 @@ function marcarAlumnosxCurso()
 	{
 		var encontrado = false;
 
-		if (cursoAct.value.alumnos != null)
+		alumnosCurso.forEach(function(x)
 		{
-			cursoAct.value.alumnos.forEach(function(x)
+			if(e.id == x.alumno)
 			{
-				if(e.id == x.alumno)
-				{
-					e.activo = true;
-					encontrado = true;
-				}
-			});
-		}
+				e.activo = true;
+				encontrado = true;
+			}
+		});
 
 		if (!encontrado)
 		{
@@ -1234,56 +1254,61 @@ function selectHab(arg)
 {
 	var aux = Observable();
 
-	niveles.forEach(function(e)
+	for(var i = 0; i < niveles.length; i++)
 	{
-		if(e.id == arg.data.nivel)
+		if(niveles.getAt(i).id == arg.data.nivel)
 		{
-			e.habilidades.forEach(function(x)
-			{
-				if(x.id == arg.data.id)
-				{
-					if (x.activo == true)
-					{
-						x.activo = false;
+			aux = niveles.getAt(i);
 
-						x.subHabs.forEach(function(y)
+			for(var j = 0; j < aux.habilidades.length; j++)
+			{
+				if(aux.habilidades[j].id == arg.data.id)
+				{
+					if (aux.habilidades[j].activo == true)
+					{
+						aux.habilidades[j].activo = false;
+
+						aux.habilidades[j].subHabs.forEach(function(y)
 						{
 							y.activo = false;
 						});
 					}else{
 
-						x.activo = true;
+						aux.habilidades[j].activo = true;
 
-						x.subHabs.forEach(function(y)
+						aux.habilidades[j].subHabs.forEach(function(y)
 						{
 							y.activo = true;
 						});
 					}
+
+					break;
 				}
-			});
+			}
+
+			niveles.replaceAt(i, aux);
+			break;
 		}
-
-		aux.add(e);
-	});
-
-	niveles.replaceAll(aux);
+	}
 }
 
 function selectSubHab(arg)
 {
 	var aux = Observable();
 
-	niveles.forEach(function(e)
+	for(var i = 0; i < niveles.length; i++)
 	{
-		if( e.id == arg.data.nivel)
+		if( niveles.getAt(i).id == arg.data.nivel)
 		{
-			e.habilidades.forEach(function(x)
+			aux = niveles.getAt(i);
+
+			for(var j = 0; j < aux.habilidades.length; j++)
 			{
-				if(x.id == arg.data.habilidad)
+				if(aux.habilidades[j].id == arg.data.habilidad)
 				{
 					var alguno = false;
 					
-					x.subHabs.forEach(function(y)
+					aux.habilidades[j].subHabs.forEach(function(y)
 					{
 						if(y.id == arg.data.id)
 						{
@@ -1303,15 +1328,15 @@ function selectSubHab(arg)
 						}
 					});
 
-					x.activo = alguno;
+					aux.habilidades[j].activo = alguno;
+					break;
 				}
-			});
+			}
+
+			niveles.replaceAt(i, aux);
+			break;
 		}
-
-		aux.add(e);
-	});
-
-	niveles.replaceAll(aux);
+	}
 }
 
 function selectN(arg)
@@ -1629,10 +1654,12 @@ module.exports = {
 
 //---AddAlumno.ux---
 	alumnos: alumnos,
+	cargarAlumnos: cargarAlumnos,
 	agregarAlumnosCurso: agregarAlumnosCurso,
 	selectNewAlumno: selectNewAlumno,
 	getAlumxCursos: getAlumxCursos,
 	creaEditaAlumno: creaEditaAlumno,
+	editaAlumno: editaAlumno,
 	limpiarDatos: limpiarDatos,
 	editarAlumnos: editarAlumnos,
 	editarAlumnoCurso: editarAlumnoCurso,

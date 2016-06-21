@@ -79,7 +79,7 @@
 					</Grid>
 				</StackPanel>
 
-				<ScrollView>
+				<ScrollView MaxHeight="500">
 					<StackPanel>
 						<Each Items="{instructores}">
 							<DockPanel Color="#FFF" Padding="0,1" Margin="0,0,0,1">
@@ -109,6 +109,7 @@
 								</Clicked>
 							</DockPanel>
 						</Each>
+						<Panel Height="60" />
 					</StackPanel>
 				</ScrollView>
 			</StackPanel>
@@ -147,7 +148,7 @@
 												<Text Value="{rama}" Alignment="CenterLeft" Font="museo300_letter" FontSize="9" TextColor="#535353"/>
 											</Grid>
 
-											<Text Value=">" FontSize="20" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000" Visibility="{movCurso.flecha}"/>
+											<Text Value=">" FontSize="20" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000" Visibility="{movCurso.objeto}"/>
 										</Grid>
 
 										<Clicked>
@@ -254,7 +255,7 @@
 
 				<Grid Columns="2*,6*,2*" Color="#00D9C5" Height="28">
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 						<Rotation Degrees="180"/>
 						<Clicked>
 							<Callback Handler="{lastMonth}" />
@@ -267,7 +268,7 @@
 					</Grid>
 
 					<DockPanel>
-						<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+						<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 						<Clicked>
 							<Callback Handler="{nextMonth}" />
 						</Clicked>
@@ -349,7 +350,7 @@
 
 					<Grid Columns="2*,7*,2*" Color="#00D9C5" Margin="0,8" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -364,7 +365,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
@@ -442,9 +443,9 @@
 								<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 								<Clicked>
-									<Callback Handler="{marcarActividadesxDia}"/>
 									<Set Target="actPage.Active" Value="addActividad" />
 									<Set Target="showActividad.Visibility" Value="Visible" />
+									<Callback Handler="{marcarActividadesxDia}"/>
 								</Clicked>
 							</StackPanel>
 
@@ -488,7 +489,7 @@
 
 					<Grid Columns="2*,7*,2*" Color="#00D9C5" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastDay}" />
@@ -503,7 +504,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextDay}" />
 							</Clicked>
@@ -522,8 +523,8 @@
 										<Text Value="{nivel}" Alignment="CenterLeft" Font="museo700_letter" FontSize="12" TextColor="#000" TextWrapping="Wrap"/>
 
 										<StackPanel Alignment="Right">
-											<Text Value=">" TextColor="#000" FontSize="12" Font="pres_letter" TextAlignment="Right" Margin="0,5,0,0"/>
-
+											<Text Value=">" TextColor="#000" FontSize="12" Font="pres_letter" TextAlignment="Right" Margin="0,5,0,0" />
+											
 											<WhileTrue Value="{activo}">
 												<Rotation Degrees="90"/>
 											</WhileTrue>
@@ -603,7 +604,7 @@
 				</Atras>
 
 				<Panel Alignment="Right" ZOffset="2" Margin="0,-10,14,6">
-					<WhileTrue Value="{editarAlumnos}">
+					<WhileTrue Value="{c}">
 						<Image Source="editVerde" Width="30" />
 					</WhileTrue>
 
@@ -635,7 +636,7 @@
 											<DockPanel Width="70">
 												<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
 
-												<Rectangle Fill="#FFF" Height="60" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
+												<Rectangle Fill="#FFF" Height="58" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
 													<WhileEnabled>
 														<Skew DegreesX="-15" Duration="0.4"/>
 													</WhileEnabled>
@@ -691,9 +692,8 @@
 							<Text Value="+" FontSize="42" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
 
 							<Clicked>
-								<Callback Handler="{limpiarDatos}" />
-								<Set Target="showCreaAlumno.Visibility" Value="Visible" />
-								<Set Target="actPage.Active" Value="crearAlumno" />
+								<Set Target="showNuevoAlumno.Visibility" Value="Visible" />
+								<Set Target="actPage.Active" Value="pagNuevoAlumno" />
 							</Clicked>
 						</StackPanel>
 
@@ -703,20 +703,80 @@
 			</StackPanel>
 		</Page>
 
+		<Page ux:Name="pagNuevoAlumno">
+			<StackPanel ux:Name="showNuevoAlumno" Visibility="Collapsed">
+				<Image Source="cabecera"/>
+
+				<Atras>
+					<Clicked>
+						<Set Target="actPage.Active" Value="pagAlumnos" />
+						<Set Target="showNuevoAlumno.Visibility" Value="Collapsed" />
+					</Clicked>
+				</Atras>
+
+				<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
+					<Grid Columns="auto,auto" Alignment="CenterLeft">
+						<Text Value="NUEVO " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+						<Text Value="ALUMNO" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
+					</Grid>
+				</StackPanel>
+
+				<StackPanel>
+					<DockPanel Padding="14,10" Color="#FFF">
+						<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+
+						<Grid Columns="7*,3*">
+							<Text Value="CREAR ALUMNO" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
+							<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
+						</Grid>
+
+						<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+
+						<Clicked>
+							<Callback Handler="{limpiarDatos}" />
+							<Set Target="showCreaAlumno.Visibility" Value="Visible" />
+							<Set Target="actPage.Active" Value="crearAlumno" />
+							<Set Target="showNuevoAlumno.Visibility" Value="Collapsed" />
+						</Clicked>
+					</DockPanel>
+
+					<DockPanel Padding="14,10" Color="#FFF" Margin="0,3">
+						<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+
+						<Grid Columns="7*,3*">
+							<Text Value="CARGAR ALUMNOS" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
+							<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
+						</Grid>
+
+						<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+
+						<Clicked>
+							<Callback Handler="{cargarAlumnos}"/>
+							<Set Target="showAddAlumno.Visibility" Value="Visible" />
+							<Set Target="actPage.Active" Value="addAlumnos" />
+							<Set Target="showNuevoAlumno.Visibility" Value="Collapsed" />
+						</Clicked>
+					</DockPanel>
+				</StackPanel>
+			</StackPanel>
+		</Page>
+
 		<Page ux:Name="crearAlumno">
 			<DockPanel ux:Name="showCreaAlumno" Visibility="Collapsed">
 				<StackPanel>
 					<Image Source="cabecera"/>
 					<Atras>
 						<Clicked>
+							<Set Target="showNuevoAlumno.Visibility" Value="{editaAlumno.pagAnterior}" />
+							<Set Target="actPage.Active" Value="{editaAlumno.paginaAct}" />
 							<Set Target="showCreaAlumno.Visibility" Value="Collapsed" />
-							<Set Target="actPage.Active" Value="pagAlumnos" />
 						</Clicked>
 					</Atras>
 
 					<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
 						<Grid Columns="auto,auto" Alignment="CenterLeft">
-							<Text Value="NUEVO " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+							<Text Value="{editaAlumno.objeto}" Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+
 							<Text Value="ALUMNO" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
 						</Grid>
 					</StackPanel>
@@ -765,7 +825,11 @@
 								<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 							</Panel>
 
-							<Panel Height="60" />
+							<Panel Height="200" />
+
+							<WhileKeyboardVisible>
+								<Move Y="-0.5" RelativeTo="Keyboard"/>
+							</WhileKeyboardVisible>
 						</StackPanel>
 					</ScrollView>
 				</StackPanel>
@@ -775,9 +839,63 @@
 
 					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
 
+					<WhileKeyboardVisible>
+						<Move Y="1" RelativeTo="Keyboard"/>
+					</WhileKeyboardVisible>
+
 					<Clicked>
 						<Callback Handler="{creaEditaAlumno}" />
 						<Set Target="showCreaAlumno.Visibility" Value="Collapsed" />
+						<Set Target="actPage.Active" Value="pagAlumnos" />
+					</Clicked>
+				</DockPanel>
+			</DockPanel>
+		</Page>
+
+		<Page ux:Name="addAlumnos">
+			<DockPanel ux:Name="showAddAlumno" Visibility="Collapsed">	
+				<StackPanel>
+					<Image Source="cabecera"/>
+					<Atras>
+						<Clicked>
+							<Set Target="showNuevoAlumno.Visibility" Value="Visible" />
+							<Set Target="actPage.Active" Value="pagNuevoAlumno" />
+							<Set Target="showAddAlumno.Visibility" Value="Collapsed" />
+						</Clicked>
+					</Atras>
+
+					<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
+						<Grid Columns="auto,auto" Alignment="CenterLeft">
+							<Text Value="CARGAR " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+							<Text Value="ALUMNOS" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
+						</Grid>
+					</StackPanel>
+
+					<ScrollView MaxHeight="450">
+						<StackPanel>
+							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
+
+							<Each Items="{alumnos}" >
+								<DockPanel Padding="14,5" Color="#FFF">
+									<Text Value="{nombres}" Alignment="CenterLeft" TextColor="#000"/>
+									<Checkbox Alignment="Right" Value="{activo}" Clicked="{selectNewAlumno}" TextColor="#00D9C5"/>
+									<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+								</DockPanel>
+							</Each>
+
+							<Panel Height="100" />
+						</StackPanel>
+					</ScrollView>
+				</StackPanel>
+
+				<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="2">
+					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+					<Text Value="Agregar al curso!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+
+					<Clicked>
+						<Callback Handler="{agregarAlumnosCurso}" />
+						<Set Target="showAddAlumno.Visibility" Value="Collapsed" />
 						<Set Target="actPage.Active" Value="pagAlumnos" />
 					</Clicked>
 				</DockPanel>
@@ -803,7 +921,7 @@
 
 					<Grid Columns="2*,7*,2*" Color="#00D9C5" Height="28">
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 							<Rotation Degrees="180"/>
 							<Clicked>
 								<Callback Handler="{lastFechaconActividad}" />
@@ -818,7 +936,7 @@
 						</Grid>
 
 						<DockPanel>
-							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,4,14,0"/>
+							<Text Value=">" TextColor="#FFF" FontSize="20" Font="pres_letter" TextAlignment="Right" Margin="0,8,14,0"/>
 							<Clicked>
 								<Callback Handler="{nextFechaconActividad}" />
 							</Clicked>
@@ -911,13 +1029,17 @@
 								<Panel Padding="14,2" Color="#FFF" MinHeight="80">
 									<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 									
-									<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Escribe aqui tus comentarios" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Top" Value="{comentario}"/>
+									<TextView TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Escribe aqui tus comentarios" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Top" Value="{comentario}"/>
 
 									<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 								</Panel>
 							</StackPanel>
 
-							<Panel Height="60" />
+							<Panel Height="100" />
+
+							<WhileKeyboardVisible>
+								<Move Y="-0.5" RelativeTo="Keyboard"/>
+							</WhileKeyboardVisible>
 						</StackPanel>
 					</ScrollView>
 				</StackPanel>
@@ -927,55 +1049,13 @@
 
 					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
 
+					<WhileKeyboardVisible>
+						<Move Y="1" RelativeTo="Keyboard"/>
+					</WhileKeyboardVisible>
+
 					<Clicked>
 						<Callback Handler="{agregarCalificaciones}" />
 						<Set Target="actPage.Active" Value="pagAlumnos" />
-					</Clicked>
-				</DockPanel>
-			</DockPanel>
-		</Page>
-
-		<Page ux:Name="addAlumnos">
-			<DockPanel Visibility="Collapsed">	
-				<StackPanel>
-					<Image Source="cabecera"/>
-					<Atras>
-						<Clicked>
-							<Set Target="actPage.Active" Value="pagAlumnos" />
-						</Clicked>
-					</Atras>
-
-					<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
-						<Grid Columns="auto,auto" Alignment="CenterLeft">
-							<Text Value="AGREGAR " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
-							<Text Value="ALUMNOS" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
-						</Grid>
-					</StackPanel>
-
-					<ScrollView MaxHeight="450">
-						<StackPanel>
-							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
-
-							<Each Items="{alumnos}" >
-								<DockPanel Padding="15,5" Color="#FFF">
-									<Text Value="{nombres}" Alignment="CenterLeft" />
-									<Checkbox Alignment="Right" Value="{activo}" Clicked="{selectNewAlumno}" TextColor="#00D9C5"/>
-									<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-								</DockPanel>
-							</Each>
-
-							<Panel Height="100" />
-						</StackPanel>
-					</ScrollView>
-				</StackPanel>
-
-				<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="2">
-					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-					<Text Value="Agregar al curso!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
-
-					<Clicked>
-						<Callback Handler="{agregarAlumnosCurso}" />
 					</Clicked>
 				</DockPanel>
 			</DockPanel>
