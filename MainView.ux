@@ -141,7 +141,7 @@
 											</StackPanel>
 
 											<DockPanel Dock="Bottom">
-												<Text Value=">" Margin="6,0,0,0" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
+												<Text Value=">" Margin="15,0,0,0" Alignment="Center" FontSize="30" TextColor="#FFF" Font="pres_letter">
 													<Rotation Degrees="-90"/>
 												</Text>
 											</DockPanel>
@@ -259,7 +259,10 @@
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>
 
-														<Panel Height="100" />
+														<Panel Height="200" />
+														<WhileKeyboardVisible>
+															<Move Y="-0.5" RelativeTo="Keyboard"/>
+														</WhileKeyboardVisible>
 													</StackPanel>
 												</ScrollView>
 											</StackPanel>
@@ -268,6 +271,10 @@
 												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 												<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+
+												<WhileKeyboardVisible>
+													<Move Y="1" RelativeTo="Keyboard"/>
+												</WhileKeyboardVisible>
 
 												<Clicked>
 													<Callback Handler="{modificarDatos}" />
@@ -343,7 +350,7 @@
 								<DockPanel>
 									<Grid Alignment="TopCenter" Width="10%">
 										<StackPanel>
-											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,2,0,0"/>
+											<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,7,0,0"/>
 											<Rotation Degrees="270"/>
 										</StackPanel>
 

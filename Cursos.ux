@@ -442,6 +442,7 @@
 								<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 								<Clicked>
+									<Callback Handler="{marcarActividadesxDia}"/>
 									<Set Target="actPage.Active" Value="addActividad" />
 									<Set Target="showActividad.Visibility" Value="Visible" />
 								</Clicked>
@@ -561,7 +562,7 @@
 														<Grid Columns="9*,1*" Padding="14,2">
 															<Text Value="{subHab}" Alignment="CenterLeft" Font="museo300I_letter" FontSize="12" TextWrapping="Wrap" Padding="0,0,10,0" TextColor="#898989"/>
 															
-															<Checkbox Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Center" TextColor="#DCDCDC"/>
+															<Checkbox Value="{activo}" Clicked="{selectSubHab}" Padding="0,2" Alignment="Right" TextColor="#DCDCDC"/>
 														</Grid>
 
 														<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2"/>

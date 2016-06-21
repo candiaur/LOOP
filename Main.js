@@ -59,13 +59,13 @@ function load(idUser)
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("CargarPersona: Something went wrong :(");
 			return;
 		}
 		return result.json();
 	})
 	.then(function(data)
-	{	
+	{
 		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, data.imagen, data.rol);
 		GlobalE.rolPerson.value = data.rol;
 
@@ -103,7 +103,7 @@ function loginUser()
 	{
 		if (result.status !== 200)
 		{
-			console.log("Something went wrong :(");
+			console.log("Login: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -147,6 +147,7 @@ function modificarClave()
 			{
 				var aux = "{ \"id\":" + GlobalE.idPerson.value + ",";
 				aux = aux + "\"clave\":\"" + nuevaClave1.value + "\"}";
+				aux = encodeURIComponent(aux);
 
 				fetch('http://loop.inhandy.com/loop.php?cambiarClave=' + aux, {
 					method: 'GET',
@@ -204,8 +205,8 @@ function modificarDatos()
 	aux = aux + "\"correo\": \"" + email.value + "\",";
 	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
 	aux = aux + "\"nacimiento\": \"" + fechaNacio.value + "\"}";
+	aux = encodeURIComponent(aux);
 
-	console.log("Link: " + 'http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux);
 	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
 		method: 'GET',
 		cache: 'default',

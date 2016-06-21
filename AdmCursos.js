@@ -6,7 +6,7 @@ var personaActual = Observable();
 //---Cursos.ux---
 var ramas = Observable();
 var curso = Observable("");
-var cursos = Observable({"cursos":"nuevos"});
+var cursos = Observable({"curso":"nuevos"});
 var actividad = Observable({"actividad":"nueva"});
 var alumnos = Observable({"alumnos":"nuevos"});
 var alumnosCurso = Observable({"alumnos":"nuevo"});
@@ -308,10 +308,14 @@ function agregarCurso()
 	aux = aux + "\"id_rama\":" + ramaAct.value.id + ",";
 	aux = aux + "\"id_instructor\":" + personaActual.value + "}";
 
-	fetch('http://loop.inhandy.com/loop.php?crearCurso=', {
+	aux = encodeURIComponent(aux);
+
+	console.log("Link Crea: " + aux);
+	fetch('http://loop.inhandy.com/loop.php?crearCurso=' + aux, {
 		method: 'POST',
+		cache: 'default',
 		headers: { "Content-type": "application/json"},
-		body: aux
+
 	})
 	.then(function(result)
 	{
@@ -410,11 +414,15 @@ function cargarActividades(reset)
 		}
 
 		actividad.replaceAll(auxiliar);
-		marcarActividadesxDia();
 
 		if(reset == 1)
 		{
 			cargarCalificaciones();
+		}
+
+		if(reset == 2)
+		{
+			marcarActividadesxDia();
 		}
 	});
 }
@@ -580,7 +588,7 @@ function agregarActividad()
 					inicio++;
 				}
 
-				aux = aux + "{\"habilidad\":" + e.id + ",";
+				aux = aux + "{\"habilidad\":" + x.id + ",";
 				aux = aux + "\"subHabs\":[";
 
 				x.subHabs.forEach(function(y)
@@ -604,6 +612,7 @@ function agregarActividad()
 	});
 
 	aux = aux + "]}";
+	aux = encodeURIComponent(aux);
 
 	if(actividad.getAt(0).id == 0)
 	{
@@ -774,6 +783,7 @@ function creaEditaAlumno()
 	if(alumnoAct.value.id == 0)
 	{
 		aux = "{" + aux + ",\"rol\": 0}";
+		aux = encodeURIComponent(aux);
 
 		fetch('http://loop.inhandy.com/loop.php?crearPersona=' + aux, {
 			method: 'GET',
@@ -799,6 +809,7 @@ function creaEditaAlumno()
 		});
 	}else{
 		aux = "{\"id\":" + alumnoAct.value.id + "," + aux + "}";
+		aux = encodeURIComponent(aux);
 
 		fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
 			method: 'GET',
@@ -845,6 +856,7 @@ function agregarAlumnosCurso()
 	});
 
 	aux = aux + "]}";
+	aux = encodeURIComponent(aux);
 
 	fetch('http://loop.inhandy.com/loop.php?agregarAlumnosCurso=' + aux, {
 		method: 'GET',
@@ -1181,6 +1193,8 @@ function agregarCalificaciones()
 		aux = aux + "]}";
 	}
 
+	aux = encodeURIComponent(aux);
+
 	if (hayCalificacion.value == 0)
 	{
 		fetch('http://loop.inhandy.com/loop.php?agregarCalificaciones=' + aux, {
@@ -1505,7 +1519,7 @@ function nextDay()
 	today.setDate(today.getDate() + 1);
 	
 	getFecha();
-	cargarActividades(0);
+	cargarActividades(2);
 }
 
 function lastDay()
@@ -1513,7 +1527,7 @@ function lastDay()
 	today.setDate(today.getDate() - 1);
 	
 	getFecha();
-	cargarActividades(0);
+	cargarActividades(2);
 }
 
 function setDay(arg)
@@ -1611,6 +1625,7 @@ module.exports = {
 	mostrarHabs: mostrarHabs,
 	mostrarSubHabs: mostrarSubHabs,
 	agregarActividad: agregarActividad,
+	marcarActividadesxDia: marcarActividadesxDia,
 
 //---AddAlumno.ux---
 	alumnos: alumnos,
