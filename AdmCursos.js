@@ -244,7 +244,14 @@ function cargarCursosxInstructor(instructor)
 			if (index >= aux.length)
 			{
 				var nuevo = data[key];
-				nuevo["habilidadesC"] = nuevo.habilidades;
+				
+				if(nuevo.habilidades > 0)
+				{
+					nuevo["porcentaje"] = Math.round(nuevo.realizadas/nuevo.habilidades*100) + "%";
+				}else{
+					nuevo["porcentaje"] = "0%";
+				}
+				
 				aux.add(nuevo);
 			}
 		});
@@ -280,16 +287,16 @@ function cargarCursos()
 		{
 			if (index >= aux.length)
 			{
-				var contador = 0;
 				var nuevo = data[key];
-
-				nuevo.habilidades.forEach(function(e)
+				nuevo.habilidades = nuevo.habilidadesC; // -- Para Borrar
+				
+				if(nuevo.habilidades > 0)
 				{
-					contador++;
-				});
+					nuevo["porcentaje"] = Math.round(nuevo.realizadas/nuevo.habilidades*100) + "%";
+				}else{
+					nuevo["porcentaje"] = "0%";
+				}
 
-				nuevo["rama"] = ramaAct.value.rama;
-				nuevo["habilidadesC"] = contador;
 				aux.add(nuevo);
 			}
 		});
@@ -373,22 +380,19 @@ function cargarActividades(reset)
 		var auxiliar = Observable();
 		var hayActividad = 0;
 
-		actividad.replaceAll(data);
-		
 		keys.forEach(function(key, index)
 		{
 			if (index >= aux.length)
 			{
 				var nuevo = data[key];
 
-				for(var i = 0; i < nuevo.niveles.length; i++)
+				nuevo.niveles.forEach(function(e)
 				{
 					var hayHabs = 0;
 
-					for(var j = 0; j < nuevo.niveles[i].habilidades.length; j++)
+					e.habilidades.forEach(function(x)
 					{
-						var x = nuevo.niveles[i].habilidades[j];
-						x["nivel"] = nuevo.niveles[i].id;
+						x["nivel"] = e.id;
 
 						x.subHabs.forEach(function(y)
 						{
@@ -398,13 +402,13 @@ function cargarActividades(reset)
 
 						hayHabs ++;
 						hayActividad = nuevo.id;
-					}
+					});
 
 					if(hayHabs > 0)
 					{
-						aux.add(nuevo.niveles[i]);
+						aux.add(e);
 					}
-				}
+				});
 			}
 		});
 
@@ -463,66 +467,64 @@ function marcarActividadesxDia()
 		a.activo = false;
 		a.isVisible = "Collapsed";
 
-		for(var l = 0; l < actividad.getAt(0).niveles.length; l++)
+		for(var j = 0; j < a.habilidades.length; j++)
 		{
-			var b = actividad.getAt(0).niveles[l];
+			a.habilidades[j].activo = false;
+			a.habilidades[j].isVisible = "Collapsed";
 
-			if(a.id == b.id)
+			for(var m = 0; m < a.habilidades[j].subHabs.length; m++)
 			{
-				for(var j = 0; j < a.habilidades.length; i++)
+				a.habilidades[j].subHabs[m].activo = false;
+
+				for(var n = 0; n < actividad.getAt(0).niveles.length; n++)
 				{
-					a.habilidades[j].activo = false;
-					a.habilidades[j].isVisible = "Collapsed";
+					var b = actividad.getAt(0).niveles.getAt(n);
 
-					for(var m = 0; m < a.habilidades[j].subHabs.length; m++)
+					if(a.id == b.id)
 					{
-						a.habilidades[j].subHabs[m].activo = false;
-					}
-
-					for(var m = 0; m < b.habilidades.length; m++)
-					{
-						var x = b.habilidades[m];
-
-						if(x.id == a.habilidades[j].id)
+						for(var o = 0; o < b.habilidades.length; o++)
 						{
-							a.habilidades[j].activo = true;
-							a.habilidades[j].isVisible = "Visible";
-							a.activo = true;
-							a.isVisible = "Visible";
-
-							for(var o = 0; o < a.habilidades[j].subHabs.length; o++)
+							if(b.habilidades[o].id == a.habilidades[j].id)
 							{
-								for(var p = 0; p < x.subHabs.length; p++)
-								{
-									if(a.habilidades[j].subHabs[o].id == x.subHabs[p].id)
-									{
-										a.habilidades[j].subHabs[o].activo = true;
-										break;
-									}
-								}
-							};
+								a.habilidades[j].activo = true;
+								a.habilidades[j].isVisible = "Visible";
+								a.activo = true;
+								a.isVisible = "Visible";
 
-							break;
+								for(var p = 0; p < b.habilidades[o].subHabs.length; p++)
+								{
+									if(a.habilidades[j].subHabs[m].id == b.habilidades[o].subHabs[p].id)
+									{
+										a.habilidades[j].subHabs[m].activo = true;
+										break;
+									}	
+								}
+
+								break;
+							}
 						}
+
+						break;
 					}
 				}
-
-				break;
 			}
 		}
 
 		aux.add(a);
 	}
 
-	niveles.replaceAt(aux);
+	console.log("Termino");
+	niveles.replaceAll(aux);
 }
 
 function mostrarHabs(arg)
 {
 	var aux = Observable();
 
+	console.log("Mostrar length: " + niveles.length);
 	for(var i = 0; i < niveles.length; i++)
 	{
+		console.log("Mostrar Id: " + niveles.getAt(i).id + " - " + arg.data.id);
 		if(niveles.getAt(i).id == arg.data.id)
 		{
 			aux = niveles.getAt(i);
@@ -971,7 +973,7 @@ function marcarAlumnosxCurso()
 
 		alumnosCurso.forEach(function(x)
 		{
-			if(e.id == x.alumno)
+			if(e.id == x.id)
 			{
 				e.activo = true;
 				encontrado = true;

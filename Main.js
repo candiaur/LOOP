@@ -23,6 +23,25 @@ var nacio = Observable("");
 var imagen = Observable("");
 var fechaNacio = Observable("");
 
+autoLogin();
+
+function autoLogin()
+{
+	if((localStorage.getItem("email") != null) && (localStorage.getItem("email").length > 0))
+	{
+		currentPage.value = "inicio";
+		email.value = localStorage.getItem("email");
+		clave.value = localStorage.getItem("password");
+		loginUser();
+	}
+}
+
+function logOut()
+{
+	localStorage.setItem("email","");
+	localStorage.setItem("password","");
+}
+
 function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
 {
 	var monthNames = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
@@ -116,6 +135,9 @@ function loginUser()
 		{
 			load(estadoLogin.uid);
 			GlobalE.idPerson.value = estadoLogin.uid;
+			
+			localStorage.setItem("email",email.value);
+			localStorage.setItem("password",clave.value);
 
 			currentPage.value = "inicio";
 		}else{
@@ -168,6 +190,8 @@ function modificarClave()
 					clave.value = nuevaClave1.value;
 					perfilPage.value = "pagConfigura";
 					mensajeClave.value = "";
+
+					localStorage.setItem("password",clave.value);
 				});
 			}else{
 				mensajeClave.value = "Claves Nuevas no coinciden";
@@ -223,6 +247,7 @@ function modificarDatos()
 	})
 	.then(function(data)
 	{
+		localStorage.setItem("email",email.value);
 		load(GlobalE.idPerson.value);
 	});
 }

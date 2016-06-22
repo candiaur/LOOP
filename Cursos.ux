@@ -136,12 +136,10 @@
 					<StackPanel>
 						<StackPanel>
 							<Each Items="{cursos}">
+								<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
 								<StackPanel Margin="0,2">
 									<DockPanel Padding="14,10" Color="#FFF" IsEnabled="{movCurso.isEnabled}">
-										<Rectangle Layer="Background">
-											<Stroke Width="1" Color="#D2D2D2"/>
-										</Rectangle>
-
 										<Grid Columns="7*,3*">
 											<Grid>
 												<Text Value="{curso}" Alignment="CenterLeft" Font="museo700_letter" FontSize="20" Margin="0,0,0,2" TextColor="#000"/>
@@ -150,6 +148,8 @@
 
 											<Text Value=">" FontSize="20" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000" Visibility="{movCurso.objeto}"/>
 										</Grid>
+
+										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 
 										<Clicked>
 											<Callback Handler="{selectCurso}" />
@@ -164,22 +164,26 @@
 										</Grid>
 
 										<Grid Columns="auto,auto">
-											<Text Value="{habilidadesC}" Alignment="CenterLeft" Font="museo700_letter" FontSize="26" TextColor="#000"/>
+											<Text Value="{habilidades}" Alignment="CenterLeft" Font="museo700_letter" FontSize="26" TextColor="#000"/>
 											<Text Value=" / Habilidades" Alignment="CenterLeft" Font="museo300_letter" FontSize="18" TextColor="#B5B5B5"/>
 										</Grid>
 
+										<Circle Width="35" Height="35" Alignment="CenterRight" Color="#32E0D0" Layer="Background" Margin="14">
+											<Text  Value="{porcentaje}" Font="museo700_letter" FontSize="12" TextColor="#FFF" Alignment="Center" Margin="0,2,0,0"/>
+										</Circle>
+											
 										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 									</StackPanel>
 								</StackPanel>
 							</Each>
 						</StackPanel>
 
-						<StackPanel Dock="Bottom" Color="#F7F5F7" Margin="0,8">
+						<StackPanel Dock="Bottom" Color="#F7F5F8" Margin="0,8" Visibility="{movCurso.objeto}">
 							<Rectangle Layer="Background" Opacity="0.5">
 								<Stroke Width="1" Color="#D2D2D2"/>
 							</Rectangle>
 
-							<Text Value="+" FontSize="42" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
+							<Text Value="+" FontSize="38" TextColor="#DCDCDC" TextAlignment="Center" Font="museo900_letter"/>
 
 							<Clicked>
 								<Callback Handler="{limpiarCurso}" />
@@ -436,11 +440,11 @@
 							</StackPanel>
 
 							<StackPanel Dock="Bottom" Color="#F7F5F8" Margin="0,8">
-								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+								<Rectangle Layer="Background" Opacity="0.5">
+									<Stroke Width="1" Color="#D2D2D2"/>
+								</Rectangle>
 
-								<Text Value="+" FontSize="38" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
-
-								<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+								<Text Value="+" FontSize="38" TextColor="#DCDCDC" TextAlignment="Center" Font="museo900_letter"/>
 
 								<Clicked>
 									<Set Target="actPage.Active" Value="addActividad" />
@@ -516,7 +520,7 @@
 							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 
 							<Each Items="{niveles}">
-								<StackPanel Color="#FFF" Padding="14,5">
+								<StackPanel Color="#FFF" Padding="14,5,20,5">
 									<Grid Columns="auto,auto,1*">
 										<Image Source="{DataToResource icono}" Height="12" Margin="0,0,10,2" Alignment="VerticalCenter"/>
 
@@ -604,7 +608,7 @@
 				</Atras>
 
 				<Panel Alignment="Right" ZOffset="2" Margin="0,-10,14,6">
-					<WhileTrue Value="{c}">
+					<WhileTrue Value="{editarAlumnos}">
 						<Image Source="editVerde" Width="30" />
 					</WhileTrue>
 
@@ -627,7 +631,7 @@
 				<ScrollView MaxHeight="550">
 					<StackPanel>
 						<StackPanel>
-							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
+							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 							<Each Items="{alumnosCurso}">
 								<DockPanel Color="#FFF">
@@ -684,12 +688,12 @@
 							</Each>
 						</StackPanel>
 
-						<StackPanel Color="#F7F5F7" Margin="0,8">
+						<StackPanel Color="#F7F5F8" Margin="0,8">
 							<Rectangle Layer="Background" Opacity="0.5">
 								<Stroke Width="1" Color="#D2D2D2"/>
 							</Rectangle>
 
-							<Text Value="+" FontSize="42" TextColor="#DBDBDB" TextAlignment="Center" Font="museo900_letter"/>
+							<Text Value="+" FontSize="38" TextColor="#DCDCDC" TextAlignment="Center" Font="museo900_letter"/>
 
 							<Clicked>
 								<Set Target="showNuevoAlumno.Visibility" Value="Visible" />
