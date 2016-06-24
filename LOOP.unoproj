@@ -48,6 +48,9 @@
             "iPad_76_1x": "ico/ios/appicon_2x.png",
             "iPad_76_2x": "ico/ios/appicon_2x.png"
         }
+    },
+    "Mobile": {
+        "Orientations": "Portrait"
     }
 }
 

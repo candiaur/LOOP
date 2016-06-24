@@ -7,7 +7,7 @@
 	<FileImageSource File="Assets/Iconos/img_IconoAvanzado.png" ux:Key="diamante"/>
 	<FileImageSource File="Assets/Iconos/img_IconoExperto.png" ux:Key="doble_Diamante"/>
 
-	<PageControl ux:Name="actPage" Active="pagRamas" Interaction="None">
+	<PageControl ux:Name="actPage" Active="{pagActual}" Interaction="None">
 		<Page ux:Name="pagRamas">
 			<DockPanel>
 				<StackPanel>
@@ -48,9 +48,7 @@
 
 				<DockPanel Dock="Bottom" Padding="0,20" Height="9%" Color="#FFF" ZOffset="2">
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
 					<Image File="Assets/Iconos/img_Instructores.png" Layer="Background" Alignment="Left" Height="34" Margin="14,0"/>
-
 					<Text Value="Listado de instructores" Font="museo700_letter" FontSize="12.5" TextColor="#000" Alignment="Center"/>
 
 					<Clicked>
@@ -226,17 +224,13 @@
 					</Panel>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="2">
-					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-					<Text Value="Guardar!" Font="museo700_letter" TextAlignment="Center" FontSize="12.5" TextColor="#000"/>
-
+				<Boton Text="Guardar!">
 					<Clicked>
 						<Callback Handler="{agregarCurso}"/>
 						<Set Target="actPage.Active" Value="pagCursos" />
 						<Set Target="showaddCurso.Visibility" Value="Collapsed" />
 					</Clicked>
-				</DockPanel>
+				</Boton>
 			</DockPanel>
 		</Page>
 
@@ -405,12 +399,17 @@
 																
 																<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background" />
 															</StackPanel>
+
+															<Rectangle Fill="#FFF" Height="100%" Width="20" Margin="0,0,-8,0" Alignment="Right">
+																<WhileEnabled>
+																	<Skew DegreesX="-15" Duration="0.4"/>
+																</WhileEnabled>
+															</Rectangle>
 														</Page>
 
 														<Page>
 															<ActivatingAnimation>		
 																<Set postponeText.Opacity="1"/>
-																<Change background.Color="#e0464d" Easing="ExponentialInOut" />
 																<Move Target="postponeText" X="-2" RelativeTo="Size" Duration=".3" DelayBack="0"/>
 															</ActivatingAnimation>
 															<WhileActive>
@@ -422,7 +421,7 @@
 													<Text ux:Class="Operation" Alignment="CenterRight" TextColor="#fff" Font="museo500I_letter"/>
 													<Operation ux:Name="postponeText">Eliminar</Operation>
 													<Rectangle>
-														<SolidColor ux:Name="background" Color="#fff" />
+														<SolidColor ux:Name="background" Color="#E0464D" />
 													</Rectangle>
 
 													<RemovingAnimation>
@@ -584,17 +583,13 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="10">
-					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-					<Text Value="Guardar!" Font="museo700_letter" TextAlignment="Center" FontSize="12.5" TextColor="#000"/>
-
+				<Boton Text="Guardar!">
 					<Clicked>
 						<Callback Handler="{agregarActividad}" />
 						<Set Target="actPage.Active" Value="pagActividad" />
 						<Set Target="showActividad.Visibility" Value="Collapsed" />
 					</Clicked>
-				</DockPanel>
+				</Boton>
 			</DockPanel>
 		</Page>
 
@@ -838,11 +833,7 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="3">
-					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
-
+				<Boton Text="Guardar!">
 					<WhileKeyboardVisible>
 						<Move Y="1" RelativeTo="Keyboard"/>
 					</WhileKeyboardVisible>
@@ -852,7 +843,7 @@
 						<Set Target="showCreaAlumno.Visibility" Value="Collapsed" />
 						<Set Target="actPage.Active" Value="pagAlumnos" />
 					</Clicked>
-				</DockPanel>
+				</Boton>
 			</DockPanel>
 		</Page>
 
@@ -1048,11 +1039,7 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="3">
-					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-					<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
-
+				<Boton Text="Guardar!">
 					<WhileKeyboardVisible>
 						<Move Y="1" RelativeTo="Keyboard"/>
 					</WhileKeyboardVisible>
@@ -1061,7 +1048,7 @@
 						<Callback Handler="{agregarCalificaciones}" />
 						<Set Target="actPage.Active" Value="pagAlumnos" />
 					</Clicked>
-				</DockPanel>
+				</Boton>
 			</DockPanel>
 		</Page>
 	</PageControl>

@@ -7,6 +7,7 @@ var leftPage = Observable("calificacion");
 var perfilPage = Observable("pagPerfil");
 var mensajeError = Observable("");
 var mensajeClave = Observable("");
+var volverInicio = Observable(false);
 
 var persona = Observable(
 	new Person("", "","","","Assets/FuseLogo.png","0"));
@@ -40,6 +41,8 @@ function logOut()
 {
 	localStorage.setItem("email","");
 	localStorage.setItem("password","");
+	currentPage.value = "login";
+	volverInicio.value = true;
 }
 
 function Person(nombre, apellido, correo, cel, nacio, imagen, rol)
@@ -87,6 +90,7 @@ function load(idUser)
 	{
 		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, data.imagen, data.rol);
 		GlobalE.rolPerson.value = data.rol;
+		GlobalE.login.value = true;
 
 		if(data.rol == "0")
 		{
@@ -95,6 +99,8 @@ function load(idUser)
 			
 			leftPage.value = "calificacion";
 		}
+
+		volverInicio.value = false;
 	});
 };
 
@@ -256,24 +262,36 @@ module.exports = {
 	tag: tag,
 	submit: submit,
 	persona: persona,
+	
+	//-- Page Control--
 	leftPage: leftPage,
 	perfilPage: perfilPage,
 	currentPage: currentPage,
-	nombre: nombre,
-	apellido: apellido,
+	volverInicio: volverInicio,
+
+	//-- Datos Generales--
 	cel: cel,
-	nacio: nacio,
 	email: email,
 	clave: clave,
+	nacio: nacio,
+	nombre: nombre,
+	apellido: apellido,
 	fechaNacio: fechaNacio,
-	loginUser: loginUser,
-	mensajeError: mensajeError,
-	mensajeClave: mensajeClave,
+	
+	//-- Modificación Clave--
 	claveAct: claveAct,
 	nuevaClave1: nuevaClave1,
 	nuevaClave2: nuevaClave2,
+
+	//-- Mensajes Error--
+	mensajeError: mensajeError,
+	mensajeClave: mensajeClave,
+	
+	//-- Funciones--
+	logOut: logOut,
+	loginUser: loginUser,
 	limpiarDatos: limpiarDatos,
 	limpiarClaves: limpiarClaves,
-	modificarClave: modificarClave,
 	modificarDatos: modificarDatos,
+	modificarClave: modificarClave,
 };

@@ -24,6 +24,17 @@
 			<Rotation Degrees="180"/>
 		</DockPanel>
 
+		<DockPanel ux:Class="Boton" ux:Name="boton" Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="10">
+			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>	
+			<Text Value="{Property boton.Text}" ux:Name="texto" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+			
+			<string ux:Property="Text"/>
+			<WhilePressed>
+				<Change boton.Color="#000"/>
+				<Change texto.TextColor="#FFF"/>
+			</WhilePressed>
+		</DockPanel>
+
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
 		
@@ -109,8 +120,11 @@
 							</Panel>
 
 							<LinearNavigation Active="center"/>
-
 							<SwipeNavigate SwipeDirection="Up"/>
+
+							<WhileTrue Value="{volverInicio}">
+								<NavigateTo Target="center" />
+							</WhileTrue>
 
 							<udPage ux:Name="top">
 								<PageControl ux:Name="controlPerfil" Active="{perfilPage}" Interaction="None">
@@ -163,7 +177,13 @@
 											</StackPanel>
 
 											<StackPanel>
-												<DockPanel Padding="14,10" Color="#FFF">
+												<DockPanel ux:Class="Opcion" ux:Name="opcion" Padding="14,10" Color="#FFF">
+													<WhilePressed>
+														<Change opcion.Color="#E2E2E2"/>
+													</WhilePressed>
+												</DockPanel>
+
+												<Opcion ux:Name="editPerfil">
 													<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 													<Grid Columns="7*,3*">
@@ -178,11 +198,9 @@
 														<Set Target="showEditaDatos.Visibility" Value="Visible" />
 														<Set Target="controlPerfil.Active" Value="pagEditaDatos" />
 													</Clicked>
-												</DockPanel>
+												</Opcion>
 
-												<DockPanel Padding="14,10" Color="#FFF" Margin="0,3">
-													<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
-
+												<Opcion ux:Name="cambiaClave">
 													<Grid Columns="7*,3*">
 														<Text Value="CAMBIAR CONTRASEÑA" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
 														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
@@ -193,6 +211,22 @@
 													<Clicked>
 														<Callback Handler="{limpiarClaves}"/>
 														<Set Target="controlPerfil.Active" Value="pagEditaClave" />
+													</Clicked>
+												</Opcion>
+
+												<DockPanel Padding="14,10" Color="#EDE9E9" Margin="0,6">
+													<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+
+													<Grid Columns="7*,3*">
+														<Text Value="CERRAR SESIÓN" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
+														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
+													</Grid>
+
+													<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+
+													<Clicked>
+														<Callback Handler="{logOut}"/>
+														<Set Target="controlPerfil.Active" Value="pagPerfil" />
 													</Clicked>
 												</DockPanel>
 											</StackPanel>
@@ -269,11 +303,7 @@
 												</ScrollView>
 											</StackPanel>
 
-											<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="3">
-												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-												<Text Value="Guardar!" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
-
+											<Boton Text="Guardar!" >
 												<WhileKeyboardVisible>
 													<Move Y="1" RelativeTo="Keyboard"/>
 												</WhileKeyboardVisible>
@@ -283,7 +313,7 @@
 													<Set Target="showEditaDatos.Visibility" Value="Collapsed" />
 													<Set Target="controlPerfil.Active" Value="pagConfigura" />
 												</Clicked>
-											</DockPanel>
+											</Boton>
 										</DockPanel>
 									</Page>
 
@@ -334,15 +364,11 @@
 												</Panel>
 											</StackPanel>
 
-											<DockPanel Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="2">
-												<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
-												<Text Value="Cambiar!" Font="museo700_letter" TextAlignment="Center" FontSize="12.5" TextColor="#000" Alignment="VerticalCenter"/>
-
+											<Boton Text="Cambiar!">
 												<Clicked>
 													<Callback Handler="{modificarClave}"/>
 												</Clicked>
-											</DockPanel>
+											</Boton>
 										</DockPanel>
 									</Page>
 								</PageControl>
@@ -358,9 +384,9 @@
 
 										<Image File="Assets/Iconos/img_Perfil.png" Alignment="Center" Margin="5,0"/>
 
-										<Clicked>
-											<SwipeNavigate SwipeDirection="Up"/>
-										</Clicked>
+										<!-- <Clicked>
+											<NavigateTo Target="top" />
+										</Clicked> -->
 									</Grid>
 
 									<Grid ColumnCount="2" Alignment="CenterLeft" Width="20%">
@@ -370,6 +396,10 @@
 										</StackPanel>
 
 										<Image File="Assets/Iconos/img_Progreso.png" Alignment="Left" Margin="5,0"/>
+
+										<!-- <Clicked>
+											<NavigateTo Target="top" />
+										</Clicked> -->
 									</Grid>
 <!-- 
 									<Grid ColumnCount="2" Alignment="CenterRight" Width="20%">

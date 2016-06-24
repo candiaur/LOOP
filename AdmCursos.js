@@ -2,9 +2,10 @@ var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
 var GlobalE = require("GlobalElem");
 var personaActual = Observable();
+var pagActual = Observable("pagRamas");
 
 //---Cursos.ux---
-var ramas = Observable();
+var ramas = Observable({"rama":"nueva"});
 var curso = Observable("");
 var cursos = Observable({"curso":"nuevos","alumnos":0});
 var actividad = Observable({"actividad":"nueva"});
@@ -17,7 +18,7 @@ var instructores = Observable({"instructor":"nuevo"});
 var movCurso = Observable(new MovimientoPag("pagRamas", "Collapsed", "Visible",true));
 
 //---CrearActividad.ux---
-var niveles = Observable();
+var niveles = Observable({"nivel":"nuevo"});
 
 //---CrearAlumno.ux---
 var editarAlumnos = Observable(false);
@@ -52,18 +53,19 @@ var timer = Timer.create(function(){
 	 getPersona()}, 1000, true);
 
 function getPersona()
-{
-	personaActual.value = GlobalE.idPerson.value; 
-	
-	if(personaActual.value != null)
+{ 	
+	if(GlobalE.login.value)
 	{
+		personaActual.value = GlobalE.idPerson.value;
+
 		if(GlobalE.rolPerson.value != 0)
 		{
+			pagActual.value = "pagRamas";
 			cargarRamas();
 			cargarNiveles();
 		}
 
-		Timer.delete(timer);
+		GlobalE.login.value = false;
 	}	
 }
 
@@ -97,15 +99,18 @@ function cargarRamas()
 	.then(function(data)
 	{
 		var keys = Object.keys(data);
+		var aux = Observable();
 		
 		keys.forEach(function(key, index)
 		{
-			if (index >= ramas.length)
+			if (index >= aux.length)
 			{
 				var nuevo = data[key];
-				ramas.add(nuevo);
+				aux.add(nuevo);
 			}
 		});
+
+		ramas.replaceAll(aux);
 	});
 }
 
@@ -130,10 +135,11 @@ function cargarNiveles()
 	.then(function(data)
 	{
 		var keys = Object.keys(data);
+		var aux = Observable();
 		
 		keys.forEach(function(key, index)
 		{
-			if (index >= niveles.length)
+			if (index >= aux.length)
 			{
 				var nuevo = data[key];
 				nuevo["isVisible"] = "Collapsed";
@@ -153,9 +159,11 @@ function cargarNiveles()
 					});
 				});
 				
-				niveles.add(nuevo);
+				aux.add(nuevo);
 			}
 		});
+
+		niveles.replaceAll(aux);
 	});
 }
 
@@ -1624,6 +1632,8 @@ function getFecha()
 }
 
 module.exports = {
+	pagActual: pagActual,
+
 //---Cursos.ux---
 	ramas: ramas,
 	cursos: cursos,
