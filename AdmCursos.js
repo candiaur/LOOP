@@ -1647,6 +1647,7 @@ module.exports = {
 	selectInstructor: selectInstructor,
 	cursoAct: cursoAct,
 	alumnoAct: alumnoAct,
+	cargarCursos: cargarCursos,
 	cargarInstructores: cargarInstructores,
 	setDiaconActividad: setDiaconActividad,
 	marcarAlumnosxCurso: marcarAlumnosxCurso,

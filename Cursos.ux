@@ -327,6 +327,7 @@
 					<Image Source="cabecera"/>
 					<Atras>
 						<Clicked>
+							<Callback Handler="{cargarCursos}" />
 							<Set Target="actPage.Active" Value="pagCursos" />
 						</Clicked>
 					</Atras>
@@ -684,7 +685,7 @@
 											<Change alumno.Color="#E2E2E2"/>
 											<Change rectangulo.Color="#E2E2E2"/>
 										</WhilePressed>
-										
+
 										<Clicked>
 											<Callback Handler="{selectAlumno}" />
 											<Set Target="actPage.Active" Value="calificaAlumno" />
