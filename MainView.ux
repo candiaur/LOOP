@@ -35,6 +35,13 @@
 			</WhilePressed>
 		</DockPanel>
 
+		<DockPanel ux:Class="Opcion" ux:Name="opcion" Padding="14,10" Color="#FFF">
+			<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+			<WhilePressed>
+				<Change opcion.Color="#E2E2E2"/>
+			</WhilePressed>
+		</DockPanel>
+
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
 		
@@ -177,12 +184,6 @@
 											</StackPanel>
 
 											<StackPanel>
-												<DockPanel ux:Class="Opcion" ux:Name="opcion" Padding="14,10" Color="#FFF">
-													<WhilePressed>
-														<Change opcion.Color="#E2E2E2"/>
-													</WhilePressed>
-												</DockPanel>
-
 												<Opcion ux:Name="editPerfil">
 													<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
 
@@ -190,8 +191,6 @@
 														<Text Value="EDITAR PERFIL" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
 														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
 													</Grid>
-
-													<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 													<Clicked>
 														<Callback Handler="{limpiarDatos}"/>
@@ -205,8 +204,6 @@
 														<Text Value="CAMBIAR CONTRASEÑA" Alignment="CenterLeft" Font="museo700_letter" FontSize="16" TextColor="#000"/>
 														<Text Value=">" FontSize="24" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
 													</Grid>
-
-													<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
 
 													<Clicked>
 														<Callback Handler="{limpiarClaves}"/>

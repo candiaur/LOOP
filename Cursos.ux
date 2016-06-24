@@ -25,19 +25,17 @@
 							<StackPanel>
 								<Rectangle Alignment="Top" Height="1" Color="#D2D2D2"/>
 								<Each Items="{ramas}">
-									<DockPanel Padding="14,10" Color="#FFF">
+									<Opcion>
 										<Grid Columns="7*,3*">
 											<Text Value="{rama}" Alignment="CenterLeft" Font="museo700_letter" FontSize="19" TextColor="#000"/>
 											<Text Value=">" FontSize="20" Alignment="CenterRight" Margin="0,5,0,0" Font="pres_letter" TextColor="#000"/>
 										</Grid>
 
-										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-
 										<Clicked>
 											<Set Target="actPage.Active" Value="pagCursos" />
 											<Callback Handler="{selectRama}" />
 										</Clicked>
-									</DockPanel>
+									</Opcion>
 								</Each>
 
 								<Panel Height="60" />
@@ -46,10 +44,14 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="0,20" Height="9%" Color="#FFF" ZOffset="2">
+				<DockPanel ux:Name="listaInst" Dock="Bottom" Padding="0,20" Height="9%" Color="#FFF" ZOffset="2">
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 					<Image File="Assets/Iconos/img_Instructores.png" Layer="Background" Alignment="Left" Height="34" Margin="14,0"/>
 					<Text Value="Listado de instructores" Font="museo700_letter" FontSize="12.5" TextColor="#000" Alignment="Center"/>
+
+					<WhilePressed>
+						<Change listaInst.Color="#00D9C5"/>
+					</WhilePressed>
 
 					<Clicked>
 						<Callback Handler="{cargarInstructores}"/>
@@ -77,17 +79,15 @@
 					</Grid>
 				</StackPanel>
 
-				<ScrollView MaxHeight="500">
+				<ScrollView MaxHeight="550">
 					<StackPanel>
-						<Each Items="{instructores}">
-							<DockPanel Color="#FFF" Padding="0,1" Margin="0,0,0,1">
-								<Rectangle Layer="Background" Opacity="0.5">
-									<Stroke Width="1" Color="#D2D2D2"/>
-								</Rectangle>
+						<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" ZOffset="2"/>
 
+						<Each Items="{instructores}">
+							<Opcion Padding="0,1">
 								<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
 
-								<Rectangle Fill="#FFF" Height="60" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
+								<Rectangle ux:Name="rectangulo" Fill="#FFF" Height="60" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
 									<WhileEnabled>
 										<Skew DegreesX="-15" Duration="0.4"/>
 									</WhileEnabled>
@@ -100,14 +100,20 @@
 								
 								<Text Value=">" FontSize="20" Alignment="CenterRight" Font="pres_letter" Margin="14,5,14,0" TextColor="#000"/>
 
+								<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+
+								<WhilePressed>
+									<Change rectangulo.Color="#E2E2E2"/>
+								</WhilePressed>
+
 								<Clicked>
 									<Callback Handler="{selectInstructor}" />
 									<Set Target="actPage.Active" Value="pagCursos" />
 									<Set Target="showInstructores.Visibility" Value="Collapsed" />
 								</Clicked>
-							</DockPanel>
+							</Opcion>
 						</Each>
-						<Panel Height="60" />
+						<Panel Height="100" />
 					</StackPanel>
 				</ScrollView>
 			</StackPanel>
@@ -134,10 +140,10 @@
 					<StackPanel>
 						<StackPanel>
 							<Each Items="{cursos}">
-								<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-
 								<StackPanel Margin="0,2">
-									<DockPanel Padding="14,10" Color="#FFF" IsEnabled="{movCurso.isEnabled}">
+									<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" ZOffset="2"/>
+
+									<Opcion IsEnabled="{movCurso.isEnabled}">
 										<Grid Columns="7*,3*">
 											<Grid>
 												<Text Value="{curso}" Alignment="CenterLeft" Font="museo700_letter" FontSize="20" Margin="0,0,0,2" TextColor="#000"/>
@@ -147,13 +153,11 @@
 											<Text Value=">" FontSize="20" Alignment="CenterRight" Font="pres_letter" Margin="0,5,0,0"  TextColor="#000" Visibility="{movCurso.objeto}"/>
 										</Grid>
 
-										<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-
 										<Clicked>
 											<Callback Handler="{selectCurso}" />
 											<Set Target="actPage.Active" Value="pagActividad" />
 										</Clicked>
-									</DockPanel>
+									</Opcion>
 
 									<StackPanel Padding="14,8" Color="#FCFBFC">
 										<Grid Columns="auto,auto">
@@ -457,12 +461,16 @@
 					</ScrollView>
 				</StackPanel>
 
-				<DockPanel Dock="Bottom" Padding="0,20" Height="9%" Color="#FFF" ZOffset="2">
+				<DockPanel ux:Name="listaCurso" Dock="Bottom" Padding="0,20" Height="9%" Color="#FFF" ZOffset="2">
 					<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 
 					<Image File="Assets/Iconos/img_Lista.png" Layer="Background" Alignment="Left" Height="30" Margin="14,0"/>
 
 					<Text Value="Listado del curso" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+					
+					<WhilePressed>
+						<Change listaCurso.Color="#00D9C5"/>
+					</WhilePressed>
 
 					<Clicked>
 						<Callback Handler="{getAlumxCursos}" />
@@ -625,17 +633,17 @@
 
 				<ScrollView MaxHeight="550">
 					<StackPanel>
-						<StackPanel>
-							<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" Layer="Background"/>
+						<Rectangle Alignment="Top" Height="1" Color="#D2D2D2" ZOffset="2"/>
 
+						<StackPanel>
 							<Each Items="{alumnosCurso}">
-								<DockPanel Color="#FFF">
+								<DockPanel ux:Name="alumno" Color="#FFF">
 									<Grid Columns="auto,auto" >
 										<WhileFalse Value="{editarAlumnos}">
 											<DockPanel Width="70">
 												<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
 
-												<Rectangle Fill="#FFF" Height="58" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
+												<Rectangle ux:Name="rectangulo" Fill="#FFF" Height="58" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
 													<WhileEnabled>
 														<Skew DegreesX="-15" Duration="0.4"/>
 													</WhileEnabled>
@@ -672,6 +680,11 @@
 									</WhileTrue>
 
 									<WhileFalse Value="{editarAlumnos}">
+										<WhilePressed>
+											<Change alumno.Color="#E2E2E2"/>
+											<Change rectangulo.Color="#E2E2E2"/>
+										</WhilePressed>
+										
 										<Clicked>
 											<Callback Handler="{selectAlumno}" />
 											<Set Target="actPage.Active" Value="calificaAlumno" />
