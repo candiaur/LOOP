@@ -18,6 +18,11 @@
 		<FileImageSource File="Assets/Logos/logoencirculo.png" ux:Global="logoCircular"/>
 		<FileImageSource File="Assets/Iconos/img_EditaNegro.png" ux:Global="editNegro"/>
 		<FileImageSource File="Assets/Iconos/img_EditaVerde.png" ux:Global="editVerde"/>
+
+		<FileImageSource File="Assets/Iconos/img_IconoPrincipiante.png" ux:Global="cuadrado"/>
+		<FileImageSource File="Assets/Iconos/img_IconoIntermedio.png" ux:Global="circulo"/>
+		<FileImageSource File="Assets/Iconos/img_IconoAvanzado.png" ux:Global="diamante"/>
+		<FileImageSource File="Assets/Iconos/img_IconoExperto.png" ux:Global="doble_Diamante"/>
 		
 		<DockPanel ux:Class="Atras" Margin="0,-50,0,23" Alignment="TopLeft" ZOffset="2">
 			<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" Padding="14,0" TextAlignment="Center"/>

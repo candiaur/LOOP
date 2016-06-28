@@ -2,13 +2,13 @@ var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
 var GlobalE = require("GlobalElem");
 var personaActual = Observable(1);
+var pagActual = Observable("pagMiActividad");
 
 var calificacionesAl = Observable({"calificaciones": "nuevas"});
 var actividadesAl = Observable({"actividades": "nuevas"});
 var resumenNotas = Observable({"nota": 0, "nombre":"", "radio":0});
 var total = Observable(0);
 var clases = Observable({"fecha":"","asistencia":"falla","actividad":0,"valido":false});
-var actividadAct = Observable();
 var comentario = Observable("");
 var calificacionAct = Observable({"calificacion":"nueva"});
 var habilidadesAlcanzadas = Observable({"habilidad":"nueva"});
@@ -19,29 +19,23 @@ var today = new Date();
 var dia = Observable();
 var anio = Observable();
 
-// var timer = Timer.create(function(){
-	// cargarFunciones();getPersona();}, 1000, true);
-
-function cargarFunciones()
-{
-	cargarCalificacionesAlumno();
-	cargarActividadesAlumno();
-	getResumenNotasAlumno();
-}
+var timer = Timer.create(function(){
+	getPersona();}, 1000, true);
 
 function getPersona()
 {
-	personaActual.value = GlobalE.idPerson.value; 
-	
-	if(personaActual.value != null)
+	if(GlobalE.login.value)
 	{
+		personaActual.value = GlobalE.idPerson.value;
+
 		if(GlobalE.rolPerson.value == 0)
 		{
+			pagActual.value = "pagMiActividad";
 			getResumenNotasAlumno();
-		}
 
-		Timer.delete(timer);
-	}	
+			GlobalE.login.value = false;
+		}
+	}
 }
 
 function getResumenNotasAlumno()
@@ -73,7 +67,7 @@ function getResumenNotasAlumno()
 				var nuevo = data[key];
 				aux.add(nuevo);
 
-				total.value = total.value + nuevo.nombre;
+				total.value = total.value + nuevo.nota;
 			}
 		});
 
@@ -86,10 +80,100 @@ function getResumenNotasAlumno()
 	});
 }
 
-//--Carga todas las calificaciones del alumno.
-function cargarCalificacionesAlumno()
+function getFechasClases(verProgreso)
 {
-	fetch('https://firstloop.firebaseio.com/calificaciones.json', {
+	var contador = 0;
+
+	fetch('http://loop.inhandy.com/loop.php?getAsistenciaAlumno=' + personaActual.value, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
+	{
+		if (result.status !== 200)
+		{
+			console.log("getAsistenciaAlumno: Something went wrong :(");
+			return;
+		}
+		return result.json();
+	})
+	.then(function(data)
+	{
+		var keys = Object.keys(data);
+		var aux = Observable();
+		var auxiliar = Observable();
+
+		var dateNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves",
+		"Viernes", "Sábado"];
+
+		var monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+	 	"Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+		keys.forEach(function(key, index)
+		{
+			if (index >= aux.length)
+			{
+				var nuevo = data[key];
+				var auxAsistencia = "falla";
+				var auxFecha = "";
+				var auxValido = false;
+				var auxDia = new Date(nuevo.fecha + "T11:51:00");
+
+				auxFecha = dateNames[auxDia.getUTCDay()] + " " + auxDia.getDate() +
+					" de " + monthNames[auxDia.getMonth()];
+
+				if(nuevo.asistencia == 1)
+				{
+					auxAsistencia = "check";
+					auxValido = true;
+				}
+
+				aux.add({"fecha":auxFecha,"asistencia":auxAsistencia,"actividad":nuevo.id,"valido":auxValido});
+				auxiliar.add({"fecha":auxDia,"id":nuevo.id})
+				contador++;
+			}
+		});
+
+		if(contador < 20)
+		{
+			for (var i = contador; i < 20; i++)
+			{
+				aux.add({"fecha":"","asistencia":"","actividad":0,"valido":false});
+			}
+		}
+
+		clases.replaceAll(aux);
+		fechasCalificaciones.replaceAll(auxiliar);
+
+		if(verProgreso == 1)
+		{
+			if(fechasCalificaciones.getAt(0).id != 0)
+			{
+				if (!iniciadoFecha)
+				{
+					indexFechasCal.value = fechasCalificaciones.length - 1;
+					today = new Date(fechasCalificaciones.getAt(indexFechasCal.value).fecha);
+					iniciadoFecha = true;
+					getFecha();
+				}
+
+				cargarCalificacionesAlumno(fechasCalificaciones.getAt(indexFechasCal.value).id)
+			}
+		}
+	});
+}
+
+function getFechasconActividades(e)
+{
+	getFechasClases(1);
+}
+
+//--Carga todas las calificaciones del alumno.
+function cargarCalificacionesAlumno(idActividad)
+{
+	fetch('http://loop.inhandy.com/loop.php?cargarCalificaciones=' + idActividad + 
+		',' + personaActual.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -105,243 +189,63 @@ function cargarCalificacionesAlumno()
 	})
 	.then(function(data)
 	{
-		var keys = Object.keys(data);
 		var aux = Observable();
+		var nuevo = data;
 
-		keys.forEach(function(key, index)
+		nuevo.habilidades.forEach(function(e)
 		{
-			if (index >= aux.length)
+			if(nuevo.asistencia == 1)
 			{
-				var nuevo = data[key];
-				aux.add(nuevo);
-			}
-		});
-
-		calificacionesAl.replaceAll(aux);
-	});
-}
-
-function cargarActividadesAlumno()
-{
-	fetch('https://firstloop.firebaseio.com/actividades.json', {
-		method: 'GET',
-		cache: 'default',
-		headers: { "Content-type": "application/json"}
-	})
-	.then(function(result)
-	{
-		if (result.status !== 200)
-		{
-			console.log("cargarActividadesAlumno: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		var keys = Object.keys(data);
-		var aux = Observable();
-
-		keys.forEach(function(key, index)
-		{
-			if (index >= aux.length)
-			{
-				var nuevo = data[key];
-				aux.add(nuevo);
-			}
-		});
-
-		actividadesAl.replaceAll(aux);
-	});
-}
-
-function getFechasClases()
-{
-	var aux = Observable();
-	var contador = 0;
-
-	var dateNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves",
-		"Viernes", "Sábado"];
-
-	var monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-	 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-	calificacionesAl.forEach(function(e)
-	{
-		if(personaActual.value == e.alumno)
-		{
-			actividadesAl.forEach(function(x)
-			{
-				if(e.actividad == x.id)
+				e.subHabs.forEach(function(x)
 				{
-					var auxAsistencia = "falla";
-					var auxFecha = "";
-					var auxValido = false;
-					var auxDia = new Date(x.fecha + "T11:51:00");
-
-					auxFecha = dateNames[auxDia.getUTCDay()] + " " + auxDia.getDate() +
-						" de " + monthNames[auxDia.getMonth()];
-
-					if(e.asistencia == 1)
-					{
-						auxAsistencia = "check";
-						auxValido = true;
-					}
-
-					aux.add({"fecha":auxFecha,"asistencia":auxAsistencia,"actividad":x.id,"valido":auxValido});
-					contador++;
-				}
-			});
-		}
-	});
-
-	if(contador < 20)
-	{
-		for (var i = contador; i < 20; i++)
-		{
-			aux.add({"fecha":"","asistencia":"","actividad":0,"valido":false});
-		}
-	}
-
-	clases.replaceAll(aux);
-}
-
-function getFechasconActividades()
-{	
-	var auxFechas = [];
-	var auxIdActividad = 0;
-
-	calificacionesAl.forEach(function(e)
-	{
-		if(personaActual.value == e.alumno)
-		{
-			actividadesAl.forEach(function(x)
-			{
-				if(e.actividad == x.id)
-				{
-					var auxFecha = x.fecha + "T11:51:00";
-					auxFechas.push({"fecha":auxFecha,"actividad":x.id});
+					x["noLogrado"] = "";
+					x["medio"] = "";
+					x["logrado"] = "";
 					
-					if (!iniciadoFecha)
+					if(x.nota == 3)
 					{
-						actividadAct = x;
-						auxIdActividad = x.id;
+						x.logrado = "check";
+					}else
+
+					if(x.nota == 2)
+					{
+						x.medio = "check";
 					}
-				}
-			});
-		}
-	});
 
-	auxFechas.sort(function(a, b) 
-		{return a.fecha.localeCompare(b.fecha);});
+					if(x.nota == 1)
+					{
+						x.noLogrado = "check";
+					}
 
-	fechasCalificaciones.replaceAll(auxFechas);
+				});
+			}
 
-	if (!iniciadoFecha)
-	{
-		indexFechasCal.value = fechasCalificaciones.length - 1;
-		today = new Date(fechasCalificaciones.getAt(indexFechasCal.value).fecha);
-		iniciadoFecha = true;
+			aux.add(e);
+		});
 		
-		getCalificacionxActividad(auxIdActividad);
-		getFecha();
-	}
-}
-
-function getCalificacionxActividad(id)
-{
-	var aux = Observable();
-	comentario.value = "";
-
-	calificacionesAl.forEach(function(a)
-	{
-		if((a.actividad == id) && (personaActual.value == a.alumno))
+		if (nuevo.asistencia == 0)
 		{
-			if(a.asistencia == 1)
-			{
-				a.habilidades.forEach(function(x)
-				{
-					actividadAct.habilidades.forEach(function(y)
-					{
-						if (y.id == x.habilidad)
-						{
-							x.subHabs.forEach(function(z)
-							{
-								y.subHabs.forEach(function(d)
-								{
-									if (z.id == d.id)
-									{
-										d["noLogrado"] = "";
-										d["medio"] = "";
-										d["logrado"] = "";
-										
-										if(z.nota == 3)
-										{
-											d.logrado = "check";
-										}else
-
-										if(z.nota == 2)
-										{
-											d.medio = "check";
-										}
-
-										if(z.nota == 1)
-										{
-											d.noLogrado = "check";
-										}
-									}
-								});
-							});
-
-							aux.add(y);
-						}
-					});
-				});
-
-				comentario.value = a.comentario;
-			}else{
-				actividadAct.habilidades.forEach(function(y)
-				{
-					y.subHabs.forEach(function(d)
-					{
-						d["noLogrado"] = "";
-						d["medio"] = "";
-						d["logrado"] = "";
-					});
-					
-					aux.add(x);
-				});
-			}
+			comentario.value = "No Asistió";
+		}else{
+			comentario.value = nuevo.comentario;
 		}
-	});
 
-	calificacionAct.replaceAll(aux);
+		calificacionAct.replaceAll(aux);
+	});
 }
 
 function selectFechaCalificacion(arg)
 {
-	var auxFecha = "";
-	getFechasconActividades();
-
-	actividadesAl.forEach(function(e)
-	{
-		if(e.id == arg.data.actividad)
-		{
-			actividadAct = e;
-			auxFecha = e.fecha;
-		}
-	});
-
 	for(var i = 0; i < fechasCalificaciones.length; i++)
 	{
-		if((auxFecha + "T11:51:00") == fechasCalificaciones[i])
+		if(arg.data.actividad == fechasCalificaciones.getAt(i).id)
 		{
 			indexFechasCal.value = i;
-			today = new Date(fechasCalificaciones[indexFechasCal.value]);
+			today = new Date(fechasCalificaciones.getAt(indexFechasCal.value).fecha);
 		}
 	}
 
-	getCalificacionxActividad(arg.data.actividad);
+	cargarCalificacionesAlumno(arg.data.actividad);
 	getFecha();
 }
 
@@ -356,57 +260,50 @@ function getFecha()
 
 function getHabilidadesAlcanzadas()
 {
-	var auxNotas = Observable();
-	var auxHabs = Observable();
-
-	calificacionesAl.forEach(function(e)
+	fetch('http://loop.inhandy.com/loop.php?getHabilidadesAlcanzadas=' + personaActual.value, {
+		method: 'GET',
+		cache: 'default',
+		headers: { "Content-type": "application/json"}
+	})
+	.then(function(result)
 	{
-		if(personaActual.value == e.alumno)
+		if (result.status !== 200)
 		{
-			e.habilidades.forEach(function(x)
-			{
-				x.subHabs.forEach(function(y)
-				{
-					if(y.nota == 3)
-					{
-						auxNotas.add({"actividad":e.actividad,"subHab":y.id});
-					}
-				});
-			});
+			console.log("getHabilidadesAlcanzadas: Something went wrong :(");
+			return;
 		}
-	});
-
-	actividadesAl.forEach(function(e)
+		return result.json();
+	})
+	.then(function(data)
 	{
-		auxNotas.forEach(function(z)
+		var keys = Object.keys(data);
+		var aux = Observable();
+
+		keys.forEach(function(key, index)
 		{
-			if(z.actividad == e.id)
+			if (index >= aux.length)
 			{
-				e.habilidades.forEach(function(x)
+				var nuevo = data[key];
+
+				nuevo.habilidades.forEach(function(e)
 				{
-					var encontrado = false;
-					var auxSubHabs = Observable();
-
-					x.subHabs.forEach(function(y)
-					{	
-						if(y.id == z.subHab)
-						{
-							var auxFecha = getFechaAbrev(e.fecha);
-							auxSubHabs.add({"subHab":y.subHab,"fecha":auxFecha});
-							encontrado = true;
-						}
-					});
-
-					if(encontrado)
+					e.subHabs.forEach(function(x)
 					{
-						auxHabs.add({"habilidad":x.habilidad,"subHabs":auxSubHabs});
-					}
+						x.fecha = getFechaAbrev(x.fecha);
+					});
 				});
+
+				console.log("Habilidades: " + nuevo.habilidades.length);
+
+				if(nuevo.habilidades.length > 0)
+				{
+					aux.add(nuevo);
+				}
 			}
 		});
-	});
 
-	habilidadesAlcanzadas.replaceAll(auxHabs);
+		habilidadesAlcanzadas.replaceAll(aux);
+	});
 }
 
 function getFechaAbrev(fechaSub)
@@ -432,15 +329,7 @@ function nextFechaCalificacion()
 
 	today = new Date(fechasCalificaciones.getAt(indexFechasCal.value).fecha);
 
-	actividadesAl.forEach(function(e)
-	{
-		if(e.id == fechasCalificaciones.getAt(indexFechasCal.value).actividad)
-		{
-			actividadAct = e;
-		}
-	});
-
-	getCalificacionxActividad(fechasCalificaciones.getAt(indexFechasCal.value).actividad);
+	cargarCalificacionesAlumno(fechasCalificaciones.getAt(indexFechasCal.value).id);
 	getFecha();
 }
 
@@ -455,19 +344,12 @@ function lastFechaCalificacion()
 
 	today = new Date(fechasCalificaciones.getAt(indexFechasCal.value).fecha);
 
-	actividadesAl.forEach(function(e)
-	{
-		if(e.id == fechasCalificaciones.getAt(indexFechasCal.value).actividad)
-		{
-			actividadAct = e;
-		}
-	});
-
-	getCalificacionxActividad(fechasCalificaciones.getAt(indexFechasCal.value).actividad);
+	cargarCalificacionesAlumno(fechasCalificaciones.getAt(indexFechasCal.value).id);
 	getFecha();
 }
 
 module.exports = {
+	pagActual: pagActual,
 	resumenNotas: resumenNotas,
 	getFechasClases: getFechasClases,
 	getHabilidadesAlcanzadas: getHabilidadesAlcanzadas,

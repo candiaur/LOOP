@@ -32,7 +32,6 @@ var cel = Observable("");
 var nacimiento = Observable("");
 var imagen = Observable("");
 
-
 //---CalificarAlumno.ux--
 var asistio = Observable(false);
 var mostrarCalificacion = Observable("Collapsed");
@@ -50,7 +49,7 @@ var anio = Observable();
 var today = new Date();
 
 var timer = Timer.create(function(){
-	 getPersona()}, 1000, true);
+	getPersona()}, 1000, true);
 
 function getPersona()
 { 	
@@ -63,10 +62,10 @@ function getPersona()
 			pagActual.value = "pagRamas";
 			cargarRamas();
 			cargarNiveles();
-		}
 
-		GlobalE.login.value = false;
-	}	
+			GlobalE.login.value = false;
+		}
+	}
 }
 
 function MovimientoPag(paginaAct, pagAnterior, objeto, isEnabled)

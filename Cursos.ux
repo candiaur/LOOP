@@ -2,11 +2,6 @@
 	
 	<JavaScript File="AdmCursos.js" />
 
-	<FileImageSource File="Assets/Iconos/img_IconoPrincipiante.png" ux:Key="cuadrado"/>
-	<FileImageSource File="Assets/Iconos/img_IconoIntermedio.png" ux:Key="circulo"/>
-	<FileImageSource File="Assets/Iconos/img_IconoAvanzado.png" ux:Key="diamante"/>
-	<FileImageSource File="Assets/Iconos/img_IconoExperto.png" ux:Key="doble_Diamante"/>
-
 	<PageControl ux:Name="actPage" Active="{pagActual}" Interaction="None">
 		<Page ux:Name="pagRamas">
 			<DockPanel>
