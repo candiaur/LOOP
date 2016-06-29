@@ -243,11 +243,10 @@ function modificarDatos()
 	aux = aux + "\"nacimiento\": \"" + fechaNacio.value + "\"}";
 	aux = encodeURIComponent(aux);
 
-	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
+	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=', {
 		method: 'POST',
-		cache: 'default',
 		headers: { "Content-type": "application/json"},
-
+		body: aux
 	})
 	.then(function(result)
 	{
