@@ -1,4 +1,5 @@
 var Observable = require("FuseJS/Observable");
+var Camera = require('FuseJS/Camera');
 var GlobalE = require("GlobalElem");
 			
 var tag = Observable();
@@ -21,8 +22,9 @@ var nombre = Observable("");
 var apellido = Observable("");
 var cel = Observable("");
 var nacio = Observable("");
-var imagen = Observable("");
+var imagen = Observable();
 var fechaNacio = Observable("");
+var base64String = Observable();
 
 autoLogin();
 
@@ -218,7 +220,11 @@ function limpiarDatos()
 	cel.value = persona.value.cel;
 	nacio.value = persona.value.nacio;
 	fechaNacio.value = persona.value.fechaN;
-	imagen.value = " ";
+
+	if(persona.value.imagen.trim().length > 0)
+	{
+		imagen.value = dataURItoBlob(persona.value.imagen);
+	} 
 }
 
 function modificarDatos()
@@ -233,14 +239,15 @@ function modificarDatos()
 	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
 	aux = aux + "\"cel\": \"" + cel.value + "\",";
 	aux = aux + "\"correo\": \"" + email.value + "\",";
-	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
+	aux = aux + "\"imagen\": \"" + base64String + "\",";
 	aux = aux + "\"nacimiento\": \"" + fechaNacio.value + "\"}";
 	aux = encodeURIComponent(aux);
 
 	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
-		method: 'GET',
+		method: 'POST',
 		cache: 'default',
-		headers: { "Content-type": "application/json"}
+		headers: { "Content-type": "application/json"},
+
 	})
 	.then(function(result)
 	{
@@ -258,6 +265,50 @@ function modificarDatos()
 	});
 }
 
+function takePicture() {
+	Camera.takePicture({targetWidth: 1080, targetHeight: 1920}).then(function(file){
+		imagen.value = file;
+		CompressImage(file);
+	});
+}
+
+function CompressImage(file)
+{
+	var reader  = new FileReader();
+	
+	reader.onloadend = function () {
+		base64String = reader.result.split(',')[1];
+	}
+
+	if(file)
+	{
+		reader.readAsDataURL(file);
+	}
+}
+
+function dataURItoBlob (dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs
+    var byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+        byteString = atob(dataURI.split(',')[1]);
+    else
+        byteString = unescape(dataURI.split(',')[1]);
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    return new Blob([ab],{type: mimeString});
+}
+
+
 module.exports = {
 	tag: tag,
 	submit: submit,
@@ -274,6 +325,7 @@ module.exports = {
 	email: email,
 	clave: clave,
 	nacio: nacio,
+	imagen: imagen,
 	nombre: nombre,
 	apellido: apellido,
 	fechaNacio: fechaNacio,
@@ -290,6 +342,7 @@ module.exports = {
 	//-- Funciones--
 	logOut: logOut,
 	loginUser: loginUser,
+	takePicture: takePicture,
 	limpiarDatos: limpiarDatos,
 	limpiarClaves: limpiarClaves,
 	modificarDatos: modificarDatos,

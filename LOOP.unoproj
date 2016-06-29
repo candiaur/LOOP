@@ -5,6 +5,7 @@
 	"Packages":	[
 		"Fuse",
 		"FuseJS",
+        "Fuse.Camera",
 		"Fuse.GeoLocation",
 		"Fuse.BasicTheme"
 	],

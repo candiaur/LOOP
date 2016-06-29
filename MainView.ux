@@ -18,6 +18,7 @@
 		<FileImageSource File="Assets/Logos/logoencirculo.png" ux:Global="logoCircular"/>
 		<FileImageSource File="Assets/Iconos/img_EditaNegro.png" ux:Global="editNegro"/>
 		<FileImageSource File="Assets/Iconos/img_EditaVerde.png" ux:Global="editVerde"/>
+		<FileImageSource File="Assets/Iconos/img_CamaraCir.png" ux:Global="EditFoto"/>
 
 		<FileImageSource File="Assets/Iconos/img_IconoPrincipiante.png" ux:Global="cuadrado"/>
 		<FileImageSource File="Assets/Iconos/img_IconoIntermedio.png" ux:Global="circulo"/>
@@ -149,7 +150,7 @@
 											</Image>
 											<StackPanel Margin="0,100,0,10">
 												<!-- <Circle Height="250" Width="250" Margin="0,15">
-													<ImageFill Url="{persona.imagen}"/>
+													<ImageFill File="{persona.imagen}"/>
 												</Circle> -->
 												<Image File="Assets/Logos/looplogo.png" Width="70%" Margin="0,15,0,50"/>
 
@@ -255,7 +256,14 @@
 
 												<ScrollView MaxHeight="500">
 													<StackPanel>
-														<Image Source="logoCircular" Margin="10" Width="150"/>
+														<Image Source="EditFoto" Margin="10" Width="150"/>
+														<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+															<ImageFill File="{imagen}"/>
+
+															<Clicked>
+																<Callback Handler="{takePicture}" />
+															</Clicked>
+														</Circle>
 
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
