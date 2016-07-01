@@ -90,10 +90,12 @@ function load(idUser)
 	})
 	.then(function(data)
 	{
-		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, data.imagen, data.rol);
+		var img = "http://loop.inhandy.com/imagen.php?id=" + idUser;
+		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, img, data.rol);
 		GlobalE.rolPerson.value = data.rol;
 		GlobalE.login.value = true;
 
+		console.log("Load: " + persona.value.nombre);
 		if(data.rol == "0")
 		{
 			leftPage.value = "informe";
@@ -104,7 +106,7 @@ function load(idUser)
 
 		volverInicio.value = false;
 	});
-};
+}
 
 function submit()
 {
@@ -220,18 +222,19 @@ function limpiarDatos()
 	cel.value = persona.value.cel;
 	nacio.value = persona.value.nacio;
 	fechaNacio.value = persona.value.fechaN;
-
-	if(persona.value.imagen.trim().length > 0)
-	{
-		imagen.value = dataURItoBlob(persona.value.imagen);
-	} 
+	imagen.value = persona.value.imagen;
 }
 
 function modificarDatos()
-{	
+{
 	if(fechaNacio.value.trim().length == 10)
 	{
 		fechaNacio.value = fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2);
+	}
+
+	if(base64String == null)
+	{
+		base64String = " ";
 	}
 
 	var aux = "{\"id\":" + GlobalE.idPerson.value + ",";
@@ -243,11 +246,18 @@ function modificarDatos()
 	aux = aux + "\"nacimiento\": \"" + fechaNacio.value + "\"}";
 	aux = encodeURIComponent(aux);
 
-	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
+	fetch('http://loop.inhandy.com/loop.php?editarDatosPersonales', {
 		method: 'POST',
-		cache: 'default',
 		headers: { "Content-type": "application/json"},
-
+		body: JSON.stringify({
+			id: GlobalE.idPerson.value,
+			nombre: nombre.value,
+			apellido: apellido.value,
+			cel: cel.value,
+			correo: email.value,
+			imagen: base64String,
+			nacimiento: fechaNacio.value
+		})
 	})
 	.then(function(result)
 	{
@@ -265,9 +275,9 @@ function modificarDatos()
 	});
 }
 
-function takePicture() {
+function takePicture()
+{
 	Camera.takePicture({targetWidth: 1080, targetHeight: 1920}).then(function(file){
-		imagen.value = file;
 		CompressImage(file);
 	});
 }
@@ -282,30 +292,8 @@ function CompressImage(file)
 
 	if(file)
 	{
-		reader.readAsDataURL(file);
+		imagen.value = reader.readAsDataURL(file);
 	}
-}
-
-function dataURItoBlob (dataURI) {
-    // convert base64 to raw binary data held in a string
-    // doesn't handle URLEncoded DataURIs
-    var byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0)
-        byteString = atob(dataURI.split(',')[1]);
-    else
-        byteString = unescape(dataURI.split(',')[1]);
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    // write the bytes of the string to an ArrayBuffer
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
-    for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    // write the ArrayBuffer to a blob, and you're done
-    return new Blob([ab],{type: mimeString});
 }
 
 
@@ -313,7 +301,7 @@ module.exports = {
 	tag: tag,
 	submit: submit,
 	persona: persona,
-	
+
 	//-- Page Control--
 	leftPage: leftPage,
 	perfilPage: perfilPage,
@@ -329,7 +317,7 @@ module.exports = {
 	nombre: nombre,
 	apellido: apellido,
 	fechaNacio: fechaNacio,
-	
+
 	//-- Modificación Clave--
 	claveAct: claveAct,
 	nuevaClave1: nuevaClave1,
@@ -338,7 +326,7 @@ module.exports = {
 	//-- Mensajes Error--
 	mensajeError: mensajeError,
 	mensajeClave: mensajeClave,
-	
+
 	//-- Funciones--
 	logOut: logOut,
 	loginUser: loginUser,

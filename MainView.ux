@@ -258,7 +258,7 @@
 													<StackPanel>
 														<Image Source="EditFoto" Margin="10" Width="150"/>
 														<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
-															<ImageFill File="{imagen}"/>
+															<ImageFill Url="{imagen}"/>
 
 															<Clicked>
 																<Callback Handler="{takePicture}" />
