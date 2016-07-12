@@ -247,6 +247,7 @@ function modificarDatos()
 		base64String = 0;
 	}
 
+<<<<<<< HEAD
 	fetch('http://loop.inhandy.com/loop.php?editaPersona=', {
 		method: 'POST',
 		headers: { "Content-type": "application/json"},
@@ -259,6 +260,12 @@ function modificarDatos()
 			imagen: base64String,
 			nacimiento: fechaNacio.value
 		})
+=======
+	fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=', {
+		method: 'POST',
+		headers: { "Content-type": "application/json"},
+		body: aux
+>>>>>>> 0eeeaf8343015cbeec166a331a87ea8cc0981e3d
 	})
 	.then(function(result)
 	{
