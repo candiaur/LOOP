@@ -64,7 +64,7 @@
 
 				<DockPanel Padding="10,20" Height="9%" Color="#FFF" Dock="Bottom" ZOffset="2">
 					<Grid Layer="Background" Columns="1*,5*">
-						<Image File="Assets/Iconos/img_Progreso.png" Alignment="Center" Height="34" Margin="5,0"/>
+						<Image Url="Assets/Iconos/img_Progreso.png" Alignment="Center" Height="34" Margin="5,0"/>
 					</Grid>
 
 					<Text Value="Evolución" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>

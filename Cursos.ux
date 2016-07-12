@@ -79,7 +79,7 @@
 						<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" ZOffset="2"/>
 
 						<Each Items="{instructores}">
-							<Opcion Padding="0,1">
+							<Opcion Padding="0">
 								<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
 
 								<Rectangle ux:Name="rectangulo" Fill="#FFF" Height="60" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
@@ -95,7 +95,7 @@
 								
 								<Text Value=">" FontSize="20" Alignment="CenterRight" Font="pres_letter" Margin="14,5,14,0" TextColor="#000"/>
 
-								<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+								<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" ZOffset="3"/>
 
 								<WhilePressed>
 									<Change rectangulo.Color="#E2E2E2"/>
@@ -108,6 +108,7 @@
 								</Clicked>
 							</Opcion>
 						</Each>
+						
 						<Panel Height="100" />
 					</StackPanel>
 				</ScrollView>
@@ -639,7 +640,7 @@
 											<DockPanel Width="70">
 												<Image Url="{imagen}" Height="60" Width="60" StretchMode="UniformToFill" Alignment="Left" />
 
-												<Rectangle ux:Name="rectangulo" Fill="#FFF" Height="58" Width="20" Margin="50,0" ZOffset="2" Alignment="Left">
+												<Rectangle ux:Name="rectangulo" Fill="#FFF" Height="60" Width="20" Margin="50,-1,0,0" ZOffset="2" Alignment="Left">
 													<WhileEnabled>
 														<Skew DegreesX="-15" Duration="0.4"/>
 													</WhileEnabled>
@@ -687,7 +688,7 @@
 										</Clicked>
 									</WhileFalse>
 
-									<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" Layer="Background"/>
+									<Rectangle Alignment="Bottom" Height="1" Color="#D2D2D2" ZOffset="3"/>
 								</DockPanel>
 							</Each>
 						</StackPanel>
@@ -791,7 +792,27 @@
 
 					<ScrollView MaxHeight="500">
 						<StackPanel>
-							<Image Source="logoCircular" Margin="10" Width="150"/>
+							<Image Source="EditFoto" Margin="10" Width="150"/>
+							
+							<WhileTrue Value="{imgCargada}">
+								<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+									<ImageFill Url="{alumnoAct.imagen}"/>
+									
+									<Clicked>
+										<Callback Handler="{takePicture}" />
+									</Clicked>
+								</Circle>
+							</WhileTrue>
+
+							<WhileFalse Value="{imgCargada}">
+								<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+									<ImageFill File="{imagen}"/>
+
+									<Clicked>
+										<Callback Handler="{takePicture}" />
+									</Clicked>
+								</Circle>
+							</WhileFalse>
 
 							<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 								<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>

@@ -148,11 +148,16 @@
 													<Set Target="controlPerfil.Active" Value="pagConfigura" />
 												</Clicked>
 											</Image>
-											<StackPanel Margin="0,100,0,10">
-												<!-- <Circle Height="250" Width="250" Margin="0,15">
-													<ImageFill File="{persona.imagen}"/>
-												</Circle> -->
-												<Image File="Assets/Logos/looplogo.png" Width="70%" Margin="0,15,0,50"/>
+											<StackPanel>
+												<WhileFalse Value="{showImg}">
+													<Image File="Assets/Logos/looplogo.png" Width="70%" Margin="0,115,0,50"/>
+												</WhileFalse>
+												
+												<WhileTrue Value="{showImg}">
+													<Circle Width="70%" Aspect="1" BoxSizing="FillAspect" Margin="0,40,0,20" ZOffset="2">
+														<ImageFill Url="{persona.imagen}"/>
+													</Circle>
+												</WhileTrue>
 
 												<Grid Columns="auto,auto" Alignment="Center">
 													<Text FontSize="27" TextColor="#FFF" Value="{persona.nombre}" Font="museo700_letter" Padding="5,0" />
@@ -257,13 +262,26 @@
 												<ScrollView MaxHeight="500">
 													<StackPanel>
 														<Image Source="EditFoto" Margin="10" Width="150"/>
-														<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
-															<ImageFill Url="{imagen}"/>
+														
+														<WhileTrue Value="{imgCargada}">
+															<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+																<ImageFill Url="{persona.imagen}"/>
 
-															<Clicked>
-																<Callback Handler="{takePicture}" />
-															</Clicked>
-														</Circle>
+																<Clicked>
+																	<Callback Handler="{takePicture}" />
+																</Clicked>
+															</Circle>
+														</WhileTrue>
+
+														<WhileFalse Value="{imgCargada}">
+															<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+																<ImageFill File="{imagen}"/>
+
+																<Clicked>
+																	<Callback Handler="{takePicture}" />
+																</Clicked>
+															</Circle>
+														</WhileFalse>
 
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>

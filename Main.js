@@ -10,8 +10,7 @@ var mensajeError = Observable("");
 var mensajeClave = Observable("");
 var volverInicio = Observable(false);
 
-var persona = Observable(
-	new Person("", "","","","Assets/FuseLogo.png","0"));
+var persona = Observable(new Person("", "","","","Assets/FuseLogo.png","0"));
 var email = Observable();
 var clave = Observable();
 var claveAct = Observable("");
@@ -24,7 +23,10 @@ var cel = Observable("");
 var nacio = Observable("");
 var imagen = Observable();
 var fechaNacio = Observable("");
+
 var base64String = Observable();
+var imgCargada = Observable(true);
+var showImg = Observable(false);
 
 autoLogin();
 
@@ -90,12 +92,20 @@ function load(idUser)
 	})
 	.then(function(data)
 	{
-		var img = "http://loop.inhandy.com/imagen.php?id=" + idUser;
-		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, img, data.rol);
+		if(data.imagen.trim().length > 0)
+		{
+			var d = new Date();
+			data.imagen = data.imagen + "&t=" + d.getTime();
+
+			showImg.value = true;
+		}else{
+			showImg.value = false;
+		}
+		
+		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, data.imagen, data.rol);
 		GlobalE.rolPerson.value = data.rol;
 		GlobalE.login.value = true;
 
-		console.log("Load: " + persona.value.nombre);
 		if(data.rol == "0")
 		{
 			leftPage.value = "informe";
@@ -222,7 +232,7 @@ function limpiarDatos()
 	cel.value = persona.value.cel;
 	nacio.value = persona.value.nacio;
 	fechaNacio.value = persona.value.fechaN;
-	imagen.value = persona.value.imagen;
+	imgCargada.value = true;
 }
 
 function modificarDatos()
@@ -232,21 +242,12 @@ function modificarDatos()
 		fechaNacio.value = fechaNacio.value.substr(6) + fechaNacio.value.substr(2,4) + fechaNacio.value.substr(0,2);
 	}
 
-	if(base64String == null)
+	if(imgCargada.value == true)
 	{
-		base64String = " ";
+		base64String = 0;
 	}
 
-	var aux = "{\"id\":" + GlobalE.idPerson.value + ",";
-	aux = aux + "\"nombre\": \"" + nombre.value + "\",";
-	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
-	aux = aux + "\"cel\": \"" + cel.value + "\",";
-	aux = aux + "\"correo\": \"" + email.value + "\",";
-	aux = aux + "\"imagen\": \"" + base64String + "\",";
-	aux = aux + "\"nacimiento\": \"" + fechaNacio.value + "\"}";
-	aux = encodeURIComponent(aux);
-
-	fetch('http://loop.inhandy.com/loop.php?editarDatosPersonales', {
+	fetch('http://loop.inhandy.com/loop.php?editaPersona=', {
 		method: 'POST',
 		headers: { "Content-type": "application/json"},
 		body: JSON.stringify({
@@ -277,7 +278,9 @@ function modificarDatos()
 
 function takePicture()
 {
-	Camera.takePicture({targetWidth: 1080, targetHeight: 1920}).then(function(file){
+	Camera.takePicture({targetWidth: 1000, targetHeight: 1000}).then(function(file){
+		imagen.value = file;
+		imgCargada.value = false;
 		CompressImage(file);
 	});
 }
@@ -292,15 +295,16 @@ function CompressImage(file)
 
 	if(file)
 	{
-		imagen.value = reader.readAsDataURL(file);
+		reader.readAsDataURL(file);
 	}
 }
-
 
 module.exports = {
 	tag: tag,
 	submit: submit,
 	persona: persona,
+	showImg: showImg,
+	imgCargada: imgCargada,
 
 	//-- Page Control--
 	leftPage: leftPage,

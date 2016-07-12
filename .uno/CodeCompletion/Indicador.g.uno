@@ -88,7 +88,7 @@ public partial class Indicador: Fuse.Controls.Panel
         global::Uno.UX.Property<Fuse.Resources.ImageSource> temp1_Source_inst;
         global::Uno.UX.Property<Fuse.Visual> alumPage_Active_inst;
         global::Uno.UX.Property<bool> self_IsEnabled_inst;
-        internal Fuse.Reactive.EventBinding temp_eb38;
+        internal Fuse.Reactive.EventBinding temp_eb40;
         static Template1()
         {
         }
@@ -109,7 +109,7 @@ public partial class Indicador: Fuse.Controls.Panel
             var temp7 = new Fuse.Gestures.Clicked();
             var temp8 = new Fuse.Triggers.Actions.Callback();
             var temp9 = new Fuse.Triggers.Actions.Set<Fuse.Visual>(alumPage_Active_inst);
-            var temp_eb38 = new Fuse.Reactive.EventBinding("selectFechaCalificacion");
+            var temp_eb40 = new Fuse.Reactive.EventBinding("selectFechaCalificacion");
             var temp10 = new Fuse.Reactive.DataBinding<bool>(self_IsEnabled_inst, "valido");
             temp2.Columns = "8*,2*";
             temp2.Children.Add(temp3);
@@ -132,8 +132,8 @@ public partial class Indicador: Fuse.Controls.Panel
             temp1.Bindings.Add(temp6);
             temp7.Actions.Add(temp8);
             temp7.Actions.Add(temp9);
-            temp7.Bindings.Add(temp_eb38);
-            temp8.Handler += temp_eb38.OnEvent;
+            temp7.Bindings.Add(temp_eb40);
+            temp8.Handler += temp_eb40.OnEvent;
             temp9.Value = __parent.pagProgreso;
             self.Children.Add(temp2);
             self.Children.Add(temp7);
@@ -386,13 +386,13 @@ public partial class Indicador: Fuse.Controls.Panel
     global::Uno.UX.Property<Fuse.Elements.Visibility> pagEvolucion_Visibility_inst;
     internal Fuse.Controls.PageControl alumPage;
     internal Fuse.Controls.Page pagMiActividad;
-    internal Fuse.Reactive.EventBinding temp_eb35;
-    internal Fuse.Reactive.EventBinding temp_eb36;
     internal Fuse.Reactive.EventBinding temp_eb37;
+    internal Fuse.Reactive.EventBinding temp_eb38;
+    internal Fuse.Reactive.EventBinding temp_eb39;
     internal Fuse.Controls.Page pagAsistencia;
     internal Fuse.Controls.Page pagProgreso;
-    internal Fuse.Reactive.EventBinding temp_eb39;
-    internal Fuse.Reactive.EventBinding temp_eb40;
+    internal Fuse.Reactive.EventBinding temp_eb41;
+    internal Fuse.Reactive.EventBinding temp_eb42;
     internal Fuse.Controls.Page pagEvolucion;
     global::Uno.UX.NameTable __g_nametable;
     static string[] __g_static_nametable = new string[] {
@@ -479,7 +479,7 @@ public partial class Indicador: Fuse.Controls.Panel
         var temp41 = new Fuse.Gestures.Clicked();
         var temp42 = new Fuse.Triggers.Actions.Set<Fuse.Visual>(alumPage_Active_inst);
         var temp43 = new Fuse.Triggers.Actions.Callback();
-        temp_eb35 = new Fuse.Reactive.EventBinding("getHabilidadesAlcanzadas");
+        temp_eb37 = new Fuse.Reactive.EventBinding("getHabilidadesAlcanzadas");
         var temp44 = new Fuse.Controls.Rectangle();
         var temp45 = new Fuse.Controls.DockPanel();
         var temp46 = new Fuse.Controls.Grid();
@@ -488,7 +488,7 @@ public partial class Indicador: Fuse.Controls.Panel
         var temp49 = new Fuse.Gestures.Clicked();
         var temp50 = new Fuse.Triggers.Actions.Callback();
         var temp51 = new Fuse.Triggers.Actions.Set<Fuse.Visual>(alumPage_Active_inst);
-        temp_eb36 = new Fuse.Reactive.EventBinding("getFechasconActividades");
+        temp_eb38 = new Fuse.Reactive.EventBinding("getFechasconActividades");
         var temp52 = new Fuse.Controls.Rectangle();
         var temp53 = new Fuse.Controls.DockPanel();
         var temp54 = new Fuse.Controls.Rectangle();
@@ -498,7 +498,7 @@ public partial class Indicador: Fuse.Controls.Panel
         var temp58 = new Fuse.Gestures.Clicked();
         var temp59 = new Fuse.Triggers.Actions.Callback();
         var temp60 = new Fuse.Triggers.Actions.Set<Fuse.Visual>(alumPage_Active_inst);
-        temp_eb37 = new Fuse.Reactive.EventBinding("getFechasClases");
+        temp_eb39 = new Fuse.Reactive.EventBinding("getFechasClases");
         var temp61 = new Fuse.Controls.Rectangle();
         var temp62 = new Fuse.Controls.StackPanel();
         var temp63 = new Fuse.Controls.Image();
@@ -534,7 +534,7 @@ public partial class Indicador: Fuse.Controls.Panel
         var temp93 = new Fuse.Rotation();
         var temp94 = new Fuse.Gestures.Clicked();
         var temp95 = new Fuse.Triggers.Actions.Callback();
-        temp_eb39 = new Fuse.Reactive.EventBinding("lastFechaCalificacion");
+        temp_eb41 = new Fuse.Reactive.EventBinding("lastFechaCalificacion");
         var temp96 = new Fuse.Controls.Grid();
         var temp97 = new Fuse.Reactive.DataBinding<string>(temp3_Value_inst, "dia");
         var temp98 = new Fuse.Reactive.DataBinding<string>(temp4_Value_inst, "anio");
@@ -542,7 +542,7 @@ public partial class Indicador: Fuse.Controls.Panel
         var temp100 = new Fuse.Controls.Text();
         var temp101 = new Fuse.Gestures.Clicked();
         var temp102 = new Fuse.Triggers.Actions.Callback();
-        temp_eb40 = new Fuse.Reactive.EventBinding("nextFechaCalificacion");
+        temp_eb42 = new Fuse.Reactive.EventBinding("nextFechaCalificacion");
         var temp103 = new Fuse.Controls.Grid();
         var temp104 = new Fuse.Controls.Text();
         var temp105 = new Fuse.Controls.Text();
@@ -725,9 +725,9 @@ public partial class Indicador: Fuse.Controls.Panel
         temp40.Font = MainView.museo700_letter;
         temp41.Actions.Add(temp42);
         temp41.Actions.Add(temp43);
-        temp41.Bindings.Add(temp_eb35);
+        temp41.Bindings.Add(temp_eb37);
         temp42.Value = pagEvolucion;
-        temp43.Handler += temp_eb35.OnEvent;
+        temp43.Handler += temp_eb37.OnEvent;
         temp44.Color = float4(0.8235294f, 0.8235294f, 0.8235294f, 1f);
         temp44.Height = new Uno.UX.Size(1f, Uno.UX.Unit.Unspecified);
         temp44.Alignment = Fuse.Elements.Alignment.Bottom;
@@ -755,8 +755,8 @@ public partial class Indicador: Fuse.Controls.Panel
         temp48.Font = MainView.museo700_letter;
         temp49.Actions.Add(temp50);
         temp49.Actions.Add(temp51);
-        temp49.Bindings.Add(temp_eb36);
-        temp50.Handler += temp_eb36.OnEvent;
+        temp49.Bindings.Add(temp_eb38);
+        temp50.Handler += temp_eb38.OnEvent;
         temp51.Value = pagProgreso;
         temp52.Color = float4(0.8235294f, 0.8235294f, 0.8235294f, 1f);
         temp52.Height = new Uno.UX.Size(1f, Uno.UX.Unit.Unspecified);
@@ -790,8 +790,8 @@ public partial class Indicador: Fuse.Controls.Panel
         temp57.Font = MainView.museo700_letter;
         temp58.Actions.Add(temp59);
         temp58.Actions.Add(temp60);
-        temp58.Bindings.Add(temp_eb37);
-        temp59.Handler += temp_eb37.OnEvent;
+        temp58.Bindings.Add(temp_eb39);
+        temp59.Handler += temp_eb39.OnEvent;
         temp60.Value = pagAsistencia;
         temp61.Color = float4(0.8235294f, 0.8235294f, 0.8235294f, 1f);
         temp61.Height = new Uno.UX.Size(1f, Uno.UX.Unit.Unspecified);
@@ -887,8 +887,8 @@ public partial class Indicador: Fuse.Controls.Panel
         temp92.Font = MainView.pres_letter;
         temp93.Degrees = 180f;
         temp94.Actions.Add(temp95);
-        temp94.Bindings.Add(temp_eb39);
-        temp95.Handler += temp_eb39.OnEvent;
+        temp94.Bindings.Add(temp_eb41);
+        temp95.Handler += temp_eb41.OnEvent;
         temp96.Columns = "auto,auto";
         temp96.Alignment = Fuse.Elements.Alignment.Center;
         temp96.Padding = float4(0f, 5f, 0f, 5f);
@@ -909,8 +909,8 @@ public partial class Indicador: Fuse.Controls.Panel
         temp100.Padding = float4(0f, 4f, 5f, 1f);
         temp100.Font = MainView.pres_letter;
         temp101.Actions.Add(temp102);
-        temp101.Bindings.Add(temp_eb40);
-        temp102.Handler += temp_eb40.OnEvent;
+        temp101.Bindings.Add(temp_eb42);
+        temp102.Handler += temp_eb42.OnEvent;
         temp5.Padding = float4(15f, 10f, 15f, 5f);
         temp5.Children.Add(temp103);
         temp5.Bindings.Add(temp108);

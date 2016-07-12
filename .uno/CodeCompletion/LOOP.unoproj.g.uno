@@ -1,12 +1,3 @@
-sealed class LOOP_FuseControlsText_TextColor_Property: Uno.UX.Property<float4>
-{
-    Fuse.Controls.Text _obj;
-    public LOOP_FuseControlsText_TextColor_Property(Fuse.Controls.Text obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
-    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
-    public override float4 Get() { return _obj.TextColor; }
-    public override void Set(float4 v, global::Uno.UX.IPropertyListener origin) { _obj.TextColor = v; }
-    public override bool SupportsOriginSetter { get { return false; } }
-}
 sealed class LOOP_FuseReactiveEach_Items_Property: Uno.UX.Property<object>
 {
     Fuse.Reactive.Each _obj;
@@ -88,14 +79,32 @@ sealed class LOOP_FuseControlsCircle_Color_Property: Uno.UX.Property<float4>
     public override void Set(float4 v, global::Uno.UX.IPropertyListener origin) { _obj.SetColor(v, origin); }
     public override bool SupportsOriginSetter { get { return true; } }
 }
-sealed class LOOP_Checkbox_Value_Property: Uno.UX.Property<bool>
+sealed class LOOP_FuseControlsText_TextColor_Property: Uno.UX.Property<float4>
 {
-    Checkbox _obj;
-    public LOOP_Checkbox_Value_Property(Checkbox obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
+    Fuse.Controls.Text _obj;
+    public LOOP_FuseControlsText_TextColor_Property(Fuse.Controls.Text obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
+    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
+    public override float4 Get() { return _obj.TextColor; }
+    public override void Set(float4 v, global::Uno.UX.IPropertyListener origin) { _obj.TextColor = v; }
+    public override bool SupportsOriginSetter { get { return false; } }
+}
+sealed class LOOP_FuseControlsImage_Source_Property: Uno.UX.Property<Fuse.Resources.ImageSource>
+{
+    Fuse.Controls.Image _obj;
+    public LOOP_FuseControlsImage_Source_Property(Fuse.Controls.Image obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
+    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
+    public override Fuse.Resources.ImageSource Get() { return _obj.Source; }
+    public override void Set(Fuse.Resources.ImageSource v, global::Uno.UX.IPropertyListener origin) { _obj.Source = v; }
+    public override bool SupportsOriginSetter { get { return false; } }
+}
+sealed class LOOP_FuseTriggersWhileTrue_Value_Property: Uno.UX.Property<bool>
+{
+    Fuse.Triggers.WhileTrue _obj;
+    public LOOP_FuseTriggersWhileTrue_Value_Property(Fuse.Triggers.WhileTrue obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
     public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
     public override bool Get() { return _obj.Value; }
-    public override void Set(bool v, global::Uno.UX.IPropertyListener origin) { _obj.SetValue(v, origin); }
-    public override bool SupportsOriginSetter { get { return true; } }
+    public override void Set(bool v, global::Uno.UX.IPropertyListener origin) { _obj.Value = v; }
+    public override bool SupportsOriginSetter { get { return false; } }
 }
 sealed class LOOP_FuseControlsStackPanel_Visibility_Property: Uno.UX.Property<Fuse.Elements.Visibility>
 {
@@ -106,14 +115,14 @@ sealed class LOOP_FuseControlsStackPanel_Visibility_Property: Uno.UX.Property<Fu
     public override void Set(Fuse.Elements.Visibility v, global::Uno.UX.IPropertyListener origin) { _obj.SetVisibility(v, origin); }
     public override bool SupportsOriginSetter { get { return true; } }
 }
-sealed class LOOP_FuseTriggersWhileTrue_Value_Property: Uno.UX.Property<bool>
+sealed class LOOP_Checkbox_Value_Property: Uno.UX.Property<bool>
 {
-    Fuse.Triggers.WhileTrue _obj;
-    public LOOP_FuseTriggersWhileTrue_Value_Property(Fuse.Triggers.WhileTrue obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
+    Checkbox _obj;
+    public LOOP_Checkbox_Value_Property(Checkbox obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
     public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
     public override bool Get() { return _obj.Value; }
-    public override void Set(bool v, global::Uno.UX.IPropertyListener origin) { _obj.Value = v; }
-    public override bool SupportsOriginSetter { get { return false; } }
+    public override void Set(bool v, global::Uno.UX.IPropertyListener origin) { _obj.SetValue(v, origin); }
+    public override bool SupportsOriginSetter { get { return true; } }
 }
 sealed class LOOP_FuseTriggersWhileFalse_Value_Property: Uno.UX.Property<bool>
 {
@@ -142,23 +151,14 @@ sealed class LOOP_FuseControlsGrid_Visibility_Property: Uno.UX.Property<Fuse.Ele
     public override void Set(Fuse.Elements.Visibility v, global::Uno.UX.IPropertyListener origin) { _obj.SetVisibility(v, origin); }
     public override bool SupportsOriginSetter { get { return true; } }
 }
-sealed class LOOP_FuseControlsCircle_LengthAngleDegrees_Property: Uno.UX.Property<float>
+sealed class LOOP_FuseControlsTextView_Value_Property: Uno.UX.Property<string>
 {
-    Fuse.Controls.Circle _obj;
-    public LOOP_FuseControlsCircle_LengthAngleDegrees_Property(Fuse.Controls.Circle obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
+    Fuse.Controls.TextView _obj;
+    public LOOP_FuseControlsTextView_Value_Property(Fuse.Controls.TextView obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
     public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
-    public override float Get() { return _obj.LengthAngleDegrees; }
-    public override void Set(float v, global::Uno.UX.IPropertyListener origin) { _obj.LengthAngleDegrees = v; }
-    public override bool SupportsOriginSetter { get { return false; } }
-}
-sealed class LOOP_FuseControlsImage_Source_Property: Uno.UX.Property<Fuse.Resources.ImageSource>
-{
-    Fuse.Controls.Image _obj;
-    public LOOP_FuseControlsImage_Source_Property(Fuse.Controls.Image obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
-    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
-    public override Fuse.Resources.ImageSource Get() { return _obj.Source; }
-    public override void Set(Fuse.Resources.ImageSource v, global::Uno.UX.IPropertyListener origin) { _obj.Source = v; }
-    public override bool SupportsOriginSetter { get { return false; } }
+    public override string Get() { return _obj.Value; }
+    public override void Set(string v, global::Uno.UX.IPropertyListener origin) { _obj.SetValue(v, origin); }
+    public override bool SupportsOriginSetter { get { return true; } }
 }
 sealed class LOOP_FuseControlsPageControl_Active_Property: Uno.UX.Property<Fuse.Visual>
 {
@@ -168,15 +168,6 @@ sealed class LOOP_FuseControlsPageControl_Active_Property: Uno.UX.Property<Fuse.
     public override Fuse.Visual Get() { return _obj.Active; }
     public override void Set(Fuse.Visual v, global::Uno.UX.IPropertyListener origin) { _obj.Active = v; }
     public override bool SupportsOriginSetter { get { return false; } }
-}
-sealed class LOOP_Checkbox_TextColor_Property: Uno.UX.Property<float4>
-{
-    Checkbox _obj;
-    public LOOP_Checkbox_TextColor_Property(Checkbox obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
-    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
-    public override float4 Get() { return _obj.TextColor; }
-    public override void Set(float4 v, global::Uno.UX.IPropertyListener origin) { _obj.SetTextColor(v, origin); }
-    public override bool SupportsOriginSetter { get { return true; } }
 }
 sealed class LOOP_Operation_Opacity_Property: Uno.UX.Property<float>
 {
@@ -194,23 +185,5 @@ sealed class LOOP_FuseDrawingSolidColor_Color_Property: Uno.UX.Property<float4>
     public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
     public override float4 Get() { return _obj.Color; }
     public override void Set(float4 v, global::Uno.UX.IPropertyListener origin) { _obj.SetColor(v, origin); }
-    public override bool SupportsOriginSetter { get { return true; } }
-}
-sealed class LOOP_FuseControlsPage_IsEnabled_Property: Uno.UX.Property<bool>
-{
-    Fuse.Controls.Page _obj;
-    public LOOP_FuseControlsPage_IsEnabled_Property(Fuse.Controls.Page obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
-    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
-    public override bool Get() { return _obj.IsEnabled; }
-    public override void Set(bool v, global::Uno.UX.IPropertyListener origin) { _obj.IsEnabled = v; }
-    public override bool SupportsOriginSetter { get { return false; } }
-}
-sealed class LOOP_FuseControlsPage_Visibility_Property: Uno.UX.Property<Fuse.Elements.Visibility>
-{
-    Fuse.Controls.Page _obj;
-    public LOOP_FuseControlsPage_Visibility_Property(Fuse.Controls.Page obj, global::Uno.UX.Selector name) : base(name) { _obj = obj; }
-    public override global::Uno.UX.PropertyObject Object { get { return _obj; } }
-    public override Fuse.Elements.Visibility Get() { return _obj.Visibility; }
-    public override void Set(Fuse.Elements.Visibility v, global::Uno.UX.IPropertyListener origin) { _obj.SetVisibility(v, origin); }
     public override bool SupportsOriginSetter { get { return true; } }
 }

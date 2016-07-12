@@ -3,6 +3,7 @@ var Timer = require('FuseJS/Timer');
 var GlobalE = require("GlobalElem");
 var personaActual = Observable();
 var pagActual = Observable("pagRamas");
+var Camera = require('FuseJS/Camera');
 
 //---Cursos.ux---
 var ramas = Observable({"rama":"nueva"});
@@ -22,7 +23,9 @@ var niveles = Observable({"nivel":"nuevo"});
 
 //---CrearAlumno.ux---
 var editarAlumnos = Observable(false);
-var editaAlumno = Observable(new MovimientoPag("pagNuevoAlumno", "Visible", "CREAR ",true));
+var editaAlumno = Observable(new MovimientoPag("pagNuevoAlumno", "Visible", "CREAR ",false));
+var imgCargada = Observable(true);
+var base64String = Observable();
 
 //--- Datos Persona---
 var nombre = Observable("");
@@ -52,7 +55,7 @@ var timer = Timer.create(function(){
 	getPersona()}, 1000, true);
 
 function getPersona()
-{ 	
+{
 	if(GlobalE.login.value)
 	{
 		personaActual.value = GlobalE.idPerson.value;
@@ -720,6 +723,13 @@ function getAlumxCursos()
 			if (index >= aux.length)
 			{
 				var nuevo = data[key];
+				
+				if(nuevo.imagen.trim().length >0)
+				{
+					var d = new Date();
+					nuevo.imagen = nuevo.imagen + "&t=" + d.getTime();
+				}
+
 				aux.add(nuevo);
 			}
 		});
@@ -778,20 +788,20 @@ function editarAlumnoCurso(arg)
 	correo.value = alumnoAct.value.correo;
 	cel.value = alumnoAct.value.cel;
 	nacimiento.value = nacio;
-	imagen.value = "";
+	imgCargada.value = true;
 }
 
 function limpiarDatos()
 {
-	alumnoAct.value = {"id":0};
-	editaAlumno.value = new MovimientoPag("pagNuevoAlumno", "Visible", "CREAR ",true);
+	alumnoAct.value = {"id":0,"imagen":""};
+	editaAlumno.value = new MovimientoPag("pagNuevoAlumno", "Visible", "CREAR ",false);
 
 	nombre.value = "";
 	apellido.value = "";
 	correo.value = "";
 	cel.value = "";
 	nacimiento.value = "";
-	imagen.value = "";
+	imgCargada.value = true;
 }
 
 //----CrearAlumno.ux----
@@ -803,22 +813,24 @@ function creaEditaAlumno()
 		nacimiento.value = nacimiento.value.substr(6) + nacimiento.value.substr(2,4) + nacimiento.value.substr(0,2);
 	}
 
-	var aux = "\"nombre\": \"" + nombre.value + "\",";
-	aux = aux + "\"apellido\": \"" + apellido.value + "\",";
-	aux = aux + "\"cel\": \"" + cel.value + "\",";
-	aux = aux + "\"correo\": \"" + correo.value + "\",";
-	aux = aux + "\"imagen\": \"" + imagen.value + "\",";
-	aux = aux + "\"nacimiento\": \"" + nacimiento.value + "\"";
+	if(imgCargada.value == true)
+	{
+		base64String = 0;
+	}
 	
 	if(alumnoAct.value.id == 0)
 	{
-		aux = "{" + aux + ",\"rol\": 0}";
-		aux = encodeURIComponent(aux);
-
-		fetch('http://loop.inhandy.com/loop.php?crearPersona=' + aux, {
-			method: 'GET',
-			cache: 'default',
-			headers: { "Content-type": "application/json"}
+		fetch('http://loop.inhandy.com/loop.php?creaPersona=', {
+			method: 'POST',
+			headers: { "Content-type": "application/json"},
+			body: JSON.stringify({
+				nombre: nombre.value,
+				apellido: apellido.value,
+				cel: cel.value,
+				correo: correo.value,
+				imagen: base64String,
+				nacimiento: nacimiento.value
+			})
 		})
 		.then(function(result)
 		{
@@ -838,13 +850,19 @@ function creaEditaAlumno()
 			agregarAlumnosCurso();
 		});
 	}else{
-		aux = "{\"id\":" + alumnoAct.value.id + "," + aux + "}";
-		aux = encodeURIComponent(aux);
 
-		fetch('http://loop.inhandy.com/loop.php?editarDatosPersona=' + aux, {
-			method: 'GET',
-			cache: 'default',
-			headers: { "Content-type": "application/json"}
+		fetch('http://loop.inhandy.com/loop.php?editaPersona=', {
+			method: 'POST',
+			headers: { "Content-type": "application/json"},
+			body: JSON.stringify({
+				id: alumnoAct.value.id,
+				nombre: nombre.value,
+				apellido: apellido.value,
+				cel: cel.value,
+				correo: correo.value,
+				imagen: base64String,
+				nacimiento: nacimiento.value
+			})
 		})
 		.then(function(result)
 		{
@@ -1461,6 +1479,32 @@ function selectNewAlumno(arg)
 	alumnos.replaceAll(aux);
 }
 
+
+//---------CAMARA------
+function takePicture()
+{
+	Camera.takePicture({targetWidth: 1000, targetHeight: 1000}).then(function(file){
+		imagen.value = file;
+		imgCargada.value = false;
+		CompressImage(file);
+	});
+}
+
+function CompressImage(file)
+{
+	var reader  = new FileReader();
+	
+	reader.onloadend = function () {
+		base64String = reader.result.split(',')[1];
+	}
+
+	if(file)
+	{
+		reader.readAsDataURL(file);
+	}
+}
+
+
 //---------FECHAS------
 //-- Cargar lista de fechas con actividades
 function getFechasconActividades()
@@ -1667,22 +1711,26 @@ module.exports = {
 //---AddAlumno.ux---
 	alumnos: alumnos,
 	cargarAlumnos: cargarAlumnos,
-	agregarAlumnosCurso: agregarAlumnosCurso,
-	selectNewAlumno: selectNewAlumno,
 	getAlumxCursos: getAlumxCursos,
+	selectNewAlumno: selectNewAlumno,
 	creaEditaAlumno: creaEditaAlumno,
+	agregarAlumnosCurso: agregarAlumnosCurso,
+	imgCargada: imgCargada,
+	takePicture: takePicture,
 	editaAlumno: editaAlumno,
 	limpiarDatos: limpiarDatos,
 	editarAlumnos: editarAlumnos,
 	editarAlumnoCurso: editarAlumnoCurso,
 	eliminarAlumnoCurso: eliminarAlumnoCurso,
 	mostrarEdicionAlumnos: mostrarEdicionAlumnos,
+
 //---Datos Persona---
 	nombre: nombre,
 	apellido: apellido,
-	correo: correo,
 	cel: cel,
+	correo: correo,
 	nacimiento: nacimiento,
+	imagen: imagen,
 
 //---CalificarAlumno.ux---
 	resetHabxAlumno: resetHabxAlumno,
