@@ -1,7 +1,6 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
 var GlobalE = require("GlobalElem");
-var personaActual = Observable(1);
 var pagActual = Observable("pagMiActividad");
 
 var calificacionesAl = Observable({"calificaciones": "nuevas"});
@@ -10,6 +9,7 @@ var resumenNotas = Observable({"nota": 0, "nombre":"", "radio":0});
 var total = Observable(0);
 var clases = Observable({"fecha":"","asistencia":"falla","actividad":0,"valido":false});
 var comentario = Observable("");
+var grafico = Observable("");
 var calificacionAct = Observable({"calificacion":"nueva"});
 var habilidadesAlcanzadas = Observable({"habilidad":"nueva"});
 var fechasCalificaciones = Observable({"fecha":"2016-06-01","id":0});
@@ -26,21 +26,26 @@ function getPersona()
 {
 	if(GlobalE.login.value)
 	{
-		personaActual.value = GlobalE.idPerson.value;
-
 		if(GlobalE.rolPerson.value == 0)
 		{
 			pagActual.value = "pagMiActividad";
 			getResumenNotasAlumno();
 
 			GlobalE.login.value = false;
+
+			var d = new Date();
+			grafico.value = "http://loop.inhandy.com/grafico.php?id=" + GlobalE.idPerson.value + 
+				"&id_instancia=" + GlobalE.instancia.value + "&t=" + d.getTime();
+
+			console.log("Grafico: " + grafico.value)
 		}
 	}
 }
 
 function getResumenNotasAlumno()
 {
-	fetch('http://loop.inhandy.com/loop.php?getResumenNotasAlumno=' + personaActual.value, {
+	fetch('http://loop.inhandy.com/loop.php?getResumenNotasAlumno=' + GlobalE.idPerson.value +
+		',' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -84,7 +89,8 @@ function getFechasClases(verProgreso)
 {
 	var contador = 0;
 
-	fetch('http://loop.inhandy.com/loop.php?getAsistenciaAlumno=' + personaActual.value, {
+	fetch('http://loop.inhandy.com/loop.php?getAsistenciaAlumno=' + GlobalE.idPerson.value +
+		',' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -173,7 +179,7 @@ function getFechasconActividades(e)
 function cargarCalificacionesAlumno(idActividad)
 {
 	fetch('http://loop.inhandy.com/loop.php?cargarCalificaciones=' + idActividad + 
-		',' + personaActual.value, {
+		',' + GlobalE.idPerson.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -260,7 +266,8 @@ function getFecha()
 
 function getHabilidadesAlcanzadas()
 {
-	fetch('http://loop.inhandy.com/loop.php?getHabilidadesAlcanzadas=' + personaActual.value, {
+	fetch('http://loop.inhandy.com/loop.php?getHabilidadesAlcanzadas=' + GlobalE.idPerson.value +
+		',' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -292,8 +299,6 @@ function getHabilidadesAlcanzadas()
 						x.fecha = getFechaAbrev(x.fecha);
 					});
 				});
-
-				console.log("Habilidades: " + nuevo.habilidades.length);
 
 				if(nuevo.habilidades.length > 0)
 				{
@@ -360,6 +365,7 @@ module.exports = {
 	lastFechaCalificacion: lastFechaCalificacion,
 	calificacionAct: calificacionAct,
 	comentario: comentario,
+	grafico: grafico,
 	clases: clases,
 	total: total,
 	anio: anio,

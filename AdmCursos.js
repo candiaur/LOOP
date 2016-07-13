@@ -1,7 +1,6 @@
 var Observable = require('FuseJS/Observable');
 var Timer = require('FuseJS/Timer');
 var GlobalE = require("GlobalElem");
-var personaActual = Observable();
 var pagActual = Observable("pagRamas");
 var Camera = require('FuseJS/Camera');
 
@@ -58,8 +57,6 @@ function getPersona()
 {
 	if(GlobalE.login.value)
 	{
-		personaActual.value = GlobalE.idPerson.value;
-
 		if(GlobalE.rolPerson.value != 0)
 		{
 			pagActual.value = "pagRamas";
@@ -83,7 +80,8 @@ function MovimientoPag(paginaAct, pagAnterior, objeto, isEnabled)
 //--Carga todas las ramas a las está asociado.
 function cargarRamas()
 {
-	fetch('http://loop.inhandy.com/loop.php?cargarRamas=' + personaActual.value + 
+	console.log("Cargar Ramas  " + GlobalE.idPerson.value);
+	fetch('http://loop.inhandy.com/loop.php?cargarRamas=' + GlobalE.idPerson.value + 
 		',' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
@@ -120,7 +118,7 @@ function cargarRamas()
 //-- Carga todos los niveles con sus habilidades y subhabilidades por default
 function cargarNiveles()
 {
-	fetch('http://loop.inhandy.com/loop.php?cargarNiveles', {
+	fetch('http://loop.inhandy.com/loop.php?cargarNiveles=' + GlobalE.instancia.value, {
 		method: 'GET',
 		cache: 'default',
 		headers: { "Content-type": "application/json"}
@@ -129,7 +127,7 @@ function cargarNiveles()
 	{
 		if (result.status !== 200)
 		{
-			console.log("cargarNiveles: Something went wrong :(");
+			console.log("CargarNiveles: Something went wrong :(");
 			return;
 		}
 		return result.json();
@@ -150,7 +148,14 @@ function cargarNiveles()
 				nuevo.habilidades.forEach(function(e)
 				{
 					e["activo"] = false;
-					e["isVisible"] = "Collapsed";
+
+					if(GlobalE.instancia.value == 1)
+					{
+						e["isVisible"] = "Collapsed";
+					}else{
+						e["isVisible"] = "Visible";
+					}
+					
 					e["nivel"] = nuevo.id
 
 					e.subHabs.forEach(function(x)
@@ -273,7 +278,7 @@ function cargarCursosxInstructor(instructor)
 //--Carga todos los cursos del instructor de la rama activa.
 function cargarCursos()
 {
-	fetch('http://loop.inhandy.com/loop.php?cargarCursos=' + personaActual.value 
+	fetch('http://loop.inhandy.com/loop.php?cargarCursos=' + GlobalE.idPerson.value 
 		+ ',' + ramaAct.value.id, {
 		method: 'GET',
 		cache: 'default',
@@ -324,7 +329,7 @@ function agregarCurso()
 {
 	var aux = "{ \"nombre\":\"" + curso.value + "\",";
 	aux = aux + "\"id_rama\":" + ramaAct.value.id + ",";
-	aux = aux + "\"id_instructor\":" + personaActual.value + "}";
+	aux = aux + "\"id_instructor\":" + GlobalE.idPerson.value + "}";
 
 	aux = encodeURIComponent(aux);
 
@@ -523,7 +528,6 @@ function marcarActividadesxDia()
 		aux.add(a);
 	}
 
-	console.log("Termino");
 	niveles.replaceAll(aux);
 }
 
@@ -531,10 +535,8 @@ function mostrarHabs(arg)
 {
 	var aux = Observable();
 
-	console.log("Mostrar length: " + niveles.length);
 	for(var i = 0; i < niveles.length; i++)
 	{
-		console.log("Mostrar Id: " + niveles.getAt(i).id + " - " + arg.data.id);
 		if(niveles.getAt(i).id == arg.data.id)
 		{
 			aux = niveles.getAt(i);
@@ -829,7 +831,9 @@ function creaEditaAlumno()
 				cel: cel.value,
 				correo: correo.value,
 				imagen: base64String,
-				nacimiento: nacimiento.value
+				nacimiento: nacimiento.value,
+				rol: 0,
+				instancia: GlobalE.instancia.value
 			})
 		})
 		.then(function(result)
@@ -851,7 +855,7 @@ function creaEditaAlumno()
 		});
 	}else{
 
-		fetch('http://loop.inhandy.com/loop.php?editaPersona=', {
+		fetch('http://loop.inhandy.com/loop.php?editarPersona=', {
 			method: 'POST',
 			headers: { "Content-type": "application/json"},
 			body: JSON.stringify({

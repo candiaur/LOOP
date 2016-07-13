@@ -25,8 +25,8 @@
 		<FileImageSource File="Assets/Iconos/img_IconoAvanzado.png" ux:Global="diamante"/>
 		<FileImageSource File="Assets/Iconos/img_IconoExperto.png" ux:Global="doble_Diamante"/>
 		
-		<DockPanel ux:Class="Atras" Margin="0,-50,0,23" Alignment="TopLeft" ZOffset="2">
-			<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" Padding="14,0" TextAlignment="Center"/>
+		<DockPanel ux:Class="Atras" Margin="0,-60,0,13" Alignment="TopLeft" ZOffset="2" Padding="10">
+			<Text Value=">" TextColor="#FFF" FontSize="22" Font="pres_letter" Padding="4,0" TextAlignment="Center"/>
 			<Rotation Degrees="180"/>
 		</DockPanel>
 
@@ -286,7 +286,7 @@
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Nombre" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nombre}" TextColor="#000"/>
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="Nombre" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nombre}" TextColor="#000"/>
 
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>
@@ -294,7 +294,7 @@
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="Apellido" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{apellido}" TextColor="#000"/>
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="Apellido" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{apellido}" TextColor="#000"/>
 
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>
@@ -302,7 +302,7 @@
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="nombre@tumail.com" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{email}" InputHint="Email" TextColor="#000"/>
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="nombre@tumail.com" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{email}" InputHint="Email" TextColor="#000"/>
 
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>
@@ -310,7 +310,7 @@
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="+56 9 91234567" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{cel}" InputHint="Phone" TextColor="#000"/>
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="+56 9 91234567" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{cel}" InputHint="Phone" TextColor="#000"/>
 
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>
@@ -318,7 +318,7 @@
 														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
 															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" PlaceholderText="11-07-1990" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{fechaNacio}" TextColor="#000"/>
+															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="11-07-1990" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{fechaNacio}" TextColor="#000"/>
 
 															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
 														</Panel>

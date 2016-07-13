@@ -131,7 +131,7 @@ function submit()
 
 function loginUser()
 {
-	var estadoLogin = Observable();
+	var dataLogin = Observable();
 
 	fetch('http://loop.inhandy.com/loop.php?login=' + email.value +'&pwd=' + clave.value, {
 		method: 'GET',
@@ -149,19 +149,25 @@ function loginUser()
 	})
 	.then(function(data)
 	{
-		estadoLogin = data;
+		dataLogin = data;
 
-		if(estadoLogin.estado == 0)
+		if(dataLogin.estado == 0)
 		{
-			load(estadoLogin.uid);
-			GlobalE.idPerson.value = estadoLogin.uid;
+			GlobalE.idPerson.value = dataLogin.uid;
+
+			dataLogin.instancias.forEach(function(e)
+			{
+				GlobalE.instancia.value = e.id;
+			});
+
+			load(dataLogin.uid);
 			
 			localStorage.setItem("email",email.value);
 			localStorage.setItem("password",clave.value);
 
 			currentPage.value = "inicio";
 		}else{
-			if(estadoLogin.estado == 2)
+			if(dataLogin.estado == 2)
 			{
 				mensajeError.value =  "La clave que ingresó es incorrecta. Inténtalo nuevamente.";
 			}else{
@@ -247,7 +253,7 @@ function modificarDatos()
 		base64String = 0;
 	}
 
-	fetch('http://loop.inhandy.com/loop.php?editaPersona=', {
+	fetch('http://loop.inhandy.com/loop.php?editarPersona=', {
 		method: 'POST',
 		headers: { "Content-type": "application/json"},
 		body: JSON.stringify({
