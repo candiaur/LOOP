@@ -55,7 +55,7 @@ var timer = Timer.create(function(){
 
 function getPersona()
 {
-	if(GlobalE.login.value)
+	if(GlobalE.login.value > 0)
 	{
 		if(GlobalE.rolPerson.value != 0)
 		{
@@ -63,7 +63,12 @@ function getPersona()
 			cargarRamas();
 			cargarNiveles();
 
-			GlobalE.login.value = false;
+			if(GlobalE.login.value > 1)
+			{
+				GlobalE.login.value = 0;
+			}else{
+				GlobalE.login.value ++;	
+			}
 		}
 	}
 }
@@ -80,7 +85,6 @@ function MovimientoPag(paginaAct, pagAnterior, objeto, isEnabled)
 //--Carga todas las ramas a las está asociado.
 function cargarRamas()
 {
-	console.log("Cargar Ramas  " + GlobalE.idPerson.value);
 	fetch('http://loop.inhandy.com/loop.php?cargarRamas=' + GlobalE.idPerson.value + 
 		',' + GlobalE.instancia.value, {
 		method: 'GET',
@@ -148,14 +152,7 @@ function cargarNiveles()
 				nuevo.habilidades.forEach(function(e)
 				{
 					e["activo"] = false;
-
-					if(GlobalE.instancia.value == 1)
-					{
-						e["isVisible"] = "Collapsed";
-					}else{
-						e["isVisible"] = "Visible";
-					}
-					
+					e["isVisible"] = "Collapsed";
 					e["nivel"] = nuevo.id
 
 					e.subHabs.forEach(function(x)
@@ -327,32 +324,34 @@ function limpiarCurso()
 
 function agregarCurso()
 {
-	var aux = "{ \"nombre\":\"" + curso.value + "\",";
-	aux = aux + "\"id_rama\":" + ramaAct.value.id + ",";
-	aux = aux + "\"id_instructor\":" + GlobalE.idPerson.value + "}";
-
-	aux = encodeURIComponent(aux);
-
-	console.log("Link Crea: " + aux);
-	fetch('http://loop.inhandy.com/loop.php?crearCurso=' + aux, {
-		method: 'POST',
-		cache: 'default',
-		headers: { "Content-type": "application/json"},
-
-	})
-	.then(function(result)
+	if(curso.value.trim().length > 0)
 	{
-		if (result.status !== 200)
+		var aux = "{ \"nombre\":\"" + curso.value + "\",";
+		aux = aux + "\"id_rama\":" + ramaAct.value.id + ",";
+		aux = aux + "\"id_instructor\":" + GlobalE.idPerson.value + "}";
+
+		aux = encodeURIComponent(aux);
+
+		fetch('http://loop.inhandy.com/loop.php?crearCurso=' + aux, {
+			method: 'POST',
+			cache: 'default',
+			headers: { "Content-type": "application/json"},
+
+		})
+		.then(function(result)
 		{
-			console.log("CrearCurso: Something went wrong :(");
-			return;
-		}
-		return result.json();
-	})
-	.then(function(data)
-	{
-		cargarCursos();	
-	});
+			if (result.status !== 200)
+			{
+				console.log("CrearCurso: Something went wrong :(");
+				return;
+			}
+			return result.json();
+		})
+		.then(function(data)
+		{
+			cargarCursos();	
+		});
+	}
 }
 
 function selectCurso(arg)
@@ -403,8 +402,6 @@ function cargarActividades(reset)
 
 				nuevo.niveles.forEach(function(e)
 				{
-					var hayHabs = 0;
-
 					e.habilidades.forEach(function(x)
 					{
 						x["nivel"] = e.id;
@@ -415,11 +412,10 @@ function cargarActividades(reset)
 							y["nivel"] = e.id;
 						});
 
-						hayHabs ++;
 						hayActividad = nuevo.id;
 					});
 
-					if(hayHabs > 0)
+					if(e.habilidades.length > 0)
 					{
 						aux.add(e);
 					}

@@ -18,6 +18,7 @@
 		<FileImageSource File="Assets/Logos/logoencirculo.png" ux:Global="logoCircular"/>
 		<FileImageSource File="Assets/Iconos/img_EditaNegro.png" ux:Global="editNegro"/>
 		<FileImageSource File="Assets/Iconos/img_EditaVerde.png" ux:Global="editVerde"/>
+		<FileImageSource File="Assets/Iconos/img_Camara2.png" ux:Global="Camara2"/>
 		<FileImageSource File="Assets/Iconos/img_CamaraCir.png" ux:Global="EditFoto"/>
 
 		<FileImageSource File="Assets/Iconos/img_IconoPrincipiante.png" ux:Global="cuadrado"/>
@@ -32,12 +33,25 @@
 
 		<DockPanel ux:Class="Boton" ux:Name="boton" Dock="Bottom" Padding="10,20" Height="9%" Color="#00D9C5" ZOffset="10">
 			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>	
-			<Text Value="{Property boton.Text}" ux:Name="texto" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+			<Text ux:Name="texto" Value="{Property boton.Text}" Font="museo700_letter" TextAlignment="Center" Alignment="VerticalCenter" FontSize="12.5" TextColor="#000"/>
 			
 			<string ux:Property="Text"/>
 			<WhilePressed>
 				<Change boton.Color="#000"/>
 				<Change texto.TextColor="#FFF"/>
+			</WhilePressed>
+		</DockPanel>
+
+		<DockPanel ux:Class="Boton2" ux:Name="boton2" Dock="Bottom" Padding="0,20" Height="9%" Color="#FFF" ZOffset="2">
+			<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+			<Image File="{Property boton2.File}" Layer="Background" Alignment="Left" Height="32" Margin="14,0"/>
+			<Text Value="{Property boton2.Text}" Font="museo700_letter" Alignment="Center" FontSize="12.5" TextColor="#000"/>
+			
+			<FileSource ux:Property="File"/>
+			<string ux:Property="Text"/>
+			<WhilePressed>
+				<Change boton2.Color="#00D9C5"/>
 			</WhilePressed>
 		</DockPanel>
 
@@ -47,6 +61,16 @@
 				<Change opcion.Color="#E2E2E2"/>
 			</WhilePressed>
 		</DockPanel>
+
+		<StackPanel ux:Class="Titulo" ux:Name="titulo" Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
+			<Grid Columns="auto,auto" Alignment="CenterLeft">
+				<Text Value="{Property titulo.Text}" Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
+				<Text Value="{Property titulo.Text2}" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
+			</Grid>
+
+			<string ux:Property="Text"/>
+			<string ux:Property="Text2"/>
+		</StackPanel>
 
 		<StatusBarBackground Dock="Top" />
 		<BottomBarBackground Dock="Bottom" />
@@ -190,9 +214,7 @@
 												</Clicked>
 											</Atras>
 
-											<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
-												<Text Value="CONFIGURACIÓN" Font="museo700_letter" FontSize="14" TextColor="#FFF" Alignment="CenterLeft"/>
-											</StackPanel>
+											<Titulo Text="CONFIGURACIÓN" Text2="" />
 
 											<StackPanel>
 												<Opcion ux:Name="editPerfil">
@@ -243,7 +265,7 @@
 
 									<Page ux:Name="pagEditaDatos" Color="#EEEBF0">
 										<DockPanel ux:Name="showEditaDatos" Visibility="Collapsed">
-											<StackPanel>
+											<StackPanel Dock="Top">
 												<Image Source="cabecera"/>
 												<Atras>
 													<Clicked>
@@ -252,84 +274,74 @@
 													</Clicked>
 												</Atras>
 
-												<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
-													<Grid Columns="auto,auto" Alignment="CenterLeft">
-														<Text Value="EDITAR " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
-														<Text Value="DATOS" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
-													</Grid>
-												</StackPanel>
-
-												<ScrollView MaxHeight="500">
-													<StackPanel>
-														<Image Source="EditFoto" Margin="10" Width="150"/>
-														
-														<WhileTrue Value="{imgCargada}">
-															<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
-																<ImageFill Url="{persona.imagen}"/>
-
-																<Clicked>
-																	<Callback Handler="{takePicture}" />
-																</Clicked>
-															</Circle>
-														</WhileTrue>
-
-														<WhileFalse Value="{imgCargada}">
-															<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
-																<ImageFill File="{imagen}"/>
-
-																<Clicked>
-																	<Callback Handler="{takePicture}" />
-																</Clicked>
-															</Circle>
-														</WhileFalse>
-
-														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="Nombre" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nombre}" TextColor="#000"/>
-
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-														</Panel>
-
-														<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="Apellido" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{apellido}" TextColor="#000"/>
-
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-														</Panel>
-
-														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="nombre@tumail.com" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{email}" InputHint="Email" TextColor="#000"/>
-
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-														</Panel>
-
-														<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="+56 9 91234567" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{cel}" InputHint="Phone" TextColor="#000"/>
-
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-														</Panel>
-
-														<Panel Padding="14,5" Color="#FFF" MinHeight="40">
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
-															
-															<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="11-07-1990" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{fechaNacio}" TextColor="#000"/>
-
-															<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
-														</Panel>
-
-														<Panel Height="200" />
-														<WhileKeyboardVisible>
-															<Move Y="-0.5" RelativeTo="Keyboard"/>
-														</WhileKeyboardVisible>
-													</StackPanel>
-												</ScrollView>
+												<Titulo Text="EDITAR " Text2="DATOS" />
 											</StackPanel>
+
+											<ScrollView>
+												<StackPanel>
+													<Image Source="EditFoto" Margin="10" Width="150"/>
+													
+													<WhileTrue Value="{imgCargada}">
+														<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+															<ImageFill Url="{persona.imagen}"/>
+
+															<Clicked>
+																<Callback Handler="{takePicture}" />
+															</Clicked>
+														</Circle>
+													</WhileTrue>
+
+													<WhileFalse Value="{imgCargada}">
+														<Circle Height="150" Width="150" Margin="0,-160,0,10" ZOffset="2">
+															<ImageFill File="{imagen}"/>
+
+															<Clicked>
+																<Callback Handler="{takePicture}" />
+															</Clicked>
+														</Circle>
+													</WhileFalse>
+
+													<Panel Padding="14,5" Color="#FFF" MinHeight="40">
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+														
+														<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="Nombre" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{nombre}" TextColor="#000"/>
+
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													</Panel>
+
+													<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+														
+														<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="Apellido" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{apellido}" TextColor="#000"/>
+
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													</Panel>
+
+													<Panel Padding="14,5" Color="#FFF" MinHeight="40">
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+														
+														<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="nombre@tumail.com" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{email}" InputHint="Email" TextColor="#000"/>
+
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													</Panel>
+
+													<Panel Padding="14,5" Color="#FFF" MinHeight="40" Margin="0,10">
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+														
+														<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="+56 9 91234567" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{cel}" InputHint="Phone" TextColor="#000"/>
+
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													</Panel>
+
+													<Panel Padding="14,5" Color="#FFF" MinHeight="40">
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+														
+														<TextInput TextWrapping="Wrap" Font="museo300_letter" FontSize="12" MinHeight="30" PlaceholderText="11-07-1990" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Center" Value="{fechaNacio}" TextColor="#000"/>
+
+														<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+													</Panel>
+												</StackPanel>
+											</ScrollView>
 
 											<Boton Text="Guardar!" >
 												<WhileKeyboardVisible>
@@ -356,12 +368,7 @@
 													</Clicked>
 												</Atras>
 
-												<StackPanel Color="#000" Margin="0,26,0,8" Padding="14,0" Height="28" Alignment="VerticalCenter">
-													<Grid Columns="auto,auto" Alignment="CenterLeft">
-														<Text Value="CAMBIAR " Font="museo700_letter" FontSize="14" TextColor="#FFF"/>
-														<Text Value="CONTRASEÑA" Font="museo100_letter" FontSize="14" TextColor="#FFF"/>
-													</Grid>
-												</StackPanel>
+												<Titulo Text="CAMBIAR " Text2="CONTRASEÑA" />
 
 												<Panel Padding="14,5" Color="#FFF" MinHeight="50">
 													<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
@@ -429,12 +436,12 @@
 											<NavigateTo Target="top" />
 										</Clicked> -->
 									</Grid>
-<!-- 
+
 									<Grid ColumnCount="2" Alignment="CenterRight" Width="20%">
 										<Image File="Assets/Iconos/img_Instructores.png" Alignment="Left"/>
 
 										<Text Value=">" TextColor="#FFF" FontSize="24" Font="pres_letter" TextAlignment="Center" Margin="0,5,0,0"/>
-									</Grid> -->
+									</Grid>
 
 									<Grid Alignment="VerticalCenter">
 										<Image File="Assets/Logos/looplogo.png" Width="70%"/>
@@ -472,8 +479,10 @@
 						</Panel>
 					</Page>
 
-					<!-- <Page ux:Name="right">
-						<StackPanel Color="#3366CC">
+					<Page ux:Name="right">
+						<RedSocial/>
+						
+						<!-- <StackPanel Color="#3366CC">
 							<DockPanel>
 								<StackPanel>
 									<Text Dock="Top" Alignment="Center" FontSize="80" Margin="0,50,0,50" TextColor="#1e88e5">Agregar</Text>
@@ -505,8 +514,8 @@
 									</Grid>
 								</StackPanel>
 							</DockPanel>
-						</StackPanel>
-					</Page> -->
+						</StackPanel> -->
+					</Page>
 				</PageControl>
 			</Page>
 		</PageControl>

@@ -1,0 +1,262 @@
+<Panel ux:Class="RedSocial" Color="#EEEBF0">
+	
+	<JavaScript File="AdmRedes.js" />
+
+	<PageControl ux:Name="redPage" Active="{pagActual}" Interaction="None">
+		<Page ux:Name="Muro">
+			<DockPanel>
+				<StackPanel Dock="Top">
+					<Image Source="cabecera"/>
+					
+					<Panel Alignment="Right" ZOffset="2" Margin="0,-10,14,6">
+						<Image File="Assets/Iconos/img_PerfilVerde.png" Width="30" />
+						
+						<Clicked>
+							<Callback Handler="{mostrarMiPerfil}"/>
+							<Set Target="redPage.Active" Value="Perfil" />
+							<Set Target="showPerfil.Visibility" Value="Visible" />
+						</Clicked>
+					</Panel>
+					
+					<Titulo Text="MUNDO " Text2="ARSKI" Margin="0,0,0,8"/>
+				</StackPanel>
+
+				<DockPanel>
+					<ScrollView>
+						<StackPanel>
+							<Each Items="{posts}">
+								<StackPanel Margin="0,0,0,8">
+									<Image Url="{imagen}" MaxHeight="450" StretchMode="UniformToFill">
+										<Image File="Assets/Iconos/img_Comentarios.png" Layer="Background" Alignment="BottomLeft" Height="35">
+											<Text Value="{comentario}" TextColor="#FFF" Font="museo900_letter" FontSize="8" Alignment="Center" Margin="0,0,8,0"/>
+										</Image>
+										
+										<Image File="Assets/Iconos/img_Likes.png" Layer="Background" Alignment="BottomRight" Height="35">
+											<Text Value="{likes}" TextColor="#FFF" Font="museo900_letter" FontSize="8" Alignment="Center" Margin="8,0,0,0"/>
+
+											<Clicked>
+												<Callback Handler="{darLike}"/>
+											</Clicked>
+										</Image>
+									</Image>
+
+									<StackPanel Color="#FFF" Padding="14,5">
+										<Grid Columns="auto,1*">
+											<StackPanel Padding="0,0,14,5">
+												<Circle Height="32" Width="32" Margin="0,2,0,5">
+													<ImageFill Url="{perfil}"/>
+												</Circle>
+
+												<Text Value="{nombre}" TextColor="#535353" Font="museo900_letter" FontSize="8" TextAlignment="Center"/>
+												
+												<Clicked>
+													<Callback Handler="{mostrarPerfil}"/>
+													<Set Target="redPage.Active" Value="Perfil" />
+													<Set Target="showPerfil.Visibility" Value="Visible" />
+												</Clicked>
+											</StackPanel>
+
+											<StackPanel>
+												<Text Value="{fecha}" TextColor="#535353" Font="museo100I_letter" FontSize="7" Margin="0,0,0,5"/>
+												<Text Value="{texto}" TextColor="#535353" Font="museo300I_letter" FontSize="9" TextWrapping="Wrap" Height="100%"/>
+												
+												<Panel Padding="10,5,0,5">
+													<Text Value="{numComments}" TextColor="#535353" Font="museo700I_letter" FontSize="8" TextAlignment="Right" Alignment="VerticalCenter"/>
+													
+													<Clicked>
+														<Callback Handler="{cargarComentarios}"/>
+													</Clicked>
+												</Panel>
+											</StackPanel>
+										</Grid>
+
+										<Each Items="{comentarios}">
+											<StackPanel Padding="5,5,0,5" Margin="14,0,0,0">
+												<Rectangle Width="1" Height="100%" Color="#D2D2D2" Alignment="Left" Layer="Background"/>
+												
+												<DockPanel>
+													<Text Value="{nombre}" TextColor="#535353" Font="museo700_letter" FontSize="9" Alignment="Left"/>
+													<Text Value="{fecha}" TextColor="#535353" Font="museo100I_letter" FontSize="7" Alignment="Right"/>
+												</DockPanel>
+
+												<Text Value="{comentario}" TextColor="#535353" Font="museo300I_letter" FontSize="9" TextWrapping="Wrap" Height="100%"/>
+
+												<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+											</StackPanel>
+										</Each>
+
+										<Panel Padding="5" Color="#F3F3F3" MinHeight="40">
+											<TextView Value="{nuevoC}" TextWrapping="Wrap" Font="museo300_letter" FontSize="9" PlaceholderText="Escribe aqui tu comentario" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Top">
+												<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+
+												<OnKeyPress Key="Enter" Handler="{crearComentario}"/>
+											</TextView>
+										</Panel>
+									</StackPanel>
+								</StackPanel>
+							</Each>
+						</StackPanel>
+					</ScrollView>
+				</DockPanel>
+
+				<Boton2 File="Assets/Iconos/img_Publica.png" Text="Publicar una foto o comentario">
+					<Clicked>
+						<Set Target="redPage.Active" Value="CreaPost" />
+						<Callback Handler="{limpiarImagen}"/>
+					</Clicked>
+				</Boton2>
+			</DockPanel>
+		</Page>
+
+		<Page ux:Name="Perfil">
+			<DockPanel ux:Name="showPerfil" Visibility="Collapsed">
+				<StackPanel Dock="Top">
+					<Image Source="cabecera"/>
+
+					<Atras>
+						<Clicked>
+							<Set Target="showPerfil.Visibility" Value="Collapsed" />
+							<Set Target="redPage.Active" Value="Muro" />
+						</Clicked>
+					</Atras>
+
+					<Titulo Text="{persona.nombre}" Text2="{persona.apellido}" Margin="0,26,0,0"/>
+
+					<StackPanel Color="#FFF">
+						<Grid ColumnCount="2">
+							<Circle Width="90%" Aspect="1" BoxSizing="FillAspect" Margin="0,10">
+								<ImageFill Url="{persona.imagen}"/>
+							</Circle>
+
+							<StackPanel>
+								<Text Value="{persona.descripcion}" TextColor="#535353" Font="museo300I_letter" FontSize="8" Margin="10" Width="130" TextWrapping="Wrap" TextAlignment="Right" Alignment="Right"/>
+
+								<Text Value="Ramas que integra" TextColor="#000" Font="museo700_letter" FontSize="9" TextAlignment="Right" Margin="10,5"/>
+
+								<Each Items="{persona.ramas}">
+									<Text Value="{rama}" TextColor="#535353" Font="museo300I_letter" FontSize="8" Margin="10" TextAlignment="Right" Alignment="Right"/>
+								</Each>
+							</StackPanel>
+						</Grid>
+
+						<Grid ColumnCount="4" Margin="30,10">
+							<StackPanel>
+								<Text Value="{persona.habilidades}" TextColor="#000" Font="museo700_letter" FontSize="18" TextAlignment="Center"/>
+								<Text Value="HABILIDADES" TextColor="#000" Font="museo300_letter" FontSize="9" TextAlignment="Center" Margin="0,0,0,2"/>
+							</StackPanel>
+
+							<StackPanel>
+								<Text Value="{persona.fotos}" TextColor="#000" Font="museo700_letter" FontSize="18" TextAlignment="Center"/>
+								<Text Value="FOTOS" TextColor="#000" Font="museo300_letter" FontSize="9" TextAlignment="Center" Margin="0,0,0,2"/>
+							</StackPanel>
+
+							<StackPanel>
+								<Text Value="{persona.likes}" TextColor="#000" Font="museo700_letter" FontSize="18" TextAlignment="Center"/>
+								<Text Value="ME GUSTA" TextColor="#000" Font="museo300_letter" FontSize="9" TextAlignment="Center" Margin="0,0,0,2"/>
+							</StackPanel>
+
+							<StackPanel>
+								<Text Value="{persona.numRamas}" TextColor="#000" Font="museo700_letter" FontSize="18" TextAlignment="Center"/>
+								<Text Value="RAMAS" TextColor="#000" Font="museo300_letter" FontSize="9" TextAlignment="Center" Margin="0,0,0,2"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</StackPanel>
+
+				<Panel>
+					<Panel Width="55%" Alignment="VerticalCenter">
+						<StackPanel ux:Class="Card" Opacity="0.4" ux:Name="self" Orientation="Horizontal" Alignment="Center" Padding="2">
+							<Scaling ux:Name="pageScaling" Factor="0.95" />
+
+							<ActivatingAnimation>
+								<Change self.Opacity="1" />
+								<Change pageScaling.Factor="1.2" Duration="0.5" />
+								<Change self.ZOffset="10" />
+							</ActivatingAnimation>
+							<EnteringAnimation Scale="0.25">
+								<Move RelativeTo="Size" X="-3.5" />
+							</EnteringAnimation>
+							<ExitingAnimation Scale="0.25">
+								<Move RelativeTo="Size" X="3.5" />
+							</ExitingAnimation>
+
+							<Rectangle Padding="2" Color="#FFF">
+								<Image Url="{imagen}">
+									<Image File="Assets/Iconos/img_Comentarios.png" Layer="Background" Alignment="BottomLeft" Height="35">
+										<Text Value="{likes}" TextColor="#FFF" Font="museo900_letter" FontSize="8" Alignment="Center" Margin="0,0,8,0"/>
+									</Image>
+									<Image File="Assets/Iconos/img_Likes.png" Layer="Background" Alignment="BottomRight" Height="35">
+										<Text Value="{comentario}" TextColor="#FFF" Font="museo900_letter" FontSize="8" Alignment="Center" Margin="8,0,0,0"/>
+									</Image>
+								</Image>
+							</Rectangle>
+
+							<Clicked>
+								<NavigateTo Target="self" />
+							</Clicked>
+						</StackPanel>
+
+						<Panel HitTestMode="LocalBoundsAndChildren">
+							<LinearNavigation ux:Name="nav">
+								<NavigationMotion GotoEasing="CircularOut" />
+							</LinearNavigation>
+							<SwipeNavigate SwipeDirection="Left"/>
+							<Each Items="{postPersona}">
+								<Card/>
+							</Each>
+						</Panel>
+					</Panel>
+				</Panel>
+			</DockPanel>
+		</Page>
+
+		<Page ux:Name="CreaPost">
+			<DockPanel>
+				<StackPanel Dock="Top">
+					<Image Source="cabecera"/>
+
+					<Atras>
+						<Clicked>
+							<Set Target="redPage.Active" Value="Muro" />
+						</Clicked>
+					</Atras>
+
+					<Titulo Text="NUEVA " Text2="PUBLICACIÓN"/>
+				</StackPanel>
+
+				<ScrollView>
+					<StackPanel>
+						<Panel Color="#F7F5F8" Width="100%" MaxHeight="450" MinHeight="300">
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+							<Image Source="Camara2" Width="45" Height="35" Layer="Background"/>
+							<Image File="{imagen}" Width="100%" MaxHeight="450" StretchMode="UniformToFill"/>
+
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+
+							<Clicked>
+								<Callback Handler="{takePicture}" />
+							</Clicked>
+						</Panel>
+
+						<Panel Padding="14,5" Color="#FFF" MinHeight="150" Margin="0,8">
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Top" Layer="Background"/>
+
+							<TextView TextWrapping="Wrap" Font="museo300_letter" FontSize="9" PlaceholderText="¿Qué quieres publicar?" PlaceholderColor="#C9C9C9" TextAlignment="Center" Alignment="Top" MinHeight="40" Value="{textPublica}">
+								<Rectangle Width="100%" Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+							</TextView>
+
+							<Rectangle Height="1" Color="#D2D2D2" Alignment="Bottom" Layer="Background"/>
+						</Panel>
+					</StackPanel>
+				</ScrollView>
+				
+				<Boton Text="Publicar!">
+					<Clicked>
+						<Callback Handler="{crearPost}" />
+					</Clicked>
+				</Boton> 
+			</DockPanel>
+		</Page>
+	</PageControl>
+</Panel>

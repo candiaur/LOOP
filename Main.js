@@ -10,7 +10,7 @@ var mensajeError = Observable("");
 var mensajeClave = Observable("");
 var volverInicio = Observable(false);
 
-var persona = Observable(new Person("", "","","","Assets/FuseLogo.png","0"));
+var persona = Observable(new Person("","","","","Assets/FuseLogo.png","0"));
 var email = Observable();
 var clave = Observable();
 var claveAct = Observable("");
@@ -21,7 +21,7 @@ var nombre = Observable("");
 var apellido = Observable("");
 var cel = Observable("");
 var nacio = Observable("");
-var imagen = Observable();
+var imagen = Observable("");
 var fechaNacio = Observable("");
 
 var base64String = Observable();
@@ -104,7 +104,7 @@ function load(idUser)
 		
 		persona.value = new Person(data.nombre, data.apellido, data.email, data.cel, data.nacimiento, data.imagen, data.rol);
 		GlobalE.rolPerson.value = data.rol;
-		GlobalE.login.value = true;
+		GlobalE.login.value = 1;
 
 		if(data.rol == "0")
 		{

@@ -24,20 +24,23 @@ var timer = Timer.create(function(){
 
 function getPersona()
 {
-	if(GlobalE.login.value)
+	if(GlobalE.login.value > 0)
 	{
 		if(GlobalE.rolPerson.value == 0)
 		{
 			pagActual.value = "pagMiActividad";
 			getResumenNotasAlumno();
 
-			GlobalE.login.value = false;
-
 			var d = new Date();
 			grafico.value = "http://loop.inhandy.com/grafico.php?id=" + GlobalE.idPerson.value + 
 				"&id_instancia=" + GlobalE.instancia.value + "&t=" + d.getTime();
 
-			console.log("Grafico: " + grafico.value)
+			if(GlobalE.login.value > 1)
+			{
+				GlobalE.login.value = 0;
+			}else{
+				GlobalE.login.value ++;	
+			}
 		}
 	}
 }
